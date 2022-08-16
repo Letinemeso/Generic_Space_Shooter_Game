@@ -36,8 +36,63 @@ private:
 
 	void reconfigure_grid()
 	{
-		float* coords_array = new float[m_grid_size * m_grid_size];
+		float min_x = m_default_c[0], max_x = m_default_c[0];
+		float min_y = m_default_c[1], max_y = m_default_c[1];
+		for(unsigned int i=0; i<m_default_c_count; i += 3)
+		{
+			if(min_x > m_default_c[i]) min_x = m_default_c[i];
+			if(max_x < m_default_c[i]) max_x = m_default_c[i];
+		}
+		for(unsigned int i=1; i<m_default_c_count; i += 3)
+		{
+			if(min_y > m_default_c[i]) min_y = m_default_c[i];
+			if(max_y < m_default_c[i]) max_y = m_default_c[i];
+		}
+		float width = max_x - min_x;
+		float height = max_y - min_y;
 
+		unsigned int c_count = m_grid_size * m_grid_size * m_default_c_count;
+		float* coords_array = new float[c_count];
+		for(unsigned int x=0; x<m_grid_size; ++x)
+		{
+			for(unsigned int y=0; y<m_grid_size; ++y)
+			{
+				for(unsigned int i=0; i<m_default_c_count; i += 3)
+					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i] + (width * x);
+				for(unsigned int i=1; i<m_default_c_count; i += 3)
+					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i] + (height * y);
+				for(unsigned int i=2; i<m_default_c_count; i += 3)
+					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i];
+			}
+		}
+
+		m_vertices.resize(c_count);
+		m_vertices.copy_array(coords_array, c_count);
+		m_vertices.setup_buffer(0, 3);
+
+		delete[] coords_array;
+
+		std::cout << "\n";
+
+		c_count = m_grid_size * m_grid_size * m_default_tc_count;
+		coords_array = new float[c_count];
+		for(unsigned int x=0; x<m_grid_size; ++x)
+		{
+			for(unsigned int y=0; y<m_grid_size; ++y)
+			{
+				for(unsigned int i=0; i<m_default_tc_count; ++i)
+				{
+					std::cout << (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i << "\n";
+					coords_array[ (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i ] = m_default_tc[i];
+				}
+			}
+		}
+
+		m_texture.resize(c_count);
+		m_texture.copy_array(coords_array, c_count);
+		m_texture.setup_buffer(1, 2);
+
+		delete[] coords_array;
 	}
 
 public:
@@ -79,6 +134,7 @@ public:
 	void set_grid_size(unsigned int _size)
 	{
 		m_grid_size = _size;
+		reconfigure_grid();
 	}
 
 };
@@ -114,10 +170,16 @@ int main()
 
 	LEti::Resource_Loader::load_object("grid_block", "Resources/Models/grid_block.mdl");
 
+//	Grid grid;
+//	grid.init("grid_block");
 
-	LEti::Object_2D grid_block;
-	grid_block.init("grid_block");
-	grid_block.set_pos(600.0f, 400.0f, 0.0f);
+	Grid grid;
+	grid.init("grid_block");
+
+	grid.set_grid_size(3);
+
+	grid.set_pos(50.0f, 50.0f, 0.0f);
+//	grid_block.set_overall_scale(30.0f);
 
 
 	LEti::Timer fps_timer;
@@ -157,7 +219,7 @@ int main()
 
 
 
-		grid_block.draw();
+		grid.draw();
 
 
 
