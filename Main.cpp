@@ -13,6 +13,8 @@
 #include "Physics/Default_Narrow_CD.h"
 #include "Physics/Default_Narrowest_CD.h"
 
+#include <include/Object_System/Object_2D.h>
+
 #include "Timer.h"
 
 #include "Debug_Drawable_Frame.h"
@@ -170,6 +172,9 @@ int main()
 
 	LEti::Resource_Loader::load_object("grid_block", "Resources/Models/grid_block.mdl");
 
+	TEST::Object_2D test_object;
+	test_object.init("grid_block");
+
 //	Grid grid;
 //	grid.init("grid_block");
 
@@ -225,6 +230,39 @@ int main()
 			}
 		}
 
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
+		{
+			test_object.move({0.0f, 200.0f * DT, 0.0f});
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
+		{
+			test_object.move({0.0f, -200.0f * DT, 0.0f});
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
+		{
+			test_object.move({-200.0f * DT, 0.0f, 0.0f});
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
+		{
+			test_object.move({200.0f * DT, 0.0f, 0.0f});
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_Q))
+		{
+			test_object.rotate(LEti::Math::PI * DT);
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_E))
+		{
+			test_object.rotate(-LEti::Math::PI * DT);
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE))
+		{
+			test_object.set_scale(test_object.get_scale() * (1.0f + DT));
+		}
+		if(LEti::Event_Controller::is_key_down(GLFW_KEY_LEFT_SHIFT))
+		{
+			test_object.set_scale(test_object.get_scale() / (1.0f + DT));
+		}
+
 
 
 
@@ -236,7 +274,7 @@ int main()
 		grid.draw();
 
 
-
+		test_object.draw();
 
 
 		++fps_counter;
