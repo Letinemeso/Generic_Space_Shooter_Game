@@ -26,6 +26,7 @@
 
 #define DT LEti::Event_Controller::get_dt()
 
+/*
 class Grid : public LEti::Object_2D
 {
 private:
@@ -154,6 +155,7 @@ public:
 	}
 
 };
+*/
 
 int main()
 {
@@ -192,13 +194,9 @@ int main()
 //	Grid grid;
 //	grid.init("grid_block");
 
-	Grid grid;
-	grid.init("grid_block");
-
-	unsigned int grid_size = 3;
-	grid.set_grid_size(grid_size);
-
-	grid.set_pos({50.0f, 50.0f, 0.0f});
+//	unsigned int grid_size = 3;
+//	grid.set_grid_size(grid_size);
+//	grid.set_pos({50.0f, 50.0f, 0.0f});
 //	grid_block.set_overall_scale(30.0f);
 
 
@@ -230,19 +228,19 @@ int main()
 		LEti::Camera::update(false, true);
 
 
-		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_UP))
-		{
-			++grid_size;
-			grid.set_grid_size(grid_size);
-		}
-		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_DOWN))
-		{
-			if(grid_size > 1)
-			{
-				--grid_size;
-				grid.set_grid_size(grid_size);
-			}
-		}
+//		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_UP))
+//		{
+//			++grid_size;
+//			grid.set_grid_size(grid_size);
+//		}
+//		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_DOWN))
+//		{
+//			if(grid_size > 1)
+//			{
+//				--grid_size;
+//				grid.set_grid_size(grid_size);
+//			}
+//		}
 
 		if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
 		{
@@ -285,7 +283,7 @@ int main()
 
 
 
-		grid.draw();
+//		grid.draw();
 
 
 		test_object.draw();
