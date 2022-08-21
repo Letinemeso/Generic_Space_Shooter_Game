@@ -3,8 +3,8 @@
 #include "Camera.h"
 #include "Resource_Loader.h"
 
-#include "Object.h"
-#include "Text_Field.h"
+#include <include/Object_System/Object_2D.h>
+#include <include/Object_System/Text_Field.h>
 
 #include "Physics/Physical_Model_2D.h"
 
@@ -17,7 +17,7 @@
 
 #include "Timer.h"
 
-#include "Debug_Drawable_Frame.h"
+//#include "Debug_Drawable_Frame.h"
 
 
 #include <chrono>
@@ -68,13 +68,13 @@ private:
 			}
 		}
 
-		m_vertices.resize(c_count);
-		m_vertices.copy_array(coords_array, c_count);
-		m_vertices.setup_buffer(0, 3);
+		draw_module()->get_vertices().resize(c_count);
+		draw_module()->get_vertices().copy_array(coords_array, c_count);
+		draw_module()->get_vertices().setup_buffer(0, 3);
 
 		delete[] coords_array;
 
-		std::cout << "\n";
+//		std::cout << "\n";
 
 		c_count = m_grid_size * m_grid_size * m_default_tc_count;
 		coords_array = new float[c_count];
@@ -84,15 +84,15 @@ private:
 			{
 				for(unsigned int i=0; i<m_default_tc_count; ++i)
 				{
-					std::cout << (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i << "\n";
+//					std::cout << (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i << "\n";
 					coords_array[ (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i ] = m_default_tc[i];
 				}
 			}
 		}
 
-		m_texture.resize(c_count);
-		m_texture.copy_array(coords_array, c_count);
-		m_texture.setup_buffer(1, 2);
+		draw_module()->get_texture().resize(c_count);
+		draw_module()->get_texture().copy_array(coords_array, c_count);
+		draw_module()->get_texture().setup_buffer(1, 2);
 
 		delete[] coords_array;
 	}
@@ -103,34 +103,48 @@ public:
 
 	void init(const char *_object_name) override
 	{
-		auto tcoords = LEti::Resource_Loader::get_data<float>(_object_name, "texture_coords");
-		init_texture(LEti::Resource_Loader::get_data<std::string>(_object_name, "texture_name").first->c_str(), tcoords.first, tcoords.second);
-
-		m_default_tc_count = tcoords.second;
-		m_default_tc = tcoords.first;
-
-		auto coords = LEti::Resource_Loader::get_data<float>(_object_name, "coords");
-		init_vertices(coords.first, coords.second);
-
-		m_default_c_count = coords.second;
-		m_default_c = coords.first;
+		remove_draw_module();
+		remove_physics_module();
 
 		auto translation = LEti::Resource_Loader::get_data<float>(_object_name, "position");
 		ASSERT(translation.second != 3);
-		set_pos(translation.first[0], translation.first[1], translation.first[2]);
+		set_pos({translation.first[0], translation.first[1], translation.first[2]});
 
 		auto scale = LEti::Resource_Loader::get_data<float>(_object_name, "scale");
 		ASSERT(scale.second != 3);
-		set_scale(scale.first[0], scale.first[1], scale.first[2]);
+		set_scale({scale.first[0], scale.first[1], scale.first[2]});
 
 		auto raxis = LEti::Resource_Loader::get_data<float>(_object_name, "rotation_axis");
 		ASSERT(raxis.second != 3);
-		set_rotation_axis(raxis.first[0], raxis.first[1], raxis.first[2]);
+		set_rotation_axis({raxis.first[0], raxis.first[1], raxis.first[2]});
 
 		auto rangle = LEti::Resource_Loader::get_data<float>(_object_name, "rotation_angle");
 		ASSERT(rangle.second != 1);
 		set_rotation_angle(*rangle.first);
 
+		std::pair<const float*, unsigned int> tcoords;
+		LEti::Resource_Loader::assign<float>(tcoords, _object_name, "texture_coords");
+
+		if(tcoords.first)
+		{
+			create_draw_module();
+			m_draw_module->init_texture(LEti::Resource_Loader::get_data<std::string>(_object_name, "texture_name").first->c_str(), tcoords.first, tcoords.second);
+			auto coords = LEti::Resource_Loader::get_data<float>(_object_name, "coords");
+			m_draw_module->init_vertices(coords.first, coords.second);
+			m_default_c = coords.first;
+			m_default_c_count = coords.second;
+			m_default_tc = tcoords.first;
+			m_default_tc_count = tcoords.second;
+		}
+
+		std::pair<const float*, unsigned int> physical_model_data;
+		LEti::Resource_Loader::assign(physical_model_data, _object_name, "physical_model_data");
+
+		if((physical_model_data.first))
+		{
+			create_physics_module();
+			m_physics_module->init(physical_model_data.first, physical_model_data.second);
+		}
 	}
 
 	void set_grid_size(unsigned int _size)
@@ -172,7 +186,7 @@ int main()
 
 	LEti::Resource_Loader::load_object("grid_block", "Resources/Models/grid_block.mdl");
 
-	TEST::Object_2D test_object;
+	LEti::Object_2D test_object;
 	test_object.init("grid_block");
 
 //	Grid grid;
@@ -184,7 +198,7 @@ int main()
 	unsigned int grid_size = 3;
 	grid.set_grid_size(grid_size);
 
-	grid.set_pos(50.0f, 50.0f, 0.0f);
+	grid.set_pos({50.0f, 50.0f, 0.0f});
 //	grid_block.set_overall_scale(30.0f);
 
 
@@ -202,7 +216,7 @@ int main()
 
 	LEti::Text_Field fps_info_block;
 	fps_info_block.init("text_field");
-	fps_info_block.set_pos(10, 770, 0);
+	fps_info_block.set_pos({10, 770, 0});
 
 	unsigned int fps_counter = 0;
 
