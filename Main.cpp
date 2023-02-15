@@ -1,220 +1,305 @@
 #include "Event_Controller.h"
 #include "Shader.h"
-#include "Camera.h"
-#include "Resource_Loader.h"
+#include "Camera_2D.h"
+#include "Picture_Manager.h"
 
-#include <include/Object_System/Object_2D.h>
-#include <include/Object_System/Text_Field.h>
+#include "Object_System/Text_Field.h"
 
+#include <Object_System/Object_2D.h>
+
+#include "Physics/Physical_Model_3D.h"
 #include "Physics/Physical_Model_2D.h"
 
-#include "Physics/Space_Splitter_2D.h"
-#include "Physics/Space_Hasher_2D.h"
-#include "Physics/Default_Narrow_CD.h"
-#include "Physics/Default_Narrowest_CD.h"
+#include "Physics/Collision_Detector_2D.h"
+#include "Physics/Collision_Resolver.h"
+#include "Physics/Collision_Resolution__Rigid_Body_2D.h"
 
-#include <include/Object_System/Object_2D.h>
+#include "Physics/Space_Hasher_2D.h"
+#include "Physics/Dynamic_Narrow_CD.h"
+#include "Physics/Default_Narrowest_CD.h"
+#include "Physics/SAT_Narrowest_CD.h"
 
 #include "Timer.h"
 
-//#include "Debug_Drawable_Frame.h"
+#include "Object_System/Debug_Drawable_Frame.h"
 
+#include <sstream>
+#include <iomanip>
 
 #include <chrono>
 #include <thread>
 
 
-#define DT LEti::Event_Controller::get_dt()
+#include <Object_System/Rigid_Body_2D.h>
 
-/*
-class Grid : public LEti::Object_2D
-{
-private:
-	const float* m_default_c = nullptr;
-	unsigned int m_default_c_count = 0;
-	const float* m_default_tc = nullptr;
-	unsigned int m_default_tc_count = 0;
+#include <Renderer.h>
 
-	unsigned int m_grid_size = 0;
-
-	void reconfigure_grid()
-	{
-		float min_x = m_default_c[0], max_x = m_default_c[0];
-		float min_y = m_default_c[1], max_y = m_default_c[1];
-		for(unsigned int i=0; i<m_default_c_count; i += 3)
-		{
-			if(min_x > m_default_c[i]) min_x = m_default_c[i];
-			if(max_x < m_default_c[i]) max_x = m_default_c[i];
-		}
-		for(unsigned int i=1; i<m_default_c_count; i += 3)
-		{
-			if(min_y > m_default_c[i]) min_y = m_default_c[i];
-			if(max_y < m_default_c[i]) max_y = m_default_c[i];
-		}
-		float width = max_x - min_x;
-		float height = max_y - min_y;
-
-		unsigned int c_count = m_grid_size * m_grid_size * m_default_c_count;
-		float* coords_array = new float[c_count];
-		for(unsigned int x=0; x<m_grid_size; ++x)
-		{
-			for(unsigned int y=0; y<m_grid_size; ++y)
-			{
-				for(unsigned int i=0; i<m_default_c_count; i += 3)
-					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i] + (width * x);
-				for(unsigned int i=1; i<m_default_c_count; i += 3)
-					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i] + (height * y);
-				for(unsigned int i=2; i<m_default_c_count; i += 3)
-					coords_array[ (x * m_grid_size * m_default_c_count) + (y * m_default_c_count) + i ] = m_default_c[i];
-			}
-		}
-
-		draw_module()->get_vertices().resize(c_count);
-		draw_module()->get_vertices().copy_array(coords_array, c_count);
-		draw_module()->get_vertices().setup_buffer(0, 3);
-
-		delete[] coords_array;
-
-//		std::cout << "\n";
-
-		c_count = m_grid_size * m_grid_size * m_default_tc_count;
-		coords_array = new float[c_count];
-		for(unsigned int x=0; x<m_grid_size; ++x)
-		{
-			for(unsigned int y=0; y<m_grid_size; ++y)
-			{
-				for(unsigned int i=0; i<m_default_tc_count; ++i)
-				{
-//					std::cout << (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i << "\n";
-					coords_array[ (x * m_grid_size * m_default_tc_count) + (y * m_default_tc_count) + i ] = m_default_tc[i];
-				}
-			}
-		}
-
-		draw_module()->get_texture().resize(c_count);
-		draw_module()->get_texture().copy_array(coords_array, c_count);
-		draw_module()->get_texture().setup_buffer(1, 2);
-
-		delete[] coords_array;
-	}
-
-public:
-	Grid() { }
-	~Grid() { }
-
-	void init(const char *_object_name) override
-	{
-		remove_draw_module();
-		remove_physics_module();
-
-		auto translation = LEti::Resource_Loader::get_data<float>(_object_name, "position");
-		ASSERT(translation.second != 3);
-		set_pos({translation.first[0], translation.first[1], translation.first[2]});
-
-		auto scale = LEti::Resource_Loader::get_data<float>(_object_name, "scale");
-		ASSERT(scale.second != 3);
-		set_scale({scale.first[0], scale.first[1], scale.first[2]});
-
-		auto raxis = LEti::Resource_Loader::get_data<float>(_object_name, "rotation_axis");
-		ASSERT(raxis.second != 3);
-		set_rotation_axis({raxis.first[0], raxis.first[1], raxis.first[2]});
-
-		auto rangle = LEti::Resource_Loader::get_data<float>(_object_name, "rotation_angle");
-		ASSERT(rangle.second != 1);
-		set_rotation_angle(*rangle.first);
-
-		std::pair<const float*, unsigned int> tcoords;
-		LEti::Resource_Loader::assign<float>(tcoords, _object_name, "texture_coords");
-
-		if(tcoords.first)
-		{
-			create_draw_module();
-			m_draw_module->init_texture(LEti::Resource_Loader::get_data<std::string>(_object_name, "texture_name").first->c_str(), tcoords.first, tcoords.second);
-			auto coords = LEti::Resource_Loader::get_data<float>(_object_name, "coords");
-			m_draw_module->init_vertices(coords.first, coords.second);
-			m_default_c = coords.first;
-			m_default_c_count = coords.second;
-			m_default_tc = tcoords.first;
-			m_default_tc_count = tcoords.second;
-		}
-
-		std::pair<const float*, unsigned int> physical_model_data;
-		LEti::Resource_Loader::assign(physical_model_data, _object_name, "physical_model_data");
-
-		if((physical_model_data.first))
-		{
-			create_physics_module();
-			m_physics_module->init(physical_model_data.first, physical_model_data.second);
-		}
-	}
-
-	void set_grid_size(unsigned int _size)
-	{
-		m_grid_size = _size;
-		reconfigure_grid();
-	}
-
-};
-*/
+#include "MDL_Reader.h"
 
 int main()
 {
-	LEti::Window_Controller::create_window(1200, 800, "Collision Test");
+	LV::Type_Manager::register_type("int", {
+										[](const std::string& _val)
+										{
+											unsigned int i=0;
+											if(_val[0] == '+' || _val[0] == '-')
+											++i;
+											for(; i<_val.size(); ++i)
+											if(_val[i] < '0' || _val[i] > '9')
+											return false;
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((int*)_variable_vptr) = std::stoi(_values_as_string[0]); }
+									});
+	LV::Type_Manager::register_type("unsigned int", {
+										[](const std::string& _val)
+										{
+											for(unsigned int i=0; i<_val.size(); ++i)
+											if(_val[i] < '0' || _val[i] > '9')
+											return false;
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((int*)_variable_vptr) = std::stoi(_values_as_string[0]); }
+									});
+	LV::Type_Manager::register_type("bool", {
+										[](const std::string& _val)
+										{
+											if(_val == "true" || _val == "false" || _val == "+" || _val == "-" || _val == "1" || _val == "0")
+												return true;
+											return false;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+										{
+											bool& var = *((bool*&)_variable_vptr);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST);
+											if(_values_as_string[0] == "true" || _values_as_string[0] == "+" || _values_as_string[0] == "1")
+												var = true;
+											else if(_values_as_string[0] == "false" || _values_as_string[0] == "-" || _values_as_string[0] == "0")
+												var = false;
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_CW);
+//											*((bool*&)_variable_vptr) = _values_as_string[0] == "true" ? true : false;
+										}
+									});
+	LV::Type_Manager::register_type("bool*", {
+										[](const std::string& _val)
+										{
+											if(_val == "true" || _val == "false" || _val == "+" || _val == "-" || _val == "1" || _val == "0")
+												return true;
+											return false;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+										{
+											bool** var_ptr_ptr = (bool**)_variable_vptr;
 
-	LEti::Shader::init_shader("Resources/Shaders/vertex_shader.shader", "Resources/Shaders/fragment_shader.shader");
-	ASSERT(!LEti::Shader::is_valid());
-	LEti::Shader::set_texture_uniform_name("input_texture");
-	LEti::Shader::set_transform_matrix_uniform_name("transform_matrix");
-	LEti::Shader::set_projection_matrix_uniform_name("projection_matrix");
+											if(*var_ptr_ptr == nullptr)
+											*var_ptr_ptr = new bool[_values_as_string.size()];
 
-	LEti::Camera::setup_orthographic_matrix();
+											bool* var_ptr = *var_ptr_ptr;
+
+											for(unsigned int i=0; i<_values_as_string.size(); ++i)
+											{
+												if(_values_as_string[i] == "true" || _values_as_string[i] == "+" || _values_as_string[i] == "1")
+													var_ptr[i] = true;
+												else if(_values_as_string[i] == "false" || _values_as_string[i] == "-" || _values_as_string[i] == "0")
+													var_ptr[i] = false;
+											}
+										}
+									});
+	LV::Type_Manager::register_type("std::string", {
+										[](const std::string& _val) { return true; },
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) {
+											*((std::string*)_variable_vptr) = _values_as_string[0];
+										}
+									});
+	LV::Type_Manager::register_type("float*", {
+										[](const std::string& _val)
+										{
+											if(_val == ".")
+											return false;
+
+											unsigned int dots_count = 0;
+											unsigned int i=0;
+											if(_val[0] == '+' || _val[0] == '-')
+											++i;
+											for(; i<_val.size(); ++i)
+											{
+												if(_val[i] == '.')
+												{
+													++dots_count;
+													continue;
+												}
+												if(_val[i] < '0' || _val[i] > '9')
+												return false;
+											}
+
+											if(dots_count > 1)
+											return false;
+
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+										{
+											float** var_ptr_ptr = (float**)_variable_vptr;
+
+											if(*var_ptr_ptr == nullptr)
+											*var_ptr_ptr = new float[_values_as_string.size()];
+
+											float* var_ptr = *var_ptr_ptr;
+
+											for(unsigned int i=0; i<_values_as_string.size(); ++i)
+											var_ptr[i] = std::stof(_values_as_string[i]);
+										}
+									});
+	LV::Type_Manager::register_type("std::string*", {
+										[](const std::string& /*_val*/)
+										{
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+										{
+											std::string** var_ptr_ptr = (std::string**)_variable_vptr;
+
+											if(*var_ptr_ptr == nullptr)
+											*var_ptr_ptr = new std::string[_values_as_string.size()];
+
+											std::string* var_ptr = *var_ptr_ptr;
+
+											for(unsigned int i=0; i<_values_as_string.size(); ++i)
+											var_ptr[i] = _values_as_string[i];
+										}
+									});
+	LV::Type_Manager::register_type("glm::vec3", {
+										[](const std::string& _val)
+										{
+											if(_val == ".")
+											return false;
+
+											unsigned int dots_count = 0;
+											unsigned int i=0;
+											if(_val[0] == '+' || _val[0] == '-')
+											++i;
+											for(; i<_val.size(); ++i)
+											{
+												if(_val[i] == '.')
+												{
+													++dots_count;
+													continue;
+												}
+												if(_val[i] < '0' || _val[i] > '9')
+												return false;
+											}
+
+											if(dots_count > 1)
+											return false;
+
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+										{
+											L_ASSERT(_values_as_string.size() == 3);
+
+											glm::vec3& vec = *((glm::vec3*)_variable_vptr);
+											for(unsigned int i=0; i<3; ++i)
+											vec[i] = std::stof(_values_as_string[i]);
+										}
+									});
+	LV::Type_Manager::register_type("float", {
+										[](const std::string& _val)
+										{
+											if(_val == ".")
+											return false;
+
+											unsigned int dots_count = 0;
+											unsigned int i=0;
+											if(_val[0] == '+' || _val[0] == '-')
+											++i;
+											for(; i<_val.size(); ++i)
+											{
+												if(_val[i] == '.')
+												{
+													++dots_count;
+													continue;
+												}
+												if(_val[i] < '0' || _val[i] > '9')
+												return false;
+											}
+
+											if(dots_count > 1)
+											return false;
+
+											return true;
+										},
+										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((float*)_variable_vptr) = std::stof(_values_as_string[0]); }
+                                    });
+
+	LV::MDL_Reader reader;
+//    reader.parse_file("Resources/Models/quad_new");
+
+//	LEti::Object_2D_Stub quad;
+//	quad.assign_values(reader.get_stub("quad"));
+
+    LEti::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_CW);
+
+    LEti::Camera_2D camera;
+
+//    camera.set_position({600, 40, 0});
+//    camera.set_view_scale(2.0f);
+
+    LEti::Shader shader;
+
+    LEti::Renderer renderer;
+    renderer.set_camera(&camera);
+    renderer.set_shader(&shader);
+
+    shader.init("Resources/Shaders/vertex_shader.shader", "Resources/Shaders/fragment_shader.shader");
+    shader.set_texture_uniform("input_texture");
+    shader.set_transform_matrix_uniform("transform_matrix");
+    shader.set_projection_matrix_uniform("projection_matrix");
+
+	LEti::Collision_Detector_2D collision_detector;
+
+	collision_detector.set_broad_phase(new LEti::Space_Hasher_2D, 10);
+	collision_detector.set_narrow_phase(new LEti::Dynamic_Narrow_CD, 10);
+	collision_detector.set_narrowest_phase(new LEti::SAT_Narrowest_CD);
+
+	LEti::Collision_Resolver Collision_Resolver;
+	Collision_Resolver.add_resolution(new LEti::Collision_Resolution__Rigid_Body_2D);
+
+	reader.parse_file("Resources/Textures/textures");
+	LEti::Picture_Manager::Picture_Autoload_Stub texture_autoload;
+	texture_autoload.assign_values(reader.get_stub("textures"));
+
+
 	LEti::Event_Controller::set_max_dt(60.0f / 1000.0f);
 
-	LEti::Space_Splitter_2D::set_broad_phase<LEti::Space_Hasher_2D>();
-	LEti::Space_Splitter_2D::set_narrow_phase<LEti::Default_Narrow_CD>();
-	LEti::Space_Splitter_2D::set_narrowest_phase<LEti::Default_Narrowest_CD>();
-	LEti::Space_Splitter_2D::get_broad_phase()->set_precision(10);
-	LEti::Space_Splitter_2D::get_narrow_phase()->set_precision(10);
 
-	LEti::Resource_Loader::init();
-	LEti::Resource_Loader::load_object("textures", "Resources/Textures/textures.mdl");
-
-	LEti::Resource_Loader::load_object("grid_block", "Resources/Models/grid_block.mdl");
-
-	LEti::Object_2D test_object;
-	test_object.init("grid_block");
-
-//	Grid grid;
-//	grid.init("grid_block");
-
-//	unsigned int grid_size = 3;
-//	grid.set_grid_size(grid_size);
-//	grid.set_pos({50.0f, 50.0f, 0.0f});
-//	grid_block.set_overall_scale(30.0f);
+//	L_CREATE_LOG_LEVEL("MOUSE_POS_LL");
 
 
-	LEti::Timer fps_timer;
+	///////////////// 2d collision test
 
+//	LEti::Rigid_Body_2D flat_co;
+//	flat_co.init(quad);
+//	flat_co.set_mass(4.0f);
+//	flat_co.set_pos({800, 400, 0});
+//	flat_co.draw_module()->set_texture(LEti::Picture_Manager::get_picture("white_texture"));
 
-	auto reset_func = [&]()
-	{
+    LEti::Timer fps_timer;
 
-	};
-	reset_func();
+//    co.second->update();
 
+	glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
-	LEti::Resource_Loader::load_object("text_field", "Resources/Models/text_field.mdl");
+	collision_detector.register_point(&cursor_position);
 
-	LEti::Text_Field fps_info_block;
-	fps_info_block.init("text_field");
-	fps_info_block.set_pos({10, 770, 0});
+//    collision_detector.register_object(co.second);
 
 	unsigned int fps_counter = 0;
 
@@ -225,79 +310,43 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		LEti::Camera::update(false, true);
+//        co.second->update_previous_state();
 
-
-//		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_UP))
-//		{
-//			++grid_size;
-//			grid.set_grid_size(grid_size);
-//		}
-//		if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_DOWN))
-//		{
-//			if(grid_size > 1)
-//			{
-//				--grid_size;
-//				grid.set_grid_size(grid_size);
-//			}
-//		}
-
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
+		if (LEti::Event_Controller::key_was_pressed(GLFW_KEY_K))
 		{
-			test_object.move({0.0f, 200.0f * DT, 0.0f});
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
+        }
+
+		if(LEti::Event_Controller::mouse_wheel_rotation() != 0)
 		{
-			test_object.move({0.0f, -200.0f * DT, 0.0f});
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
-		{
-			test_object.move({-200.0f * DT, 0.0f, 0.0f});
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
-		{
-			test_object.move({200.0f * DT, 0.0f, 0.0f});
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_Q))
-		{
-			test_object.rotate(LEti::Math::PI * DT);
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_E))
-		{
-			test_object.rotate(-LEti::Math::PI * DT);
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE))
-		{
-			test_object.set_scale(test_object.get_scale() * (1.0f + DT));
-		}
-		if(LEti::Event_Controller::is_key_down(GLFW_KEY_LEFT_SHIFT))
-		{
-			test_object.set_scale(test_object.get_scale() / (1.0f + DT));
-		}
+			float additional_scale_per_rotation = 0.2f;
 
+			additional_scale_per_rotation *= -(float)(LEti::Event_Controller::mouse_wheel_rotation());
 
+            camera.set_view_scale(camera.view_scale() + additional_scale_per_rotation);
+        }
 
+//        co.second->update();
 
-		LEti::Space_Splitter_2D::update();
+//		LEti::Camera_2D::set_position(flat_co.get_pos());
 
+		if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+        {
+        }
 
+		collision_detector.update();
 
+		Collision_Resolver.resolve_all(collision_detector.get_collisions__models());
 
-//		grid.draw();
-
-
-		test_object.draw();
-
+//        renderer.draw(*co.second->draw_module());
 
 		++fps_counter;
 		fps_timer.update();
+
 		if(!fps_timer.is_active())
 		{
-			fps_timer.start(1.0f);
-			fps_info_block.set_text((std::to_string(fps_counter)).c_str());
+            fps_timer.start(1.0f);
 			fps_counter = 0;
-		}
-		fps_info_block.draw();
+        }
 
 		LEti::Window_Controller::swap_buffers();
 	}
