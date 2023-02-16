@@ -44,6 +44,7 @@ INCLUDEPATH += "../LEti_Engine/include/"
 
 SOURCES += \
     Main.cpp \
+    source/Background.cpp \
     source/Collision_Resolution__Entity.cpp \
     source/Enemy_Entity_Generator.cpp \
     source/Entity.cpp \
@@ -64,6 +65,7 @@ Resources/Textures/textures.mdl \
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
 
 HEADERS += \
+	include/Background.h \
 	include/Collision_Resolution__Entity.h \
 	include/Enemy_Entity_Generator.h \
 	include/Entity.h \

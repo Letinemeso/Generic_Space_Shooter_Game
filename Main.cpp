@@ -21,6 +21,7 @@
 #include <Object_System/Rigid_Body_2D.h>
 #include <Renderer.h>
 
+#include <Background.h>
 #include <Collision_Resolution__Entity.h>
 #include <Entity_Manager.h>
 #include <Enemy_Entity_Generator.h>
@@ -273,6 +274,10 @@ int main()
 
     //  game setup
 
+    GSSG::Background background;
+    background.inject_camera(&camera);
+    background.set_picture(LEti::Picture_Manager::get_picture("background_texture"));
+
     GSSG::Entity_Manager entity_manager;
     entity_manager.inject_collision_detector(&collision_detector);
     entity_manager.inject_renderer(&renderer);
@@ -341,19 +346,7 @@ int main()
 
         player->apply_input();
 
-		if (LEti::Event_Controller::key_was_pressed(GLFW_KEY_K))
-		{
-        }
-
-		if(LEti::Event_Controller::mouse_wheel_rotation() != 0)
-		{
-        }
-
         entity_manager.update_entities();
-
-		if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
-        {
-        }
 
         collision_detector.update();
 
@@ -363,7 +356,11 @@ int main()
 
         enemy_generator.update();
 
+        background.update();
+
         entity_manager.draw_entities();
+
+        renderer.draw(*background.draw_module());
 
 		++fps_counter;
 		fps_timer.update();

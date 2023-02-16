@@ -2,16 +2,20 @@
 \
     |amount|
     \
-        "2"
+        "4"
     /
     |names|
     \
         "white_texture"
         "arrow_texture"
+        "background_texture"
+        "yellow_texture"
     /
     |paths|
     \
         "Resources/Textures/white.png"
         "Resources/Textures/arrow.png"
+        "Resources/Textures/background.png"
+        "Resources/Textures/yellow.png"
     /
 /

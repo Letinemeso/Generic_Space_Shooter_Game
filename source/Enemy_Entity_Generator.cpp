@@ -54,5 +54,8 @@ void Enemy_Entity_Generator::spawn_enemy() const
             entity->draw_module()->colors()[c] = random_color;
     }
 
+    entity->update_previous_state();
+    entity->update(0.0f);
+
     m_entity_manager->add_entity(entity);
 }
