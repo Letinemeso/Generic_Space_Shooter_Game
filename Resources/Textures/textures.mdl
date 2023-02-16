@@ -2,26 +2,16 @@
 \
     |amount|
     \
-        "7"
+        "2"
     /
     |names|
     \
-        "ugly_color"
-        "pyramid_texture"
         "white_texture"
-        "font_texture"
-        "red_indicator"
-        "yellow_indicator"
-        "purple_texture"
+        "arrow_texture"
     /
     |paths|
     \
-        "Resources/Textures/ugly_color.png"
-        "Resources/Textures/quad.png"
         "Resources/Textures/white.png"
-        "Resources/Font/font_yellow.png"
-        "Resources/Textures/red.png"
-        "Resources/Textures/yellow.png"
-        "Resources/Textures/purple.png"
+        "Resources/Textures/arrow.png"
     /
 /

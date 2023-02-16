@@ -1,43 +1,36 @@
-#include "Event_Controller.h"
-#include "Shader.h"
-#include "Camera_2D.h"
-#include "Picture_Manager.h"
-
-#include "Object_System/Text_Field.h"
-
-#include <Object_System/Object_2D.h>
-
-#include "Physics/Physical_Model_3D.h"
-#include "Physics/Physical_Model_2D.h"
-
-#include "Physics/Collision_Detector_2D.h"
-#include "Physics/Collision_Resolver.h"
-#include "Physics/Collision_Resolution__Rigid_Body_2D.h"
-
-#include "Physics/Space_Hasher_2D.h"
-#include "Physics/Dynamic_Narrow_CD.h"
-#include "Physics/Default_Narrowest_CD.h"
-#include "Physics/SAT_Narrowest_CD.h"
-
-#include "Timer.h"
-
-#include "Object_System/Debug_Drawable_Frame.h"
-
-#include <sstream>
-#include <iomanip>
-
 #include <chrono>
 #include <thread>
 
+#include <MDL_Reader.h>
 
+#include <Timer.h>
+#include <Event_Controller.h>
+#include <Shader.h>
+#include <Camera_2D.h>
+#include <Picture_Manager.h>
+#include <Physics/Physical_Model_2D.h>
+#include <Physics/Collision_Detector_2D.h>
+#include <Physics/Collision_Resolver.h>
+#include <Physics/Collision_Resolution__Rigid_Body_2D.h>
+#include <Physics/Space_Hasher_2D.h>
+#include <Physics/Dynamic_Narrow_CD.h>
+#include <Physics/Default_Narrowest_CD.h>
+#include <Physics/SAT_Narrowest_CD.h>
+#include <Object_System/Text_Field.h>
+#include <Object_System/Object_2D.h>
 #include <Object_System/Rigid_Body_2D.h>
-
 #include <Renderer.h>
 
-#include "MDL_Reader.h"
+#include <Collision_Resolution__Entity.h>
+#include <Entity_Manager.h>
+#include <Enemy_Entity_Generator.h>
+#include <Player.h>
+
 
 int main()
 {
+    //  engine setup
+
 	LV::Type_Manager::register_type("int", {
 										[](const std::string& _val)
 										{
@@ -231,12 +224,9 @@ int main()
 										},
 										[](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((float*)_variable_vptr) = std::stof(_values_as_string[0]); }
                                     });
+    srand(time(nullptr));
 
-	LV::MDL_Reader reader;
-//    reader.parse_file("Resources/Models/quad_new");
-
-//	LEti::Object_2D_Stub quad;
-//	quad.assign_values(reader.get_stub("quad"));
+    LV::MDL_Reader reader;
 
     LEti::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
 
@@ -248,9 +238,7 @@ int main()
     glCullFace(GL_CW);
 
     LEti::Camera_2D camera;
-
-//    camera.set_position({600, 40, 0});
-//    camera.set_view_scale(2.0f);
+    camera.set_view_scale(1.0f);
 
     LEti::Shader shader;
 
@@ -269,8 +257,9 @@ int main()
 	collision_detector.set_narrow_phase(new LEti::Dynamic_Narrow_CD, 10);
 	collision_detector.set_narrowest_phase(new LEti::SAT_Narrowest_CD);
 
-	LEti::Collision_Resolver Collision_Resolver;
-	Collision_Resolver.add_resolution(new LEti::Collision_Resolution__Rigid_Body_2D);
+    LEti::Collision_Resolver collision_resolver;
+    collision_resolver.add_resolution(new GSSG::Collision_Resolution__Entity);
+    collision_resolver.add_resolution(new LEti::Collision_Resolution__Rigid_Body_2D);
 
 	reader.parse_file("Resources/Textures/textures");
 	LEti::Picture_Manager::Picture_Autoload_Stub texture_autoload;
@@ -279,27 +268,65 @@ int main()
 
 	LEti::Event_Controller::set_max_dt(60.0f / 1000.0f);
 
+    //  ~engine setup
 
-//	L_CREATE_LOG_LEVEL("MOUSE_POS_LL");
+
+    //  game setup
+
+    GSSG::Entity_Manager entity_manager;
+    entity_manager.inject_collision_detector(&collision_detector);
+    entity_manager.inject_renderer(&renderer);
+    entity_manager.set_max_distance_from_view_pos(1000.0f);
+
+    reader.parse_file("Resources/Models/arrow_quad");
+    reader.parse_file("Resources/Models/triangle");
+
+    LEti::Object_2D_Stub arrow_quad_stub;
+    arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
+
+    LEti::Object_2D_Stub enemy_entity_stub;
+    enemy_entity_stub.assign_values(reader.get_stub("arrow_quad"));
+    enemy_entity_stub.texture_name = "white_texture";
+
+    LEti::Object_2D_Stub projectile_stub;
+    projectile_stub.assign_values(reader.get_stub("triangle"));
+    projectile_stub.scale = { 3.0f, 3.0f, 1.0f };
+
+    GSSG::Enemy_Entity_Generator enemy_generator;
+    enemy_generator.set_spawn_frequency(5.0f);
+    enemy_generator.inject_entity_manager(&entity_manager);
+    enemy_generator.set_entity_stub(&enemy_entity_stub);
+
+    GSSG::Player* player = new GSSG::Player;
+    player->init(arrow_quad_stub);
+    player->set_health(10);
+    player->set_mass(15.0f);
+    player->inject_camera(&camera);
+    player->inject_entity_manager(&entity_manager);
+    player->set_projectile_stub(&projectile_stub);
+    player->inject_enemy_generator(&enemy_generator);
 
 
-	///////////////// 2d collision test
+    GSSG::Entity* some_entity = new GSSG::Entity;
+    some_entity->init(arrow_quad_stub);
+    some_entity->set_pos({300, 300, 0});
+    some_entity->set_health(3);
+    some_entity->set_mass(15.0f);
 
-//	LEti::Rigid_Body_2D flat_co;
-//	flat_co.init(quad);
-//	flat_co.set_mass(4.0f);
-//	flat_co.set_pos({800, 400, 0});
-//	flat_co.draw_module()->set_texture(LEti::Picture_Manager::get_picture("white_texture"));
+    entity_manager.add_entity(some_entity);
+    entity_manager.add_entity(player);
+
+    entity_manager.update_entities_prev_state();
+    entity_manager.update_entities(0.0f);
+
+    //  ~game setup
+
 
     LEti::Timer fps_timer;
 
-//    co.second->update();
-
 	glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
-	collision_detector.register_point(&cursor_position);
-
-//    collision_detector.register_object(co.second);
+    collision_detector.register_point(&cursor_position);
 
 	unsigned int fps_counter = 0;
 
@@ -308,9 +335,11 @@ int main()
 		LEti::Event_Controller::update();
 		LEti::Window_Controller::update();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//        co.second->update_previous_state();
+        entity_manager.update_entities_prev_state();
+
+        player->apply_input();
 
 		if (LEti::Event_Controller::key_was_pressed(GLFW_KEY_K))
 		{
@@ -318,26 +347,23 @@ int main()
 
 		if(LEti::Event_Controller::mouse_wheel_rotation() != 0)
 		{
-			float additional_scale_per_rotation = 0.2f;
-
-			additional_scale_per_rotation *= -(float)(LEti::Event_Controller::mouse_wheel_rotation());
-
-            camera.set_view_scale(camera.view_scale() + additional_scale_per_rotation);
         }
 
-//        co.second->update();
-
-//		LEti::Camera_2D::set_position(flat_co.get_pos());
+        entity_manager.update_entities();
 
 		if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
         {
         }
 
-		collision_detector.update();
+        collision_detector.update();
 
-		Collision_Resolver.resolve_all(collision_detector.get_collisions__models());
+        collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
-//        renderer.draw(*co.second->draw_module());
+        entity_manager.remove_dead_entities();
+
+        enemy_generator.update();
+
+        entity_manager.draw_entities();
 
 		++fps_counter;
 		fps_timer.update();
