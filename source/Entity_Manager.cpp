@@ -61,6 +61,12 @@ void Entity_Manager::update_entities(float _ratio) const
         (*it)->update(_ratio);
 }
 
+void Entity_Manager::apply_entities_input() const
+{
+    for(LDS::List<Entity*>::Const_Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
+        (*it)->apply_input();
+}
+
 
 void Entity_Manager::remove_dead_entities()
 {

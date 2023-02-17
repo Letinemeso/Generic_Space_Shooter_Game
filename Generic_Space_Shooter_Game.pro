@@ -46,11 +46,13 @@ SOURCES += \
     Main.cpp \
     source/Background.cpp \
     source/Collision_Resolution__Entity.cpp \
-    source/Enemy_Entity_Generator.cpp \
+    source/Enemy.cpp \
+    source/Enemy_Generator.cpp \
     source/Entity.cpp \
     source/Entity_Manager.cpp \
     source/Player.cpp \
-    source/Projectile.cpp
+    source/Projectile.cpp \
+    source/Space_Ship.cpp
 
 DISTFILES += \
 Resources/Models/arrow_quad.mdl \
@@ -67,8 +69,10 @@ Resources/Textures/textures.mdl \
 HEADERS += \
 	include/Background.h \
 	include/Collision_Resolution__Entity.h \
-	include/Enemy_Entity_Generator.h \
+	include/Enemy.h \
+	include/Enemy_Generator.h \
 	include/Entity.h \
 	include/Entity_Manager.h \
 	include/Player.h \
-	include/Projectile.h
+	include/Projectile.h \
+	include/Space_Ship.h

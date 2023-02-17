@@ -24,8 +24,9 @@
 #include <Background.h>
 #include <Collision_Resolution__Entity.h>
 #include <Entity_Manager.h>
-#include <Enemy_Entity_Generator.h>
+#include <Enemy_Generator.h>
 #include <Player.h>
+#include <Enemy.h>
 
 
 int main()
@@ -298,11 +299,12 @@ int main()
     projectile_stub.assign_values(reader.get_stub("triangle"));
     projectile_stub.scale = { 3.0f, 3.0f, 1.0f };
 
-    GSSG::Enemy_Entity_Generator enemy_generator;
+    GSSG::Enemy_Generator enemy_generator;
     enemy_generator.set_spawn_frequency(5.0f);
     enemy_generator.inject_entity_manager(&entity_manager);
     enemy_generator.inject_camera(&camera);
-    enemy_generator.set_entity_stub(&enemy_entity_stub);
+    enemy_generator.set_enemy_stub(&projectile_stub);
+    enemy_generator.set_enemy_projectile_stub(&projectile_stub);
 
     GSSG::Player* player = new GSSG::Player;
     player->init(arrow_quad_stub);
@@ -312,14 +314,6 @@ int main()
     player->inject_entity_manager(&entity_manager);
     player->set_projectile_stub(&projectile_stub);
 
-
-    GSSG::Entity* some_entity = new GSSG::Entity;
-    some_entity->init(arrow_quad_stub);
-    some_entity->set_pos({300, 300, 0});
-    some_entity->set_health(3);
-    some_entity->set_mass(15.0f);
-
-    entity_manager.add_entity(some_entity);
     entity_manager.add_entity(player);
 
     entity_manager.update_entities_prev_state();
@@ -344,17 +338,13 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         entity_manager.update_entities_prev_state();
-
-        player->apply_input();
-
+        entity_manager.apply_entities_input();
         entity_manager.update_entities();
 
         collision_detector.update();
-
         collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
         entity_manager.remove_dead_entities();
-
         enemy_generator.update();
 
         background.update();

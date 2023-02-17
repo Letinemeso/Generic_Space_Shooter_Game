@@ -28,6 +28,9 @@ namespace GSSG
         inline int health() const { return m_health; }
         inline virtual bool should_be_destroyed() const { return m_health < 1; };
 
+    public:
+        virtual void apply_input() = 0;
+
     };
 
 }

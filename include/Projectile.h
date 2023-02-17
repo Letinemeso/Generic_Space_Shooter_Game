@@ -26,6 +26,8 @@ namespace GSSG
         void update_previous_state() override;
         void update(float _ratio = 1.0f) override;
 
+        void apply_input() override { }
+
     public:
         void set_lifetime(float _seconds);
 

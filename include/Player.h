@@ -6,29 +6,20 @@
 
 #include <Event_Controller.h>
 
-#include <Enemy_Entity_Generator.h>
+#include <Enemy_Generator.h>
 #include <Entity_Manager.h>
 #include <Entity.h>
 #include <Projectile.h>
+#include <Space_Ship.h>
 
 
 namespace GSSG
 {
 
-    class Player : public GSSG::Entity
+    class Player : public GSSG::Space_Ship
     {
     private:
         LEti::Camera_2D* m_camera = nullptr;
-
-    private:
-        Entity_Manager* m_entity_manager = nullptr;
-
-    private:
-        const LEti::Object_2D_Stub* m_projectile_stub = nullptr;
-
-        float m_acceleration_speed = 300.0f;
-        float m_rotation_acceleration_speed = LEti::Math::HALF_PI;
-        float m_max_multiplier_limit = 1.0f;
 
     public:
         Player();
@@ -36,12 +27,9 @@ namespace GSSG
 
     public:
         inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
-        inline void inject_entity_manager(Entity_Manager* _entity_manager) { m_entity_manager = _entity_manager; }
-
-        inline void set_projectile_stub(const LEti::Object_2D_Stub* _projectile_stub) { m_projectile_stub = _projectile_stub; }
 
     public:
-        void apply_input();
+        void apply_input() override;
         void update(float _ratio = 1.0f) override;
 
     };
