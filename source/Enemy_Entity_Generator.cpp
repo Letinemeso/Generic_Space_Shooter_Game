@@ -33,7 +33,7 @@ void Enemy_Entity_Generator::spawn_enemy() const
 {
     L_ASSERT(m_entity_stub);
 
-    glm::vec3 position = m_spawn_position;
+    glm::vec3 position = m_camera->position();
     position.x += LEti::Math::random_number(100, 400) * (LEti::Math::random_number(0, 2) == 0 ? -1.0f : 1.0f);
     position.y += LEti::Math::random_number(100, 400) * (LEti::Math::random_number(0, 2) == 0 ? -1.0f : 1.0f);
 

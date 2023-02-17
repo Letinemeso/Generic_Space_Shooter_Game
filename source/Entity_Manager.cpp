@@ -70,7 +70,7 @@ void Entity_Manager::remove_dead_entities()
 
     for(LDS::List<Entity*>::Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
     {
-        if((*it)->should_be_destroyed() || ( LEti::Math::vector_length(m_view_pos - (*it)->get_pos()) > m_max_distance_from_view_pos ) )
+        if((*it)->should_be_destroyed() || ( LEti::Math::vector_length(m_camera->position() - (*it)->get_pos()) > m_max_distance_from_view_pos ) )
             entities_to_delete.push_back(*it);
     }
 

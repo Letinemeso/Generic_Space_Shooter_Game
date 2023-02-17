@@ -82,6 +82,4 @@ void Player::update(float _ratio)
     Entity::update(_ratio);
 
     m_camera->set_position(get_pos());
-    m_enemy_generator->set_spawn_position(get_pos());
-    m_entity_manager->set_view_pos(get_pos());
 }

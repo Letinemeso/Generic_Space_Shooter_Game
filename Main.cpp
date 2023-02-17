@@ -281,6 +281,7 @@ int main()
     GSSG::Entity_Manager entity_manager;
     entity_manager.inject_collision_detector(&collision_detector);
     entity_manager.inject_renderer(&renderer);
+    entity_manager.inject_camera(&camera);
     entity_manager.set_max_distance_from_view_pos(1000.0f);
 
     reader.parse_file("Resources/Models/arrow_quad");
@@ -300,6 +301,7 @@ int main()
     GSSG::Enemy_Entity_Generator enemy_generator;
     enemy_generator.set_spawn_frequency(5.0f);
     enemy_generator.inject_entity_manager(&entity_manager);
+    enemy_generator.inject_camera(&camera);
     enemy_generator.set_entity_stub(&enemy_entity_stub);
 
     GSSG::Player* player = new GSSG::Player;
@@ -309,7 +311,6 @@ int main()
     player->inject_camera(&camera);
     player->inject_entity_manager(&entity_manager);
     player->set_projectile_stub(&projectile_stub);
-    player->inject_enemy_generator(&enemy_generator);
 
 
     GSSG::Entity* some_entity = new GSSG::Entity;

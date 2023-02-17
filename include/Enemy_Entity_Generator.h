@@ -14,10 +14,11 @@ namespace GSSG
     class Enemy_Entity_Generator
     {
     private:
+        const LEti::Camera_2D* m_camera = nullptr;
+
+    private:
         Entity_Manager* m_entity_manager = nullptr;
         const LEti::Object_2D_Stub* m_entity_stub = nullptr;
-
-        glm::vec3 m_spawn_position{0.0f, 0.0f, 0.0f};
 
         float m_spawn_frequency = 1.0f;
         LEti::Timer m_timer;
@@ -29,8 +30,8 @@ namespace GSSG
     public:
         inline void set_entity_stub(const LEti::Object_2D_Stub* _entity_stub) { m_entity_stub = _entity_stub; }
         inline void inject_entity_manager(Entity_Manager* _entity_manager) { m_entity_manager = _entity_manager; }
+        inline void inject_camera(const LEti::Camera_2D* _camera) { m_camera = _camera; }
         inline void set_spawn_frequency(float _spawn_frequency) { m_spawn_frequency = _spawn_frequency; }
-        inline void set_spawn_position(const glm::vec3& _position) { m_spawn_position = _position; }
 
     public:
         void update();

@@ -17,12 +17,12 @@ namespace GSSG
     private:
         LEti::Collision_Detector_2D* m_collision_detector = nullptr;
         const LEti::Renderer* m_renderer = nullptr;
+        const LEti::Camera_2D* m_camera = nullptr;
 
     private:
         LDS::List<Entity*> m_entities;
 
     private:
-        glm::vec3 m_view_pos{0.0f, 0.0f, 0.0f};
         float m_max_distance_from_view_pos = 1000.0f;
 
     public:
@@ -32,8 +32,8 @@ namespace GSSG
     public:
         inline void inject_collision_detector(LEti::Collision_Detector_2D* _collision_detector) { m_collision_detector = _collision_detector; }
         inline void inject_renderer(LEti::Renderer* _renderer) { m_renderer = _renderer; }
+        inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
 
-        inline void set_view_pos(const glm::vec3& _view_pos) { m_view_pos = _view_pos; }
         inline void set_max_distance_from_view_pos(float _max) { m_max_distance_from_view_pos = _max; }
 
     private:

@@ -22,7 +22,6 @@ namespace GSSG
 
     private:
         Entity_Manager* m_entity_manager = nullptr;
-        Enemy_Entity_Generator* m_enemy_generator = nullptr;
 
     private:
         const LEti::Object_2D_Stub* m_projectile_stub = nullptr;
@@ -38,7 +37,6 @@ namespace GSSG
     public:
         inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
         inline void inject_entity_manager(Entity_Manager* _entity_manager) { m_entity_manager = _entity_manager; }
-        inline void inject_enemy_generator(Enemy_Entity_Generator* _enemy_generator) { m_enemy_generator = _enemy_generator; }
 
         inline void set_projectile_stub(const LEti::Object_2D_Stub* _projectile_stub) { m_projectile_stub = _projectile_stub; }
 
