@@ -20,5 +20,11 @@ bool Collision_Resolution__Entity::resolve(const LEti::Physical_Model_2D::Inters
     maybe_entity_1->set_health(health_1 - health_2);
     maybe_entity_2->set_health(health_2 - health_1);
 
-    LEti::Collision_Resolution__Rigid_Body_2D::resolve(_id);
+    if(!LEti::Collision_Resolution__Rigid_Body_2D::resolve(_id))
+        return false;
+
+    maybe_entity_1->on_collision(maybe_entity_2);
+    maybe_entity_2->on_collision(maybe_entity_1);
+
+    return true;
 }

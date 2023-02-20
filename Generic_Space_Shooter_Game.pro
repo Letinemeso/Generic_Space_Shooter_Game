@@ -45,6 +45,10 @@ INCLUDEPATH += "../LEti_Engine/include/"
 SOURCES += \
     Main.cpp \
     source/Background.cpp \
+    source/Behavior_Tree/Action.cpp \
+    source/Behavior_Tree/Node_Base.cpp \
+    source/Behavior_Tree/Selector.cpp \
+    source/Behavior_Tree/Sequence.cpp \
     source/Collision_Resolution__Entity.cpp \
     source/Enemy.cpp \
     source/Enemy_Generator.cpp \
@@ -68,6 +72,10 @@ Resources/Textures/textures.mdl \
 
 HEADERS += \
 	include/Background.h \
+	include/Behavior_Tree/Action.h \
+	include/Behavior_Tree/Node_Base.h \
+	include/Behavior_Tree/Selector.h \
+	include/Behavior_Tree/Sequence.h \
 	include/Collision_Resolution__Entity.h \
 	include/Enemy.h \
 	include/Enemy_Generator.h \

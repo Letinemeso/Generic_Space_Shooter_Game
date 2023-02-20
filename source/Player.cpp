@@ -2,6 +2,9 @@
 
 using namespace GSSG;
 
+INIT_FIELDS(GSSG::Player, GSSG::Space_Ship);
+FIELDS_END;
+
 
 Player::Player()
 {
@@ -47,20 +50,26 @@ void Player::apply_input()
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(velocity());
-        if(speed > max_speed())
-            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+        move(impulse / 5.0f);
+
+//        apply_linear_impulse(impulse);
+
+//        float speed = LEti::Math::vector_length(velocity());
+//        if(speed > max_speed())
+//            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
     }
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({-acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(velocity());
-        if(speed > max_speed())
-            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+        move(impulse / 5.0f);
+
+//        apply_linear_impulse(impulse);
+
+//        float speed = LEti::Math::vector_length(velocity());
+//        if(speed > max_speed())
+//            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
     }
 
     if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_SPACE))

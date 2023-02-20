@@ -43,6 +43,9 @@ namespace GSSG
         void add_entity(Entity* _entity);
 
     public:
+        inline const LDS::List<Entity*>& registred_entities() const { return m_entities; }
+
+    public:
         void update_entities_prev_state() const;
         void update_entities(float _ratio = 1.0f) const;
         void apply_entities_input() const;

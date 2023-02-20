@@ -11,7 +11,10 @@ namespace GSSG
 
     class Space_Ship : public Entity
     {
-    private:
+    public:
+        DECLARE_VARIABLE;
+
+    protected:
         Entity_Manager* m_entity_manager = nullptr;
 
     private:

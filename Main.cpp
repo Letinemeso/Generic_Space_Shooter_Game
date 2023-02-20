@@ -330,6 +330,8 @@ int main()
 
 	unsigned int fps_counter = 0;
 
+    enemy_generator.update();
+
 	while (!LEti::Window_Controller::window_should_close())
 	{
 		LEti::Event_Controller::update();
@@ -345,7 +347,7 @@ int main()
         collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
         entity_manager.remove_dead_entities();
-        enemy_generator.update();
+//        enemy_generator.update();
 
         background.update();
 

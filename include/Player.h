@@ -18,6 +18,9 @@ namespace GSSG
 
     class Player : public GSSG::Space_Ship
     {
+    public:
+        DECLARE_VARIABLE;
+
     private:
         LEti::Camera_2D* m_camera = nullptr;
 

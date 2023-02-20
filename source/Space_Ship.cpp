@@ -2,6 +2,9 @@
 
 using namespace GSSG;
 
+INIT_FIELDS(GSSG::Space_Ship, GSSG::Entity);
+FIELDS_END;
+
 
 Space_Ship::Space_Ship()
 {
@@ -37,7 +40,7 @@ void Space_Ship::M_shoot()
 
     m_entity_manager->add_entity(projectile);
 
-    apply_linear_impulse(-projectile_impulse * (projectile->mass() / mass()));
+//    apply_linear_impulse(-projectile_impulse * (projectile->mass() / mass()));
 }
 
 

@@ -9,6 +9,9 @@ namespace GSSG
 
     class Entity : public LEti::Rigid_Body_2D
     {
+    public:
+        DECLARE_VARIABLE;
+
     protected:
         int m_health = 0.0f;
 
@@ -30,6 +33,7 @@ namespace GSSG
 
     public:
         virtual void apply_input() = 0;
+        virtual void on_collision(Entity* /*_with*/) { }
 
     };
 
