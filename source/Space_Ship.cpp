@@ -41,6 +41,8 @@ void Space_Ship::M_shoot()
     m_entity_manager->add_entity(projectile);
 
     apply_linear_impulse(-projectile_impulse * (projectile->mass() / mass()));
+    if(LEti::Math::vector_length(velocity()) > max_speed())
+        set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
 }
 
 

@@ -34,8 +34,8 @@ void Background::M_reconfigure()
     if(full_images_amount_y == 0)
         full_images_amount_y = 1;
 
-    full_images_amount_x += 2;
-    full_images_amount_y += 2;
+    full_images_amount_x += 3;
+    full_images_amount_y += 3;
 
     unsigned int total_images_amount = full_images_amount_x * full_images_amount_y;
 
@@ -51,12 +51,27 @@ void Background::M_reconfigure()
             unsigned int c_index = (x + (y * full_images_amount_x)) * 24;
             unsigned int t_index = (x + (y * full_images_amount_x)) * 12;
 
-            coords[v_index + 0] =  m_picture->width() * x;       coords[v_index + 1] =  m_picture->height() * y;        coords[v_index + 2] = 0.0f;
-            coords[v_index + 3] =  m_picture->width() * (x - 1); coords[v_index + 4] =  m_picture->height() * y;        coords[v_index + 5] = 0.0f;
-            coords[v_index + 6] =  m_picture->width() * (x - 1); coords[v_index + 7] =  m_picture->height() * (y - 1);  coords[v_index + 8] = 0.0f;
-            coords[v_index + 9] =  m_picture->width() * x;       coords[v_index + 10] = m_picture->height() * y;        coords[v_index + 11] = 0.0f;
-            coords[v_index + 12] = m_picture->width() * (x - 1); coords[v_index + 13] = m_picture->height() * (y - 1);  coords[v_index + 14] = 0.0f;
-            coords[v_index + 15] = m_picture->width() * x;       coords[v_index + 16] = m_picture->height() * (y - 1);  coords[v_index + 17] = 0.0f;
+            coords[v_index + 0] =  m_picture->width() * (x + 1);
+            coords[v_index + 15] = m_picture->width() * (x + 1);
+            coords[v_index + 9] =  m_picture->width() * (x + 1);
+            coords[v_index + 3] =  m_picture->width() * x;
+            coords[v_index + 6] =  m_picture->width() * x;
+            coords[v_index + 12] = m_picture->width() * x;
+
+            coords[v_index + 1] =  m_picture->height() * (y + 1);
+            coords[v_index + 4] =  m_picture->height() * (y + 1);
+            coords[v_index + 10] = m_picture->height() * (y + 1);
+            coords[v_index + 7] =  m_picture->height() * y;
+            coords[v_index + 13] = m_picture->height() * y;
+            coords[v_index + 16] = m_picture->height() * y;
+
+            coords[v_index + 2] = 0.0f;
+            coords[v_index + 5] = 0.0f;
+            coords[v_index + 8] = 0.0f;
+            coords[v_index + 11] = 0.0f;
+            coords[v_index + 14] = 0.0f;
+            coords[v_index + 17] = 0.0f;
+
 
             t_coords[t_index + 0] = 1;  t_coords[t_index + 1] = 1;
             t_coords[t_index + 2] = 0;  t_coords[t_index + 3] = 1;
@@ -68,6 +83,12 @@ void Background::M_reconfigure()
             for(unsigned int i=c_index; i < c_index + 24; ++i)
                 colors[i] = 1.0f;
         }
+    }
+
+    for(unsigned int i=0; i<total_images_amount * 18; i += 3)
+    {
+        coords[i] -= LEti::Window_Controller::get_window_data().width * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->width();
+        coords[i + 1] -= LEti::Window_Controller::get_window_data().height * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->height();
     }
 
     delete m_draw_module;
