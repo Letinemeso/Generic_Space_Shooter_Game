@@ -36,8 +36,7 @@ void Entity_Manager::M_delete_entity(Entity *_entity)
         if((*it) == _entity)
             entity_as_iterator = it;
 
-        if((*it)->parent() == _entity)
-            (*it)->set_parent(nullptr);
+        (*it)->on_delete_other_entity(_entity);
     }
 
     L_ASSERT(entity_as_iterator.is_ok());

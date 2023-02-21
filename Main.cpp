@@ -308,7 +308,7 @@ int main()
 
     GSSG::Player* player = new GSSG::Player;
     player->init(arrow_quad_stub);
-    player->set_health(10);
+    player->set_health(1);
     player->set_mass(15.0f);
     player->inject_camera(&camera);
     player->inject_entity_manager(&entity_manager);
@@ -330,7 +330,7 @@ int main()
 
 	unsigned int fps_counter = 0;
 
-    enemy_generator.update();
+//    enemy_generator.update();
 
 	while (!LEti::Window_Controller::window_should_close())
 	{
@@ -347,7 +347,7 @@ int main()
         collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
         entity_manager.remove_dead_entities();
-//        enemy_generator.update();
+        enemy_generator.update();
 
         background.update();
 

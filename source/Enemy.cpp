@@ -262,29 +262,6 @@ BT_Execution_Result Enemy::M_process_idle_behavior()
 
 void Enemy::apply_input()
 {
-//    switch(m_mode)
-//    {
-//    case(Mode::attack):
-//    {
-//        m_shoot_timer.update();
-//        if(!m_shoot_timer.is_active())
-//        {
-//            m_shoot_timer.start(1.0f);
-//            M_shoot();
-//        }
-//        break;
-//    }
-//    case(Mode::idle):
-//    {
-//        M_process_idle_behavior();
-//        break;
-//    }
-//    case(Mode::flee):
-//    {
-//        break;
-//    }
-//    }
-
     m_behavior->process();
 }
 
@@ -292,4 +269,12 @@ void Enemy::apply_input()
 void Enemy::update(float _ratio)
 {
     Space_Ship::update(_ratio);
+}
+
+
+void Enemy::on_delete_other_entity(const Entity *_entity_to_delete)
+{
+    Space_Ship::on_delete_other_entity(_entity_to_delete);
+    if(m_attacked_entity == _entity_to_delete)
+        m_attacked_entity = nullptr;
 }
