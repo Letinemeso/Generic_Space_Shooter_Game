@@ -28,6 +28,7 @@ namespace GSSG
         Node_Base* m_behavior = nullptr;
 
         Space_Ship* m_attacked_entity = nullptr;
+        float m_max_dist = 400.0f;
 
     public:
         Enemy();
@@ -43,14 +44,15 @@ namespace GSSG
 
     private:    //  behavior logic
         BT_Execution_Result M_find_closest_enemy();
+        BT_Execution_Result M_accelerate();
 
         //  flee
         BT_Execution_Result M_is_low_hp();
-        BT_Execution_Result M_look_away_from_closest_enemy();
-        BT_Execution_Result M_flee_from_enemy();
+        BT_Execution_Result M_rotate_away_from_enemy();
 
         //  attack
         BT_Execution_Result M_rotate_towards_enemy();
+        BT_Execution_Result M_get_close_to_enemy();
         BT_Execution_Result M_shoot_at_enemy();
 
         //  idle

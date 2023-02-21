@@ -20,9 +20,9 @@ namespace GSSG
     private:
         const LEti::Object_2D_Stub* m_projectile_stub = nullptr;
 
-        float m_acceleration_speed = 500.0f;
+        float m_acceleration = 500.0f;
         float m_max_speed = 250.0f;
-        float m_rotation_acceleration_speed = LEti::Math::DOUBLE_PI;
+        float m_rotation_acceleration = LEti::Math::DOUBLE_PI;
         float m_max_rotation_speed = LEti::Math::PI;
 
     public:
@@ -35,9 +35,9 @@ namespace GSSG
         inline void set_projectile_stub(const LEti::Object_2D_Stub* _projectile_stub) { m_projectile_stub = _projectile_stub; }
 
     public:
-        inline float acceleration() const { return m_acceleration_speed; }
+        inline float acceleration() const { return m_acceleration; }
         inline float max_speed() const { return m_max_speed; }
-        inline float rotation_acceleration() const { return m_rotation_acceleration_speed; }
+        inline float rotation_acceleration() const { return m_rotation_acceleration; }
         inline float max_rotation_speed() const { return m_max_rotation_speed; }
 
     protected:

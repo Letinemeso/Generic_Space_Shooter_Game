@@ -28,6 +28,8 @@ void Player::apply_input()
         if(angular_velocity() > max_rotation_speed())
             set_angular_velocity(max_rotation_speed());
         has_rotational_input = true;
+
+//        move(glm::vec3{-300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
     {
@@ -35,6 +37,8 @@ void Player::apply_input()
         if(angular_velocity() < -max_rotation_speed())
             set_angular_velocity(-max_rotation_speed());
         has_rotational_input = true;
+
+//        move(glm::vec3{300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
 
     if(!has_rotational_input && !LEti::Math::floats_are_equal(angular_velocity(), 0.0f))
@@ -50,26 +54,24 @@ void Player::apply_input()
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
+        apply_linear_impulse(impulse);
 
-        move(impulse / 5.0f);
+        float speed = LEti::Math::vector_length(velocity());
+        if(speed > max_speed())
+            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
 
-//        apply_linear_impulse(impulse);
-
-//        float speed = LEti::Math::vector_length(velocity());
-//        if(speed > max_speed())
-//            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+//        move(glm::vec3{0.0f, 300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({-acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
+        apply_linear_impulse(impulse);
 
-        move(impulse / 5.0f);
+        float speed = LEti::Math::vector_length(velocity());
+        if(speed > max_speed())
+            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
 
-//        apply_linear_impulse(impulse);
-
-//        float speed = LEti::Math::vector_length(velocity());
-//        if(speed > max_speed())
-//            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+//        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
 
     if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_SPACE))

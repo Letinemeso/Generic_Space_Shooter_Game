@@ -10,10 +10,24 @@ Enemy::Enemy()
     : Space_Ship()
 {
 //    Selector* root = new Selector;
-    Sequence* root = new Sequence;
-    root->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_find_closest_enemy)));
-    root->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_look_away_from_closest_enemy)));
+    Selector* root = new Selector;
     m_behavior = root;
+
+    Sequence* flee_subroot = new Sequence;
+    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_find_closest_enemy)));
+    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_is_low_hp)));
+    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_rotate_away_from_enemy)));
+    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_accelerate)));
+    root->add_child(flee_subroot);
+
+    Sequence* attack_subroot = new Sequence;
+    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_find_closest_enemy)));
+    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_rotate_towards_enemy)));
+    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_get_close_to_enemy)));
+    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_shoot_at_enemy)));
+    root->add_child(attack_subroot);
+
+    root->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_process_idle_behavior)));
 }
 
 Enemy::~Enemy()
@@ -30,7 +44,7 @@ BT_Execution_Result Enemy::M_find_closest_enemy()
     if(m_attacked_entity)
     {
         float dist = LEti::Math::vector_length(get_pos() - m_attacked_entity->get_pos());
-        if(dist < 300.0f)
+        if(dist < m_max_dist)
             return BT_Execution_Result::Success;
     }
 
@@ -52,7 +66,7 @@ BT_Execution_Result Enemy::M_find_closest_enemy()
 
         float dist = LEti::Math::vector_length(get_pos() - maybe_spaceship->get_pos());
 
-        if(dist > 300.0f)
+        if(dist > m_max_dist)
             continue;
 
         if(dist < min_dist || min_dist < 0.0f)
@@ -69,6 +83,19 @@ BT_Execution_Result Enemy::M_find_closest_enemy()
     return BT_Execution_Result::Success;
 }
 
+BT_Execution_Result Enemy::M_accelerate()
+{
+    glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+    apply_linear_impulse(look_direction * LEti::Event_Controller::get_dt());
+
+    float speed = LEti::Math::vector_length(velocity());
+    if(speed > max_speed())
+        set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+
+    return BT_Execution_Result::Success;
+}
+
+
 //  Enemy Flee Behavior
 
 BT_Execution_Result Enemy::M_is_low_hp()
@@ -78,14 +105,14 @@ BT_Execution_Result Enemy::M_is_low_hp()
     return BT_Execution_Result::Fail;
 }
 
-BT_Execution_Result Enemy::M_look_away_from_closest_enemy()
+BT_Execution_Result Enemy::M_rotate_away_from_enemy()
 {
     if(m_attacked_entity == nullptr)
         return BT_Execution_Result::Fail;
 
     glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
 
-    if(LEti::Math::vector_length(this_to_other_vec) > 300.0f)
+    if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
         return BT_Execution_Result::Fail;
 
     glm::vec3 look_direction = LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
@@ -93,34 +120,83 @@ BT_Execution_Result Enemy::M_look_away_from_closest_enemy()
     float cos_between_vecs = LEti::Math::angle_cos_between_vectors(this_to_other_vec, look_direction);
 
     if(cos_between_vecs >= 0.0f)
+    {
+        if(!LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.2f))
+            return BT_Execution_Result::In_Progress;
+
+        set_angular_velocity(0.0f);
         return BT_Execution_Result::Success;
+    }
 
-    float angle = acos(cos_between_vecs);
-    if(angle > LEti::Math::HALF_PI)
-        angle -= LEti::Math::HALF_PI;
+    set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
 
-//    std::cout << angle << "\n";
+    if(LEti::Geometry_2D::vec_points_left(look_direction, this_to_other_vec))
+        set_angular_velocity(-angular_velocity());
 
-    set_rotation_angle(LEti::Math::PI - angle);
-
-    if(LEti::Math::dot_product(this_to_other_vec, look_direction) < 0.0f)
-        set_rotation_angle(get_rotation_angle() + LEti::Math::PI);
-
-//    if(cos_between_vecs)
-//        rotate(acos(cos_between_vecs));
+    return BT_Execution_Result::In_Progress;
+}
 
 
-//    if(LEti::Math::dot_product(this_to_other_vec, look_direction) < 0.0f)
-//    {
-//        set_rotation_angle(acos(LEti::Math::angle_cos_between_vectors(this_to_other_vec, look_direction)));
+// Enemy Attack Behavior
 
-//        look_direction = LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+BT_Execution_Result Enemy::M_rotate_towards_enemy()
+{
+    if(m_attacked_entity == nullptr)
+        return BT_Execution_Result::Fail;
 
-//        if(LEti::Math::dot_product(this_to_other_vec, look_direction) < 0.0f)
-//            set_rotation_angle(get_rotation_angle() + LEti::Math::PI);
-//    }
+    glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
+
+    if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
+        return BT_Execution_Result::Fail;
+
+    glm::vec3 inverse_look_direction = -LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+
+    float cos_between_vecs = LEti::Math::angle_cos_between_vectors(this_to_other_vec, inverse_look_direction);
+
+    if(LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.05f))
+    {
+        set_angular_velocity(0.0f);
+        return BT_Execution_Result::Success;
+    }
+
+    set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
+
+    if(LEti::Geometry_2D::vec_points_left(inverse_look_direction, this_to_other_vec))
+        set_angular_velocity(-angular_velocity());
+
+    return BT_Execution_Result::In_Progress;
+}
+
+BT_Execution_Result Enemy::M_get_close_to_enemy()
+{
+    glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+
+    float dist = LEti::Math::get_distance(get_pos(), m_attacked_entity->get_pos());
+    if(dist < 150.0f)
+        impulse *= -1.0f;
+
+    apply_linear_impulse(impulse * LEti::Event_Controller::get_dt());
+
+    float speed = LEti::Math::vector_length(velocity());
+    if(speed > max_speed())
+        set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+
+    if(dist < 150.0f || dist > 300.0f)
+        return BT_Execution_Result::In_Progress;
 
     return BT_Execution_Result::Success;
+}
+
+BT_Execution_Result Enemy::M_shoot_at_enemy()
+{
+    m_shoot_timer.update();
+    if(!m_shoot_timer.is_active())
+    {
+        m_shoot_timer.start(1.0f);
+        M_shoot();
+        return BT_Execution_Result::Success;
+    }
+    return BT_Execution_Result::In_Progress;
 }
 
 
@@ -210,13 +286,6 @@ void Enemy::apply_input()
 //    }
 
     m_behavior->process();
-
-    m_shoot_timer.update();
-    if(!m_shoot_timer.is_active())
-    {
-        m_shoot_timer.start(1.0f);
-        M_shoot();
-    }
 }
 
 
