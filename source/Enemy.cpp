@@ -153,7 +153,7 @@ BT_Execution_Result Enemy::M_rotate_towards_enemy()
 
     float cos_between_vecs = LEti::Math::angle_cos_between_vectors(this_to_other_vec, inverse_look_direction);
 
-    if(LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.05f))
+    if(LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.001f))
     {
         set_angular_velocity(0.0f);
         return BT_Execution_Result::Success;

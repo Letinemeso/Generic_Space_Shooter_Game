@@ -2,7 +2,7 @@
 \
     |amount|
     \
-        "4"
+        "5"
     /
     |names|
     \
@@ -10,6 +10,7 @@
         "arrow_texture"
         "background_texture"
         "yellow_texture"
+        "triangle_texture"
     /
     |paths|
     \
@@ -17,5 +18,6 @@
         "Resources/Textures/arrow.png"
         "Resources/Textures/background.png"
         "Resources/Textures/yellow.png"
+        "Resources/Textures/triangle.png"
     /
 /

@@ -293,8 +293,8 @@ int main()
     arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
 
     LEti::Object_2D_Stub enemy_entity_stub;
-    enemy_entity_stub.assign_values(reader.get_stub("arrow_quad"));
-    enemy_entity_stub.texture_name = "white_texture";
+    enemy_entity_stub.assign_values(reader.get_stub("triangle"));
+    enemy_entity_stub.texture_name = "triangle_texture";
 
     LEti::Object_2D_Stub projectile_stub;
     projectile_stub.assign_values(reader.get_stub("triangle"));
@@ -304,7 +304,7 @@ int main()
     enemy_generator.set_spawn_frequency(5.0f);
     enemy_generator.inject_entity_manager(&entity_manager);
     enemy_generator.inject_camera(&camera);
-    enemy_generator.set_enemy_stub(&projectile_stub);
+    enemy_generator.set_enemy_stub(&enemy_entity_stub);
     enemy_generator.set_enemy_projectile_stub(&projectile_stub);
 
     GSSG::Player_Controller player_controller;
