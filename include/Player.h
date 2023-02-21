@@ -16,6 +16,8 @@
 namespace GSSG
 {
 
+    class Player_Controller;
+
     class Player : public GSSG::Space_Ship
     {
     public:
@@ -23,6 +25,7 @@ namespace GSSG
 
     private:
         LEti::Camera_2D* m_camera = nullptr;
+        Player_Controller* m_player_controller = nullptr;
 
     public:
         Player();
@@ -30,10 +33,12 @@ namespace GSSG
 
     public:
         inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
+        inline void inject_player_controller(Player_Controller* _player_controller) { m_player_controller = _player_controller; }
 
     public:
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
+        void on_delete_other_entity(const Entity* _entity_to_delete) override;
 
     };
 

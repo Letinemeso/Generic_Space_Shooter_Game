@@ -25,6 +25,7 @@
 #include <Collision_Resolution__Entity.h>
 #include <Entity_Manager.h>
 #include <Enemy_Generator.h>
+#include <Player_Controller.h>
 #include <Player.h>
 #include <Enemy.h>
 
@@ -306,15 +307,12 @@ int main()
     enemy_generator.set_enemy_stub(&projectile_stub);
     enemy_generator.set_enemy_projectile_stub(&projectile_stub);
 
-    GSSG::Player* player = new GSSG::Player;
-    player->init(arrow_quad_stub);
-    player->set_health(1);
-    player->set_mass(15.0f);
-    player->inject_camera(&camera);
-    player->inject_entity_manager(&entity_manager);
-    player->set_projectile_stub(&projectile_stub);
-
-    entity_manager.add_entity(player);
+    GSSG::Player_Controller player_controller;
+    player_controller.set_player_stub(&arrow_quad_stub);
+    player_controller.set_projectile_stub(&projectile_stub);
+    player_controller.inject_camera(&camera);
+    player_controller.inject_entity_manager(&entity_manager);
+    player_controller.update();
 
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
@@ -348,6 +346,7 @@ int main()
 
         entity_manager.remove_dead_entities();
         enemy_generator.update();
+        player_controller.update();
 
         background.update();
 

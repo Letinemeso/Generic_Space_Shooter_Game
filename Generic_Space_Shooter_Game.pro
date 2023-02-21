@@ -55,6 +55,7 @@ SOURCES += \
     source/Entity.cpp \
     source/Entity_Manager.cpp \
     source/Player.cpp \
+    source/Player_Controller.cpp \
     source/Projectile.cpp \
     source/Space_Ship.cpp
 
@@ -82,5 +83,6 @@ HEADERS += \
 	include/Entity.h \
 	include/Entity_Manager.h \
 	include/Player.h \
+	include/Player_Controller.h \
 	include/Projectile.h \
 	include/Space_Ship.h

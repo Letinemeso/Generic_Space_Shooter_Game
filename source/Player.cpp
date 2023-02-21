@@ -1,5 +1,7 @@
 #include <Player.h>
 
+#include <Player_Controller.h>
+
 using namespace GSSG;
 
 INIT_FIELDS(GSSG::Player, GSSG::Space_Ship);
@@ -13,7 +15,7 @@ Player::Player()
 
 Player::~Player()
 {
-
+    m_player_controller->notify_about_player_death();
 }
 
 
@@ -86,4 +88,9 @@ void Player::update(float _ratio)
     Space_Ship::update(_ratio);
 
     m_camera->set_position(get_pos());
+}
+
+void Player::on_delete_other_entity(const Entity *_entity_to_delete)
+{
+    Space_Ship::on_delete_other_entity(_entity_to_delete);
 }

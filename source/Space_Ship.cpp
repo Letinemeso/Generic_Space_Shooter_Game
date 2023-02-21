@@ -40,7 +40,7 @@ void Space_Ship::M_shoot()
 
     m_entity_manager->add_entity(projectile);
 
-//    apply_linear_impulse(-projectile_impulse * (projectile->mass() / mass()));
+    apply_linear_impulse(-projectile_impulse * (projectile->mass() / mass()));
 }
 
 
