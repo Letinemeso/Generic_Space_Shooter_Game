@@ -272,9 +272,9 @@ void Enemy::update(float _ratio)
 }
 
 
-void Enemy::on_delete_other_entity(const Entity *_entity_to_delete)
+void Enemy::on_other_entity_death(const Entity *_entity_to_delete)
 {
-    Space_Ship::on_delete_other_entity(_entity_to_delete);
+    Space_Ship::on_other_entity_death(_entity_to_delete);
     if(m_attacked_entity == _entity_to_delete)
         m_attacked_entity = nullptr;
 }

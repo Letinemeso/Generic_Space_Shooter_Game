@@ -63,7 +63,7 @@ namespace GSSG
 
         void update(float _ratio = 1.0f) override;
 
-        void on_delete_other_entity(const Entity* _entity_to_delete) override;
+        void on_other_entity_death(const Entity* _entity_to_delete) override;
 
     };
 

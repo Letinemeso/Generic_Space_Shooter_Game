@@ -34,7 +34,8 @@ namespace GSSG
     public:
         virtual void apply_input() = 0;
         virtual void on_collision(Entity* /*_with*/) { }
-        virtual void on_delete_other_entity(const Entity* _entity_to_delete);
+        virtual void on_other_entity_death(const Entity* _entity_to_delete);
+        virtual void on_death() { }
 
     };
 

@@ -18,7 +18,7 @@ Entity::~Entity()
 
 
 
-void Entity::on_delete_other_entity(const Entity *_entity_to_delete)
+void Entity::on_other_entity_death(const Entity *_entity_to_delete)
 {
     if(m_parent == _entity_to_delete)
         m_parent = nullptr;

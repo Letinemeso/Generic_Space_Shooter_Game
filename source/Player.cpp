@@ -15,7 +15,7 @@ Player::Player()
 
 Player::~Player()
 {
-    m_player_controller->notify_about_player_death();
+
 }
 
 
@@ -107,9 +107,9 @@ void Player::update(float _ratio)
     m_camera->set_position(get_pos());
 }
 
-void Player::on_delete_other_entity(const Entity *_entity_to_delete)
+void Player::on_other_entity_death(const Entity *_entity_to_delete)
 {
-    Space_Ship::on_delete_other_entity(_entity_to_delete);
+    Space_Ship::on_other_entity_death(_entity_to_delete);
 }
 
 void Player::on_collision(Entity *_with)
@@ -120,6 +120,11 @@ void Player::on_collision(Entity *_with)
         m_player_hp_tf->set_text("HP " + std::to_string(health()));
     else
         m_player_hp_tf->set_text(" ");
+}
+
+void Player::on_death()
+{
+    m_player_controller->notify_about_player_death();
 }
 
 

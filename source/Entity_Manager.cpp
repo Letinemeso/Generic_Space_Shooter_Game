@@ -35,13 +35,14 @@ void Entity_Manager::M_delete_entity(Entity *_entity)
     {
         if((*it) == _entity)
             entity_as_iterator = it;
-
-        (*it)->on_delete_other_entity(_entity);
+        else
+            (*it)->on_other_entity_death(_entity);
     }
 
     L_ASSERT(entity_as_iterator.is_ok());
 
     m_collision_detector->unregister_object(_entity);
+    _entity->on_death();
     delete _entity;
     m_entities.erase(entity_as_iterator);
 }
