@@ -23,7 +23,7 @@ GUI::~GUI()
 
 
 
-void GUI::add_object(LEti::Object_2D* _object, LST::Function_Wrapper<void, unsigned int>* _on_pressed, LST::Function_Wrapper<void, unsigned int>* _on_released)
+void GUI::add_object(LEti::Object_2D* _object, const LST::Function<void(unsigned int)>& _on_pressed, const LST::Function<void(unsigned int)>& _on_released)
 {
     m_objects.push_back(GUI_Element_Data(_object, _on_pressed, _on_released));
 
@@ -61,7 +61,7 @@ void GUI::M_process_mouse_down()
         if(!(*it).on_pressed)
             continue;
 
-        (*it).on_pressed->invoke(GLFW_MOUSE_BUTTON_1);  //  need to come up with some idea for passing different buttons here
+        (*it).on_pressed(GLFW_MOUSE_BUTTON_1);  //  need to come up with some idea for passing different buttons here
     }
 }
 
@@ -75,7 +75,7 @@ void GUI::M_process_mouse_up()
         if(!(*it).on_released)
             continue;
 
-        (*it).on_released->invoke(GLFW_MOUSE_BUTTON_1);
+        (*it).on_released(GLFW_MOUSE_BUTTON_1);
     }
 }
 

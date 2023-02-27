@@ -13,14 +13,14 @@ namespace GSSG
     class Action : public Node_Base
     {
     private:
-        LST::Function_Wrapper<BT_Execution_Result>* m_action = nullptr;
+        LST::Function<BT_Execution_Result()> m_action;
 
     public:
-        Action(LST::Function_Wrapper<BT_Execution_Result>* _action);
+        Action(const LST::Function<BT_Execution_Result()>& _action);
         ~Action();
 
     public:
-        void set_action(LST::Function_Wrapper<BT_Execution_Result>* _action);
+        void set_action(const LST::Function<BT_Execution_Result()>& _action);
 
     public:
         BT_Execution_Result process() const override;

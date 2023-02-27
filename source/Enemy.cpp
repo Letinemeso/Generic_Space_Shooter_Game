@@ -14,20 +14,20 @@ Enemy::Enemy()
     m_behavior = root;
 
     Sequence* flee_subroot = new Sequence;
-    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_find_closest_enemy)));
-    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_is_low_hp)));
-    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_rotate_away_from_enemy)));
-    flee_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_accelerate)));
+    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_find_closest_enemy();})) );
+    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_is_low_hp();} )) );
+    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_rotate_away_from_enemy();} )) );
+    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_accelerate();} )) );
     root->add_child(flee_subroot);
 
     Sequence* attack_subroot = new Sequence;
-    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_find_closest_enemy)));
-    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_rotate_towards_enemy)));
-    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_get_close_to_enemy)));
-    attack_subroot->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_shoot_at_enemy)));
+    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_find_closest_enemy();} )) );
+    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_rotate_towards_enemy();} )) );
+    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_get_close_to_enemy();} )) );
+    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
     root->add_child(attack_subroot);
 
-    root->add_child(new Action(LST::make_wrapper(*this, &Enemy::M_process_idle_behavior)));
+    root->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_process_idle_behavior();} )) );
 }
 
 Enemy::~Enemy()

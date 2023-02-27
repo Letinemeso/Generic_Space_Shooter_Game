@@ -21,12 +21,12 @@ namespace GSSG
         struct GUI_Element_Data
         {
             LEti::Object_2D* object = nullptr;
-            LST::Function_Wrapper<void, unsigned int>* on_pressed = nullptr;
-            LST::Function_Wrapper<void, unsigned int>* on_released = nullptr;
+            LST::Function<void(unsigned int)> on_pressed;
+            LST::Function<void(unsigned int)> on_released;
 
-            GUI_Element_Data(LEti::Object_2D* _object, LST::Function_Wrapper<void, unsigned int>* _on_pressed, LST::Function_Wrapper<void, unsigned int>* _on_released)
+            GUI_Element_Data(LEti::Object_2D* _object, const LST::Function<void(unsigned int)>& _on_pressed, const LST::Function<void(unsigned int)>& _on_released)
                 : object(_object), on_pressed(_on_pressed), on_released(_on_released) { }
-            ~GUI_Element_Data() { delete on_pressed; delete on_released; }
+            ~GUI_Element_Data() { }
         };
 
     private:
@@ -46,7 +46,7 @@ namespace GSSG
         inline void inject_shader(const LEti::Shader* _shader) { m_renderer.set_shader(_shader); }
 
     public:
-        void add_object(LEti::Object_2D* _object, LST::Function_Wrapper<void, unsigned int>* _on_pressed = nullptr, LST::Function_Wrapper<void, unsigned int>* _on_released = nullptr);
+        void add_object(LEti::Object_2D* _object, const LST::Function<void(unsigned int)>& _on_pressed = {}, const LST::Function<void(unsigned int)>& _on_released = {});
         void remove_object(LEti::Object_2D* _object);
 
     private:
