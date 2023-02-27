@@ -328,6 +328,7 @@ int main()
     player_controller.set_projectile_stub(&projectile_stub);
     player_controller.inject_camera(&camera);
     player_controller.inject_entity_manager(&entity_manager);
+    player_controller.inject_player_hp_caption(&player_hp_tf);
     player_controller.update();
 
     entity_manager.update_entities_prev_state();

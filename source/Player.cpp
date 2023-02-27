@@ -20,6 +20,14 @@ Player::~Player()
 
 
 
+void Player::inject_player_hp_caption(LEti::Text_Field *_player_hp_tf)
+{
+    m_player_hp_tf = _player_hp_tf;
+    m_player_hp_tf->set_text(std::to_string(health()));
+}
+
+
+
 void Player::apply_input()
 {
     bool has_rotational_input = false;
@@ -96,4 +104,14 @@ void Player::update(float _ratio)
 void Player::on_delete_other_entity(const Entity *_entity_to_delete)
 {
     Space_Ship::on_delete_other_entity(_entity_to_delete);
+}
+
+void Player::on_collision(Entity *_with)
+{
+    Space_Ship::on_collision(_with);
+
+    if(health() > 0)
+        m_player_hp_tf->set_text(std::to_string(health()));
+    else
+        m_player_hp_tf->set_text(" ");
 }
