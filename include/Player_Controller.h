@@ -19,6 +19,7 @@ namespace GSSG
         LEti::Timer m_respawn_timer;
 
         LEti::Text_Field* m_player_hp_tf = nullptr;
+        LEti::Text_Field* m_player_respawn_tf = nullptr;
 
     private:
         LEti::Camera_2D* m_camera = nullptr;
@@ -30,6 +31,7 @@ namespace GSSG
         inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
         inline void inject_entity_manager(Entity_Manager* _entity_manager) { m_entity_manager = _entity_manager; }
         inline void inject_player_hp_caption(LEti::Text_Field* _player_hp_tf) { m_player_hp_tf = _player_hp_tf; }
+        inline void inject_player_respawn_caption(LEti::Text_Field* _player_respawn_tf) { m_player_respawn_tf = _player_respawn_tf; }
 
     private:
         void M_create_player();
