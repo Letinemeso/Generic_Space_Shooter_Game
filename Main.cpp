@@ -301,11 +301,14 @@ int main()
     LEti::Text_Field player_respawn_timer_tf;
     player_respawn_timer_tf.init(text_field_stub);
     player_respawn_timer_tf.set_pos({420.0f, 380.0f, 0.0f});
-    player_respawn_timer_tf.set_scale(1.0f);
-    player_respawn_timer_tf.set_text("Respawn in 5...");
+
+    LEti::Text_Field player_eliminations_tf;
+    player_eliminations_tf.init(text_field_stub);
+    player_eliminations_tf.set_pos({800, 20.0f, 0.0f});
 
     gui.add_object(&player_hp_tf);
     gui.add_object(&player_respawn_timer_tf);
+    gui.add_object(&player_eliminations_tf);
 
 
     LEti::Object_2D_Stub arrow_quad_stub;
@@ -333,6 +336,7 @@ int main()
     player_controller.inject_entity_manager(&entity_manager);
     player_controller.inject_player_hp_caption(&player_hp_tf);
     player_controller.inject_player_respawn_caption(&player_respawn_timer_tf);
+    player_controller.inject_player_eliminations_amount_caption(&player_eliminations_tf);
     player_controller.update();
 
     entity_manager.update_entities_prev_state();

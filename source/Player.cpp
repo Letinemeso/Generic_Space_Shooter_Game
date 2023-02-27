@@ -23,7 +23,13 @@ Player::~Player()
 void Player::inject_player_hp_caption(LEti::Text_Field *_player_hp_tf)
 {
     m_player_hp_tf = _player_hp_tf;
-    m_player_hp_tf->set_text(std::to_string(health()));
+    m_player_hp_tf->set_text("HP " + std::to_string(health()));
+}
+
+void Player::inject_eliminations_amount_caption(LEti::Text_Field *_eliminations_amount_tf)
+{
+    m_eliminations_amount_tf = _eliminations_amount_tf;
+    m_eliminations_amount_tf->set_text("Eliminations " + std::to_string(m_eliminations_amount));
 }
 
 
@@ -111,7 +117,15 @@ void Player::on_collision(Entity *_with)
     Space_Ship::on_collision(_with);
 
     if(health() > 0)
-        m_player_hp_tf->set_text(std::to_string(health()));
+        m_player_hp_tf->set_text("HP " + std::to_string(health()));
     else
         m_player_hp_tf->set_text(" ");
+}
+
+
+
+void Player::set_eliminations_amount(unsigned int _amount)
+{
+    m_eliminations_amount = _amount;
+    m_eliminations_amount_tf->set_text("Eliminations " + std::to_string(m_eliminations_amount));
 }

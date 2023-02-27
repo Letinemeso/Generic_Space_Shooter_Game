@@ -13,7 +13,9 @@ void Player_Controller::M_create_player()
     m_player->inject_player_controller(this);
     m_player->set_health(5);
     m_player->set_mass(10.0f);
+
     m_player->inject_player_hp_caption(m_player_hp_tf);
+    m_player->inject_eliminations_amount_caption(m_player_eliminations_amount_tf);
 
     m_entity_manager->add_entity(m_player);
 

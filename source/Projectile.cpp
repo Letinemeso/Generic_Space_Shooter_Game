@@ -1,5 +1,7 @@
 #include <Projectile.h>
 
+#include <Player.h>
+
 using namespace GSSG;
 
 
@@ -34,6 +36,26 @@ void Projectile::update(float _ratio)
     Entity::update(_ratio);
 
     m_time_until_death -= LEti::Event_Controller::get_dt() * _ratio;
+}
+
+
+
+void Projectile::on_collision(Entity* _with)
+{
+    Entity::on_collision(_with);
+
+    //  TODO: think of better way to inform player
+    if(_with->health() > 0)
+        return;
+
+    Player* maybe_player = LV::cast_variable<Player>((Entity*)parent());
+    if(!maybe_player)
+        return;
+
+    if(!LV::cast_variable<Space_Ship>(_with))
+        return;
+
+    maybe_player->set_eliminations_amount(maybe_player->eliminations_amount() + 1);
 }
 
 
