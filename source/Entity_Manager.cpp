@@ -20,7 +20,7 @@ void Entity_Manager::add_entity(Entity *_entity)
 {
     L_ASSERT(_entity);
 
-    m_entities.push_back(_entity);
+    m_entities.push_front(_entity);
     m_collision_detector->register_object(_entity);
 }
 

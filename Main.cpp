@@ -234,12 +234,8 @@ int main()
 
     LEti::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_CW);
+//    glEnable(GL_DEPTH_TEST);
+//    glClearColor(0.0,0.0,0.0,0.0);
 
     LEti::Shader shader;
 
@@ -352,7 +348,7 @@ int main()
 		LEti::Event_Controller::update();
 		LEti::Window_Controller::update();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
 
         entity_manager.update_entities_prev_state();
         entity_manager.apply_entities_input();
@@ -371,11 +367,15 @@ int main()
 
         background.update();
 
-        gui.draw();
+//        gui.draw();
+
+        renderer.draw(*background.draw_module());
 
         entity_manager.draw_entities();
 
-        renderer.draw(*background.draw_module());
+        gui.draw();
+
+//        renderer.draw(*background.draw_module());
 
 		++fps_counter;
 		fps_timer.update();
