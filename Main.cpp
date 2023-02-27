@@ -300,11 +300,14 @@ int main()
 
     LEti::Text_Field player_respawn_timer_tf;
     player_respawn_timer_tf.init(text_field_stub);
-    player_respawn_timer_tf.set_pos({420.0f, 380.0f, 0.0f});
+    player_respawn_timer_tf.set_pos({600.0f, 400.0f, 0.0f});
+    player_respawn_timer_tf.set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::center);
+    player_respawn_timer_tf.set_vertical_alignment(LEti::Text_Field::Vertical_Alignment::center);
 
     LEti::Text_Field player_eliminations_tf;
     player_eliminations_tf.init(text_field_stub);
-    player_eliminations_tf.set_pos({800, 20.0f, 0.0f});
+    player_eliminations_tf.set_pos({1180, 20.0f, 0.0f});
+    player_eliminations_tf.set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::right);
 
     gui.add_object(&player_hp_tf);
     gui.add_object(&player_respawn_timer_tf);
