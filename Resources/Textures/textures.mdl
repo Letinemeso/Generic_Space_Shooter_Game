@@ -2,10 +2,11 @@
 \
     |amount|
     \
-        "5"
+        "6"
     /
     |names|
     \
+        "font_texture"
         "white_texture"
         "arrow_texture"
         "background_texture"
@@ -14,6 +15,7 @@
     /
     |paths|
     \
+        "Resources/Font/font_yellow.png"
         "Resources/Textures/white.png"
         "Resources/Textures/arrow.png"
         "Resources/Textures/background.png"

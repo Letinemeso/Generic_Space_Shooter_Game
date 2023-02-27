@@ -76,9 +76,12 @@ void Player::apply_input()
 //        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
 
-    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_SPACE))
+    m_shoot_timer.update();
+
+    if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
     {
         M_shoot();
+        m_shoot_timer.start(1.0f);
     }
 
 }

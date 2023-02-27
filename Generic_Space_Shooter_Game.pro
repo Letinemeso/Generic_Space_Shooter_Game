@@ -54,6 +54,7 @@ SOURCES += \
     source/Enemy_Generator.cpp \
     source/Entity.cpp \
     source/Entity_Manager.cpp \
+    source/GUI.cpp \
     source/Player.cpp \
     source/Player_Controller.cpp \
     source/Projectile.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
 	include/Enemy_Generator.h \
 	include/Entity.h \
 	include/Entity_Manager.h \
+	include/GUI.h \
 	include/Player.h \
 	include/Player_Controller.h \
 	include/Projectile.h \

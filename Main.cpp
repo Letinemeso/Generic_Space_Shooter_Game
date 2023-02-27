@@ -28,6 +28,7 @@
 #include <Player_Controller.h>
 #include <Player.h>
 #include <Enemy.h>
+#include <GUI.h>
 
 
 int main()
@@ -240,14 +241,17 @@ int main()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_CW);
 
+    LEti::Shader shader;
+
     LEti::Camera_2D camera;
     camera.set_view_scale(1.0f);
-
-    LEti::Shader shader;
 
     LEti::Renderer renderer;
     renderer.set_camera(&camera);
     renderer.set_shader(&shader);
+
+    GSSG::GUI gui;
+    gui.inject_shader(&shader);
 
     shader.init("Resources/Shaders/vertex_shader.shader", "Resources/Shaders/fragment_shader.shader");
     shader.set_texture_uniform("input_texture");
@@ -288,6 +292,18 @@ int main()
 
     reader.parse_file("Resources/Models/arrow_quad");
     reader.parse_file("Resources/Models/triangle");
+    reader.parse_file("Resources/Models/text_field_new");
+
+    LEti::Text_Field_Stub text_field_stub;
+    text_field_stub.assign_values(reader.get_stub("text_field"));
+
+    LEti::Text_Field player_hp_tf;
+    player_hp_tf.init(text_field_stub);
+    player_hp_tf.set_pos({20.0f, 20.0f, 0.0f});
+    player_hp_tf.set_text("abc");
+
+    gui.add_object(&player_hp_tf);
+
 
     LEti::Object_2D_Stub arrow_quad_stub;
     arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
@@ -341,6 +357,8 @@ int main()
         entity_manager.apply_entities_input();
         entity_manager.update_entities();
 
+        gui.update_prev_state();
+
         collision_detector.update();
         collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
@@ -348,7 +366,11 @@ int main()
         enemy_generator.update();
         player_controller.update();
 
+        gui.update();
+
         background.update();
+
+        gui.draw();
 
         entity_manager.draw_entities();
 
