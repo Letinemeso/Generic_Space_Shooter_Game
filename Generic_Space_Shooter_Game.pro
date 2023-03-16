@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 unix {
-    LIBS += "../Utility/libUtility.a"
+    LIBS += "../L_Utility/libL_Utility.a"
     LIBS += "../L_Variable/libL_Variable.a"
     LIBS += "../LEti_Engine/libLEti_Engine.a"
 
@@ -18,7 +18,7 @@ unix {
 
 
 win32 {
-    LIBS += "../Utility/debug/libUtility.a"
+    LIBS += "../L_Utility/debug/libL_Utility.a"
     LIBS += "../L_Variable/debug/libL_Variable.a"
     LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
 
@@ -37,7 +37,7 @@ INCLUDEPATH += "../LEti_Engine/OpenGL/GLM"
 INCLUDEPATH += "../LEti_Engine/OpenGL/"
 
 INCLUDEPATH += "include/"
-INCLUDEPATH += "../Utility/include/"
+INCLUDEPATH += "../L_Utility/include/"
 INCLUDEPATH += "../L_Variable/include/"
 INCLUDEPATH += "../LEti_Engine/include/"
 
@@ -62,7 +62,10 @@ SOURCES += \
 
 DISTFILES += \
 Resources/Models/arrow_quad.mdl \
+    Resources/Models/arrow_quad_new.mdl \
+    Resources/Models/text_field_new.mdl \
 Resources/Models/triangle.mdl \
+    Resources/Models/triangle_new.mdl \
 Resources/Shaders/fragment_shader.shader \
 Resources/Shaders/vertex_shader.shader \
 Resources/Font/font_yellow.png \

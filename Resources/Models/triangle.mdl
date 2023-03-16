@@ -1,68 +1,85 @@
 |triangle|
 \
-    |coords_count|
+    |enable_draw_module|
     \
-	"9"
+        "+"
     /
-    |coords|
-    \
-	"-1""2""0"
-	"-1""-2""0"
-	"2.3""0""0"
-    /
-    |colors_count|
-    \
-	"12"
-    /
-    |colors|
-    \
-	"1""1""1""1"
-	"1""1""1""1"
-	"1""1""1""1"
-    /
-    |collision_permissions|
-    \
 
-	"+" "+" "+"
-    /
-    |phys_coords_count|
+    ||draw_module||
     \
-	"9"
+        |coords_count|
+        \
+            "9"
+        /
+        |coords|
+        \
+            "-1""2""0"
+            "-1""-2""0"
+            "2.3""0""0"
+        /
+        |colors_count|
+        \
+            "12"
+        /
+        |colors|
+        \
+            "1""1""1""1"
+            "1""1""1""1"
+            "1""1""1""1"
+        /
+        |tcoords_count|
+        \
+            "6"
+        /
+        |tcoords|
+        \
+            "0""1"
+            "0""0"
+            "1""0.49"
+        /
+        |texture_name|
+        \
+            "white_texture"
+        /
     /
-    |phys_coords|
+
+    |enable_physics_module|
     \
-	"-1""2""0"
-	"-1""-2""0"
-	"2.3""0""0"
+        "+"
     /
-    |tcoords_count|
+
+    ||physics_module||
     \
-	"6"
+        |collision_permissions|
+        \
+            "+" "+" "+"
+        /
+        |coords_count|
+        \
+            "9"
+        /
+        |coords|
+        \
+            "-1""2""0"
+            "-1""-2""0"
+            "2.3""0""0"
+        /
     /
-    |tcoords|
-    \
-	"0""1"
-	"0""0"
-	"1""0.49"
-    /
-    |texture_name|
-    \
-	"white_texture"
-    /
+
     |rotation_angle|
     \
-	"0"
+        "0"
     /
     |position|
     \
-	"0""0""0"
+        "0""0""0"
     /
     |scale|
     \
-	"1""1""1"
+        "1""1""1"
     /
     |rotation_axis|
     \
-	"0""0""1"
+        "0""0""1"
     /
 /
