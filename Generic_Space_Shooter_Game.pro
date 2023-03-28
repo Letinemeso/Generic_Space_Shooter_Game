@@ -62,10 +62,8 @@ SOURCES += \
 
 DISTFILES += \
 Resources/Models/arrow_quad.mdl \
-    Resources/Models/arrow_quad_new.mdl \
     Resources/Models/text_field_new.mdl \
 Resources/Models/triangle.mdl \
-    Resources/Models/triangle_new.mdl \
 Resources/Shaders/fragment_shader.shader \
 Resources/Shaders/vertex_shader.shader \
 Resources/Font/font_yellow.png \
