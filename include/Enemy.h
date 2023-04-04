@@ -67,6 +67,16 @@ namespace GSSG
 
     };
 
+    class Enemy_Stub : public LEti::Rigid_Body_2D_Stub
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    protected:
+        LV::Variable_Base* M_construct_product() const override { return new Enemy; }
+
+    };
+
 }
 
 

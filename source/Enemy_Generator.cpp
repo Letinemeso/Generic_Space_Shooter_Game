@@ -39,14 +39,13 @@ void Enemy_Generator::spawn_enemy() const
 
     float random_scale = LEti::Math::random_number(1, 6);
 
-    Enemy* enemy = new Enemy;
-    enemy->init(*m_enemy_stub);
+    Enemy* enemy = (Enemy*)m_enemy_stub->construct();
     enemy->set_projectile_stub(m_enemy_projectile_stub);
     enemy->inject_entity_manager(m_entity_manager);
     enemy->set_pos(position);
     enemy->set_health(random_scale);
     enemy->set_scale(5.0f * (float)random_scale);
-    enemy->set_mass(3.0f * (float)random_scale);
+    ((LEti::Physics_Module__Rigid_Body_2D*)enemy->physics_module())->set_mass(3.0f * (float)random_scale);
     enemy->set_rotation_angle(LEti::Math::DOUBLE_PI / 360.0f * (float)LEti::Math::random_number(0, 360));
 
     for(unsigned int i=0; i<3; ++i)

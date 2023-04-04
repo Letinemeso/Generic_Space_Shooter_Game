@@ -2,7 +2,7 @@
 
 using namespace GSSG;
 
-INIT_FIELDS(GSSG::Entity, LEti::Rigid_Body_2D);
+INIT_FIELDS(GSSG::Entity, LEti::Object_2D);
 FIELDS_END;
 
 

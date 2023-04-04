@@ -1,13 +1,13 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <Object_System/Rigid_Body_2D.h>
+#include <Object_System/Rigid_Body_2D_Stub.h>
 
 
 namespace GSSG
 {
 
-    class Entity : public LEti::Rigid_Body_2D
+    class Entity : public LEti::Object_2D
     {
     public:
         DECLARE_VARIABLE;
@@ -20,6 +20,9 @@ namespace GSSG
     public:
         Entity();
         ~Entity();
+
+    protected:
+        inline LEti::Physics_Module__Rigid_Body_2D* M_get_physics_module() { return (LEti::Physics_Module__Rigid_Body_2D*)physics_module(); }
 
     public:
         inline void set_parent(const Entity* _parent) { m_parent = _parent; }

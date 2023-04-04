@@ -5,6 +5,14 @@
 using namespace GSSG;
 
 
+INIT_FIELDS(GSSG::Projectile, GSSG::Entity);
+FIELDS_END;
+
+INIT_FIELDS(GSSG::Projectile_Stub, LEti::Rigid_Body_2D_Stub);
+FIELDS_END;
+
+
+
 Projectile::Projectile()
 {
     m_health = 1;

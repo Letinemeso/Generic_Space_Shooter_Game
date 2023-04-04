@@ -4,8 +4,13 @@
 
 using namespace GSSG;
 
+
 INIT_FIELDS(GSSG::Player, GSSG::Space_Ship);
 FIELDS_END;
+
+INIT_FIELDS(GSSG::Player_Stub, LEti::Rigid_Body_2D_Stub);
+FIELDS_END;
+
 
 
 Player::Player()
@@ -40,52 +45,52 @@ void Player::apply_input()
 
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
     {
-        apply_rotation(rotation_acceleration() * LEti::Event_Controller::get_dt());
-        if(angular_velocity() > max_rotation_speed())
-            set_angular_velocity(max_rotation_speed());
+        M_get_physics_module()->apply_rotation(rotation_acceleration() * LEti::Event_Controller::get_dt());
+        if(M_get_physics_module()->angular_velocity() > max_rotation_speed())
+            M_get_physics_module()->set_angular_velocity(max_rotation_speed());
         has_rotational_input = true;
 
 //        move(glm::vec3{-300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
     {
-        apply_rotation(-rotation_acceleration() * LEti::Event_Controller::get_dt());
-        if(angular_velocity() < -max_rotation_speed())
-            set_angular_velocity(-max_rotation_speed());
+        M_get_physics_module()->apply_rotation(-rotation_acceleration() * LEti::Event_Controller::get_dt());
+        if(M_get_physics_module()->angular_velocity() < -max_rotation_speed())
+            M_get_physics_module()->set_angular_velocity(-max_rotation_speed());
         has_rotational_input = true;
 
 //        move(glm::vec3{300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
 
-    if(!has_rotational_input && !LEti::Math::floats_are_equal(angular_velocity(), 0.0f))
+    if(!has_rotational_input && !LEti::Math::floats_are_equal(M_get_physics_module()->angular_velocity(), 0.0f))
     {
-        float multiplier = angular_velocity() < 0.0f ? 1.0f : -1.0f;
+        float multiplier = M_get_physics_module()->angular_velocity() < 0.0f ? 1.0f : -1.0f;
 
-        set_angular_velocity(angular_velocity() + (rotation_acceleration() * multiplier * LEti::Event_Controller::get_dt()));
+        M_get_physics_module()->set_angular_velocity(M_get_physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * LEti::Event_Controller::get_dt()));
 
-        if(fabs(angular_velocity()) < rotation_acceleration() * LEti::Event_Controller::get_dt())
-            set_angular_velocity(0.0f);
+        if(fabs(M_get_physics_module()->angular_velocity()) < rotation_acceleration() * LEti::Event_Controller::get_dt())
+            M_get_physics_module()->set_angular_velocity(0.0f);
     }
 
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        apply_linear_impulse(impulse);
+        M_get_physics_module()->apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(velocity());
+        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
         if(speed > max_speed())
-            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+            M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
 
 //        move(glm::vec3{0.0f, 300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({-acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        apply_linear_impulse(impulse);
+        M_get_physics_module()->apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(velocity());
+        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
         if(speed > max_speed())
-            set_velocity(LEti::Math::extend_vector_to_length(velocity(), max_speed()));
+            M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
 
 //        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }

@@ -18,7 +18,7 @@
 #include <Physics/SAT_Narrowest_CD.h>
 #include <Object_System/Text_Field.h>
 #include <Object_System/Object_2D.h>
-#include <Object_System/Rigid_Body_2D.h>
+#include <Object_System/Rigid_Body_2D_Stub.h>
 #include <Renderer.h>
 
 #include <Background.h>
@@ -293,41 +293,38 @@ int main()
     LEti::Text_Field_Stub text_field_stub;
     text_field_stub.assign_values(reader.get_stub("text_field"));
 
-    LEti::Text_Field player_hp_tf;
-    player_hp_tf.init(text_field_stub);
-    player_hp_tf.set_pos({20.0f, 20.0f, 0.0f});
-    player_hp_tf.set_text(" ");
+    LEti::Text_Field* player_hp_tf = (LEti::Text_Field*)text_field_stub.construct();
+    player_hp_tf->set_pos({20.0f, 20.0f, 0.0f});
+    player_hp_tf->set_text(" ");
 
-    LEti::Text_Field player_respawn_timer_tf;
-    player_respawn_timer_tf.init(text_field_stub);
-    player_respawn_timer_tf.set_pos({600.0f, 400.0f, 0.0f});
-    player_respawn_timer_tf.set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::center);
-    player_respawn_timer_tf.set_vertical_alignment(LEti::Text_Field::Vertical_Alignment::center);
+    LEti::Text_Field* player_respawn_timer_tf = (LEti::Text_Field*)text_field_stub.construct();
+    player_respawn_timer_tf->set_pos({600.0f, 400.0f, 0.0f});
+    player_respawn_timer_tf->set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::center);
+    player_respawn_timer_tf->set_vertical_alignment(LEti::Text_Field::Vertical_Alignment::center);
 
-    LEti::Text_Field player_eliminations_tf;
-    player_eliminations_tf.init(text_field_stub);
-    player_eliminations_tf.set_pos({1180, 20.0f, 0.0f});
-    player_eliminations_tf.set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::right);
+    LEti::Text_Field* player_eliminations_tf = (LEti::Text_Field*)text_field_stub.construct();
+    player_eliminations_tf->set_pos({1180, 20.0f, 0.0f});
+    player_eliminations_tf->set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::right);
 
-    gui.add_object(&player_hp_tf);
-    gui.add_object(&player_respawn_timer_tf);
-    gui.add_object(&player_eliminations_tf);
+    gui.add_object(player_hp_tf);
+    gui.add_object(player_respawn_timer_tf);
+    gui.add_object(player_eliminations_tf);
 
 
-    LEti::Object_2D_Stub arrow_quad_stub;
+    GSSG::Player_Stub arrow_quad_stub;
     arrow_quad_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-    arrow_quad_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
+    arrow_quad_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
 
-    LEti::Object_2D_Stub enemy_entity_stub;
+    GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-    enemy_entity_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
+    enemy_entity_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
     ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
-    LEti::Object_2D_Stub projectile_stub;
+    GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-    projectile_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
+    projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("triangle"));
     projectile_stub.scale = { 3.0f, 3.0f, 1.0f };
 
@@ -343,9 +340,9 @@ int main()
     player_controller.set_projectile_stub(&projectile_stub);
     player_controller.inject_camera(&camera);
     player_controller.inject_entity_manager(&entity_manager);
-    player_controller.inject_player_hp_caption(&player_hp_tf);
-    player_controller.inject_player_respawn_caption(&player_respawn_timer_tf);
-    player_controller.inject_player_eliminations_amount_caption(&player_eliminations_tf);
+    player_controller.inject_player_hp_caption(player_hp_tf);
+    player_controller.inject_player_respawn_caption(player_respawn_timer_tf);
+    player_controller.inject_player_eliminations_amount_caption(player_eliminations_tf);
     player_controller.update();
 
     entity_manager.update_entities_prev_state();
@@ -388,8 +385,6 @@ int main()
 
         background.update();
 
-        //        gui.draw();
-
         renderer.draw(*background.draw_module());
 
         entity_manager.draw_entities();
@@ -409,6 +404,10 @@ int main()
 
         LEti::Window_Controller::swap_buffers();
     }
+
+    delete player_hp_tf;
+    delete player_respawn_timer_tf;
+    delete player_eliminations_tf;
 
     return 0;
 }

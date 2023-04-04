@@ -12,6 +12,9 @@ namespace GSSG
 
     class Projectile : public Entity
     {
+    public:
+        DECLARE_VARIABLE;
+
     private:
         float m_time_until_death_prev_state = 0.0f;
         float m_time_until_death = 0.0f;
@@ -35,6 +38,16 @@ namespace GSSG
 
     public:
         bool should_be_destroyed() const override;
+
+    };
+
+    class Projectile_Stub : public LEti::Rigid_Body_2D_Stub
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    protected:
+        LV::Variable_Base* M_construct_product() const override { return new Projectile; }
 
     };
 
