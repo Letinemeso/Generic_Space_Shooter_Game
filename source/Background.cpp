@@ -130,5 +130,5 @@ void Background::update()
     move_matrix[3][0] = stride.x;
     move_matrix[3][1] = stride.y;
 
-    m_draw_module->update(move_matrix, default_matrix, default_matrix);
+    m_draw_module->update(move_matrix, default_matrix, default_matrix, 1.0f);
 }
