@@ -96,7 +96,9 @@ void Background::M_reconfigure()
 
     m_draw_module->init_vertices(coords, total_images_amount * 18);
     m_draw_module->init_colors(colors, total_images_amount * 24);
-    m_draw_module->init_texture(m_picture, t_coords, total_images_amount * 12);
+    m_draw_module->set_texture(m_picture);
+    m_draw_module->set_texture_coords(t_coords, total_images_amount * 12);
+//    m_draw_module->init_texture(m_picture, t_coords, total_images_amount * 12);
 
     delete[] coords;
     delete[] colors;
