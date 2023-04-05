@@ -2,7 +2,7 @@
 #define ENEMY_GENERATOR_H
 
 #include <Math_Stuff.h>
-#include <Timer.h>
+#include <Stuff/Timer.h>
 
 #include <Entity_Manager.h>
 #include <Enemy.h>
@@ -22,7 +22,7 @@ namespace GSSG
         const LEti::Object_2D_Stub* m_enemy_projectile_stub = nullptr;
 
         float m_spawn_frequency = 1.0f;
-        LEti::Timer m_timer;
+        LST::Timer m_timer;
 
     public:
         Enemy_Generator();

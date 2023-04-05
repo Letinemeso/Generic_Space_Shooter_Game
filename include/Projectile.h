@@ -1,7 +1,6 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include <Timer.h>
 #include <Physics/Collision_Detector_2D.h>
 
 #include <Entity.h>

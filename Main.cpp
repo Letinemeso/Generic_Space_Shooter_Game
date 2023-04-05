@@ -3,7 +3,7 @@
 
 #include <MDL_Reader.h>
 
-#include <Timer.h>
+#include <Stuff/Timer.h>
 #include <Event_Controller.h>
 #include <Shader.h>
 #include <Camera_2D.h>
@@ -19,6 +19,7 @@
 #include <Object_System/Text_Field.h>
 #include <Object_System/Object_2D.h>
 #include <Object_System/Rigid_Body_2D_Stub.h>
+#include <Object_System/Modules/Draw_Module__Animation.h>
 #include <Renderer.h>
 
 #include <Background.h>
@@ -312,7 +313,7 @@ int main()
 
 
     GSSG::Player_Stub arrow_quad_stub;
-    arrow_quad_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    arrow_quad_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
     arrow_quad_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
 
@@ -351,7 +352,7 @@ int main()
     //  ~game setup
 
 
-    LEti::Timer fps_timer;
+    LST::Timer fps_timer;
 
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
@@ -394,7 +395,7 @@ int main()
         //        renderer.draw(*background.draw_module());
 
         ++fps_counter;
-        fps_timer.update();
+        fps_timer.update(LEti::Event_Controller::get_dt());
 
         if(!fps_timer.is_active())
         {

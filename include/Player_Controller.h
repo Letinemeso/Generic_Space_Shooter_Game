@@ -16,7 +16,7 @@ namespace GSSG
         const LEti::Object_2D_Stub* m_player_projectile_stub = nullptr;
         const LEti::Object_2D_Stub* m_player_stub = nullptr;
         Player* m_player = nullptr;
-        LEti::Timer m_respawn_timer;
+        LST::Timer m_respawn_timer;
 
         LEti::Text_Field* m_player_hp_tf = nullptr;
         LEti::Text_Field* m_player_respawn_tf = nullptr;

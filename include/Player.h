@@ -28,7 +28,7 @@ namespace GSSG
         LEti::Camera_2D* m_camera = nullptr;
         Player_Controller* m_player_controller = nullptr;
 
-        LEti::Timer m_shoot_timer;
+        LST::Timer m_shoot_timer;
 
         LEti::Text_Field* m_player_hp_tf = nullptr;
 

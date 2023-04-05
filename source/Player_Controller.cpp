@@ -36,7 +36,7 @@ void Player_Controller::update()
     if(m_player)
         return;
 
-    m_respawn_timer.update();
+    m_respawn_timer.update(LEti::Event_Controller::get_dt());
 
     m_player_respawn_tf->set_text("Respawning in " + std::to_string((unsigned int)(m_respawn_timer.time_left()) + 1) + "...");
 

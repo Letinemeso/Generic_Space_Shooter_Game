@@ -3,11 +3,11 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Enemy, GSSG::Space_Ship);
-FIELDS_END;
+INIT_FIELDS(GSSG::Enemy, GSSG::Space_Ship)
+FIELDS_END
 
-INIT_FIELDS(GSSG::Enemy_Stub, LEti::Rigid_Body_2D_Stub);
-FIELDS_END;
+INIT_FIELDS(GSSG::Enemy_Stub, LEti::Rigid_Body_2D_Stub)
+FIELDS_END
 
 
 Enemy::Enemy()
@@ -193,7 +193,7 @@ BT_Execution_Result Enemy::M_get_close_to_enemy()
 
 BT_Execution_Result Enemy::M_shoot_at_enemy()
 {
-    m_shoot_timer.update();
+    m_shoot_timer.update(LEti::Event_Controller::get_dt());
     if(!m_shoot_timer.is_active())
     {
         m_shoot_timer.start(1.0f);
@@ -207,7 +207,7 @@ BT_Execution_Result Enemy::M_shoot_at_enemy()
 
 BT_Execution_Result Enemy::M_process_idle_behavior()
 {
-    m_idle_timer.update();
+    m_idle_timer.update(LEti::Event_Controller::get_dt());
     if(!m_idle_timer.is_active())
     {
         if(m_idle_acceleration > 0.001f)

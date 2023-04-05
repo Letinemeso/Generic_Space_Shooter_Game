@@ -5,11 +5,11 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Player, GSSG::Space_Ship);
-FIELDS_END;
+INIT_FIELDS(GSSG::Player, GSSG::Space_Ship)
+FIELDS_END
 
-INIT_FIELDS(GSSG::Player_Stub, LEti::Rigid_Body_2D_Stub);
-FIELDS_END;
+INIT_FIELDS(GSSG::Player_Stub, LEti::Rigid_Body_2D_Stub)
+FIELDS_END
 
 
 
@@ -95,7 +95,7 @@ void Player::apply_input()
 //        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
 
-    m_shoot_timer.update();
+    m_shoot_timer.update(LEti::Event_Controller::get_dt());
 
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
     {

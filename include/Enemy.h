@@ -1,6 +1,8 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include <Stuff/Timer.h>
+
 #include <Behavior_Tree/Selector.h>
 #include <Behavior_Tree/Sequence.h>
 #include <Behavior_Tree/Action.h>
@@ -39,8 +41,8 @@ namespace GSSG
         float m_idle_acceleration = 0.0f;
 
     private:
-        LEti::Timer m_shoot_timer;
-        LEti::Timer m_idle_timer;
+        LST::Timer m_shoot_timer;
+        LST::Timer m_idle_timer;
 
     private:    //  behavior logic
         BT_Execution_Result M_find_closest_enemy();
