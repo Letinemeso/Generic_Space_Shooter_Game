@@ -1,4 +1,4 @@
-|triangle|
+|projectile|
 \
     |enable_draw_module|
     \
@@ -33,13 +33,23 @@
         /
         |tcoords|
         \
-	        "0""101"
+	        "0""51"
             "0""0"
-	        "101""50"
+	        "51""25"
         /
         |texture_name|
         \
-            "white_texture"
+            "projectile_animation"
+        /
+        
+        |frames_per_second|
+        \
+            "12"
+        /
+        
+        |frames_count|
+        \
+            "3"
         /
     /
 

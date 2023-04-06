@@ -2,7 +2,7 @@
 \
     |amount|
     \
-        "6"
+        "8"
     /
     |names|
     \
@@ -12,6 +12,8 @@
         "background_texture"
         "yellow_texture"
         "triangle_texture"
+        "explosion_animation"
+        "projectile_animation"
     /
     |paths|
     \
@@ -21,5 +23,7 @@
         "Resources/Textures/background.png"
         "Resources/Textures/yellow.png"
         "Resources/Textures/triangle.png"
+        "Resources/Textures/explosion_animation.png"
+        "Resources/Textures/projectile_animation.png"
     /
 /

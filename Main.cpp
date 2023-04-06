@@ -30,6 +30,7 @@
 #include <Player.h>
 #include <Enemy.h>
 #include <GUI.h>
+#include <Effects_Controller.h>
 
 
 int main()
@@ -290,6 +291,8 @@ int main()
     reader.parse_file("Resources/Models/arrow_quad");
     reader.parse_file("Resources/Models/triangle");
     reader.parse_file("Resources/Models/text_field_new");
+    reader.parse_file("Resources/Models/explosion");
+    reader.parse_file("Resources/Models/projectile");
 
     LEti::Text_Field_Stub text_field_stub;
     text_field_stub.assign_values(reader.get_stub("text_field"));
@@ -324,13 +327,21 @@ int main()
     ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
-    projectile_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    projectile_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
     projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
-    projectile_stub.assign_values(reader.get_stub("triangle"));
-    projectile_stub.scale = { 3.0f, 3.0f, 1.0f };
+    projectile_stub.assign_values(reader.get_stub("projectile"));
+    projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
+
+    LEti::Object_2D_Stub explosion_stub;
+    explosion_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+    explosion_stub.assign_values(reader.get_stub("explosion"));
+
+
+    GSSG::Effects_Controller effects_controller;
+    effects_controller.inject_renderer(&renderer);
 
     GSSG::Enemy_Generator enemy_generator;
-    enemy_generator.set_spawn_frequency(5.0f);
+    enemy_generator.set_spawn_frequency(3.0f);
     enemy_generator.inject_entity_manager(&entity_manager);
     enemy_generator.inject_camera(&camera);
     enemy_generator.set_enemy_stub(&enemy_entity_stub);
@@ -344,8 +355,15 @@ int main()
     player_controller.inject_player_hp_caption(player_hp_tf);
     player_controller.inject_player_respawn_caption(player_respawn_timer_tf);
     player_controller.inject_player_eliminations_amount_caption(player_eliminations_tf);
-    player_controller.update();
 
+    arrow_quad_stub.effects_controller = &effects_controller;
+    arrow_quad_stub.on_death_effect = &explosion_stub;
+    enemy_entity_stub.effects_controller = &effects_controller;
+    enemy_entity_stub.on_death_effect = &explosion_stub;
+    projectile_stub.effects_controller = &effects_controller;
+    projectile_stub.on_death_effect = &explosion_stub;
+
+    player_controller.update();
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
@@ -381,6 +399,7 @@ int main()
         entity_manager.remove_dead_entities();
         enemy_generator.update();
         player_controller.update();
+        effects_controller.update();
 
         gui.update();
 
@@ -389,6 +408,7 @@ int main()
         renderer.draw(*background.draw_module());
 
         entity_manager.draw_entities();
+        effects_controller.draw();
 
         gui.draw();
 

@@ -40,7 +40,7 @@ namespace GSSG
 
     };
 
-    class Projectile_Stub : public LEti::Rigid_Body_2D_Stub
+    class Projectile_Stub : public Entity_Stub
     {
     public:
         DECLARE_VARIABLE;

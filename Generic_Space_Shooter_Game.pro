@@ -50,6 +50,7 @@ SOURCES += \
     source/Behavior_Tree/Selector.cpp \
     source/Behavior_Tree/Sequence.cpp \
     source/Collision_Resolution__Entity.cpp \
+    source/Effects_Controller.cpp \
     source/Enemy.cpp \
     source/Enemy_Generator.cpp \
     source/Entity.cpp \
@@ -80,6 +81,7 @@ HEADERS += \
 	include/Behavior_Tree/Selector.h \
 	include/Behavior_Tree/Sequence.h \
 	include/Collision_Resolution__Entity.h \
+	include/Effects_Controller.h \
 	include/Enemy.h \
 	include/Enemy_Generator.h \
 	include/Entity.h \

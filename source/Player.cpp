@@ -8,7 +8,7 @@ using namespace GSSG;
 INIT_FIELDS(GSSG::Player, GSSG::Space_Ship)
 FIELDS_END
 
-INIT_FIELDS(GSSG::Player_Stub, LEti::Rigid_Body_2D_Stub)
+INIT_FIELDS(GSSG::Player_Stub, GSSG::Entity_Stub)
 FIELDS_END
 
 
@@ -100,7 +100,7 @@ void Player::apply_input()
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
     {
         M_shoot();
-        m_shoot_timer.start(1.0f);
+        m_shoot_timer.start(0.6f);
     }
 
 }
@@ -129,6 +129,8 @@ void Player::on_collision(Entity *_with)
 
 void Player::on_death()
 {
+    Space_Ship::on_death();
+
     m_player_controller->notify_about_player_death();
 }
 

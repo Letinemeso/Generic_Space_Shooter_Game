@@ -8,7 +8,7 @@ using namespace GSSG;
 INIT_FIELDS(GSSG::Projectile, GSSG::Entity)
 FIELDS_END
 
-INIT_FIELDS(GSSG::Projectile_Stub, LEti::Rigid_Body_2D_Stub)
+INIT_FIELDS(GSSG::Projectile_Stub, GSSG::Entity_Stub)
 FIELDS_END
 
 
@@ -56,8 +56,12 @@ void Projectile::on_collision(Entity* _with)
         return;
 
     //  TODO: think of better way to inform player
+    //  IDEA: make another projectile derived from this and override this method
     Player* maybe_player = LV::cast_variable<Player>((Entity*)parent());
     if(!maybe_player)
+        return;
+
+    if(!LV::cast_variable<Enemy>(_with))
         return;
 
     maybe_player->set_eliminations_amount(maybe_player->eliminations_amount() + 1);

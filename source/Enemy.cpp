@@ -6,7 +6,7 @@ using namespace GSSG;
 INIT_FIELDS(GSSG::Enemy, GSSG::Space_Ship)
 FIELDS_END
 
-INIT_FIELDS(GSSG::Enemy_Stub, LEti::Rigid_Body_2D_Stub)
+INIT_FIELDS(GSSG::Enemy_Stub, GSSG::Entity_Stub)
 FIELDS_END
 
 
