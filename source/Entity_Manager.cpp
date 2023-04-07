@@ -26,25 +26,12 @@ void Entity_Manager::add_entity(Entity *_entity)
 
 
 
-void Entity_Manager::M_delete_entity(Entity *_entity)
+void Entity_Manager::M_notify_other_entities_about_death(Entity *_entity)
 {
     L_ASSERT(_entity);
 
-    LDS::List<Entity*>::Iterator entity_as_iterator;
     for(LDS::List<Entity*>::Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
-    {
-        if((*it) == _entity)
-            entity_as_iterator = it;
-        else
-            (*it)->on_other_entity_death(_entity);
-    }
-
-    L_ASSERT(entity_as_iterator.is_ok());
-
-    m_collision_detector->unregister_object(_entity);
-    _entity->on_death();
-    delete _entity;
-    m_entities.erase(entity_as_iterator);
+        (*it)->on_other_entity_death(_entity);
 }
 
 
@@ -72,16 +59,35 @@ void Entity_Manager::remove_dead_entities()
 {
     L_ASSERT(m_collision_detector);
 
-    LDS::List<Entity*> entities_to_delete;
+    if(m_entities.size() == 0)
+        return;
 
-    for(LDS::List<Entity*>::Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
+    LDS::List<Entity*>::Iterator it = m_entities.begin();
+
+    while(true)
     {
         if((*it)->should_be_destroyed() || ( LEti::Math::vector_length(m_camera->position() - (*it)->get_pos()) > m_max_distance_from_view_pos ) )
-            entities_to_delete.push_back(*it);
-    }
+        {
+            LDS::List<Entity*>::Iterator next = it;
+            if(!it.end_reached())
+                ++next;
 
-    for(LDS::List<Entity*>::Iterator it = entities_to_delete.begin(); !it.end_reached() && it.is_ok(); ++it)
-        M_delete_entity(*it);
+            Entity* entity = *it;
+            m_entities.erase(it);
+
+            M_notify_other_entities_about_death(entity);
+            m_collision_detector->unregister_object(entity);
+            entity->on_death();
+            delete entity;
+
+            it = next;
+        }
+
+        if(it.end_reached() || !it.is_ok() || m_entities.size() == 0)
+            break;
+
+        ++it;
+    }
 }
 
 

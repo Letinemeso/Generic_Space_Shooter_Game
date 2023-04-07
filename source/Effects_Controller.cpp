@@ -30,9 +30,10 @@ void Effects_Controller::update()
     for(LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
         (*it)->update();
 
-    LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin();
-    if(it.end_reached() || !it.is_ok())
+    if(m_effect_objects.size() == 0)
         return;
+
+    LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin();
 
     while(true)
     {

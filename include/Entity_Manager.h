@@ -37,7 +37,7 @@ namespace GSSG
         inline void set_max_distance_from_view_pos(float _max) { m_max_distance_from_view_pos = _max; }
 
     private:
-        void M_delete_entity(Entity* _entity);
+        void M_notify_other_entities_about_death(Entity* _entity);
 
     public:
         void add_entity(Entity* _entity);
