@@ -47,6 +47,7 @@ namespace GSSG
         void inject_eliminations_amount_caption(LEti::Text_Field* _eliminations_amount_tf);
 
     public:
+        void temp_apply_simple_input();
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
         void on_other_entity_death(const Entity* _entity_to_delete) override;

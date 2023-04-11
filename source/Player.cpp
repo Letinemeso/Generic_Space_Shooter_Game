@@ -39,8 +39,48 @@ void Player::inject_eliminations_amount_caption(LEti::Text_Field *_eliminations_
 
 
 
+void Player::temp_apply_simple_input()
+{
+    glm::vec3 impulse = {0.0f, 0.0f, 0.0f};
+
+    if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
+    {
+        impulse.x -= acceleration();
+    }
+    if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
+    {
+        impulse.x += acceleration();
+    }
+    if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
+    {
+        impulse.y += acceleration();
+    }
+    if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
+    {
+        impulse.y -= acceleration();
+    }
+    M_get_physics_module()->set_velocity(impulse);
+
+    glm::vec3 pos_to_cursor = get_pos() - m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
+    LEti::Math::shrink_vector_to_1(pos_to_cursor);
+    set_rotation_angle(LEti::Math::PI - acos(pos_to_cursor.x));
+    if(pos_to_cursor.y > 0.0f)
+        set_rotation_angle(LEti::Math::DOUBLE_PI - get_rotation_angle());
+
+    m_shoot_timer.update(LEti::Event_Controller::get_dt());
+
+    if((LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) || LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1)) && !m_shoot_timer.is_active())
+    {
+        M_shoot();
+        m_shoot_timer.start(0.6f);
+    }
+}
+
 void Player::apply_input()
 {
+    temp_apply_simple_input();
+    return;
+
     bool has_rotational_input = false;
 
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
