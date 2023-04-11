@@ -10,8 +10,6 @@ void Player_Controller::M_create_player()
     m_player->inject_camera(m_camera);
     m_player->inject_entity_manager(m_entity_manager);
     m_player->inject_player_controller(this);
-    m_player->set_health(5);
-    ((LEti::Physics_Module__Rigid_Body_2D*)m_player->physics_module())->set_mass(10.0f);
 
     m_player->inject_player_hp_caption(m_player_hp_tf);
     m_player->inject_eliminations_amount_caption(m_player_eliminations_amount_tf);

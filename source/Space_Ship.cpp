@@ -31,9 +31,7 @@ void Space_Ship::M_shoot()
     projectile->set_rotation_angle(get_rotation_angle());
     projectile->set_parent(this);
     projectile->set_lifetime(1.5f);
-    projectile->set_health(1);
     pm->set_velocity(projectile_impulse);
-    pm->set_mass(1.0f);
 
     projectile->update_previous_state();
     projectile->update(0.0f);

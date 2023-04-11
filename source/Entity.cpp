@@ -20,6 +20,7 @@ void Entity_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 
     result->inject_effects_controller(effects_controller);
     result->set_on_death_effect(on_death_effect);
+    result->set_health(health);
 }
 
 

@@ -60,6 +60,9 @@ namespace GSSG
         Effects_Controller* effects_controller = nullptr;
         const LEti::Object_2D_Stub* on_death_effect = nullptr;
 
+    public:
+        int health = 1;
+
     protected:
         LV::Variable_Base* M_construct_product() const override;
         void M_init_constructed_product(LV::Variable_Base* _product) const override;

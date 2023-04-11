@@ -315,15 +315,18 @@ int main()
     gui.add_object(player_eliminations_tf);
 
 
-    GSSG::Player_Stub arrow_quad_stub;
-    arrow_quad_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
-    arrow_quad_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
-    arrow_quad_stub.assign_values(reader.get_stub("arrow_quad"));
+    GSSG::Player_Stub player_stub;
+    player_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+    player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
+    player_stub.assign_values(reader.get_stub("arrow_quad"));
+    player_stub.health = 5;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->mass = 10.0f;
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
     enemy_entity_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
+    enemy_entity_stub.health = 1;
     ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
@@ -331,6 +334,8 @@ int main()
     projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
+    projectile_stub.health = 1;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->mass = 5.0f;
 
     LEti::Object_2D_Stub explosion_stub;
     explosion_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
@@ -348,7 +353,7 @@ int main()
     enemy_generator.set_enemy_projectile_stub(&projectile_stub);
 
     GSSG::Player_Controller player_controller;
-    player_controller.set_player_stub(&arrow_quad_stub);
+    player_controller.set_player_stub(&player_stub);
     player_controller.set_projectile_stub(&projectile_stub);
     player_controller.inject_camera(&camera);
     player_controller.inject_entity_manager(&entity_manager);
@@ -356,8 +361,8 @@ int main()
     player_controller.inject_player_respawn_caption(player_respawn_timer_tf);
     player_controller.inject_player_eliminations_amount_caption(player_eliminations_tf);
 
-    arrow_quad_stub.effects_controller = &effects_controller;
-    arrow_quad_stub.on_death_effect = &explosion_stub;
+    player_stub.effects_controller = &effects_controller;
+    player_stub.on_death_effect = &explosion_stub;
     enemy_entity_stub.effects_controller = &effects_controller;
     enemy_entity_stub.on_death_effect = &explosion_stub;
     projectile_stub.effects_controller = &effects_controller;
