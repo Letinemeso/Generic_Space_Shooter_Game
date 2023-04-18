@@ -56,6 +56,8 @@ SOURCES += \
     source/Entity.cpp \
     source/Entity_Manager.cpp \
     source/GUI.cpp \
+    source/Game_Logic.cpp \
+    source/Game_World.cpp \
     source/Player.cpp \
     source/Player_Controller.cpp \
     source/Projectile.cpp \
@@ -87,6 +89,8 @@ HEADERS += \
 	include/Entity.h \
 	include/Entity_Manager.h \
 	include/GUI.h \
+	include/Game_Logic.h \
+	include/Game_World.h \
 	include/Player.h \
 	include/Player_Controller.h \
 	include/Projectile.h \

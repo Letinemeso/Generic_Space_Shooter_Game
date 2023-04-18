@@ -387,8 +387,8 @@ int main()
 
     while (!LEti::Window_Controller::window_should_close())
     {
-        LEti::Event_Controller::update();
         LEti::Window_Controller::update();
+        LEti::Event_Controller::update();
 
         glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
 
