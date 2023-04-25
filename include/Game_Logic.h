@@ -11,6 +11,9 @@ namespace GSSG
         virtual ~Game_Logic();
 
     public:
+        virtual void on_activate();
+
+    public:
         virtual void update() = 0;
 
     };

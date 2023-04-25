@@ -32,6 +32,8 @@
 #include <GUI.h>
 #include <Effects_Controller.h>
 #include <Game_World.h>
+#include <Edit_Mode/Edit_Mode.h>
+#include <Edit_Mode/Grid.h>
 
 
 int main()
@@ -294,6 +296,7 @@ int main()
     reader.parse_file("Resources/Models/text_field_new");
     reader.parse_file("Resources/Models/explosion");
     reader.parse_file("Resources/Models/projectile");
+    reader.parse_file("Resources/Models/grid_cell");
 
     LEti::Text_Field_Stub text_field_stub;
     text_field_stub.assign_values(reader.get_stub("text_field"));
@@ -373,6 +376,37 @@ int main()
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
+
+    LEti::Object_2D_Stub em_cell_stub;
+    em_cell_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
+    em_cell_stub.assign_values(reader.get_stub("grid_cell"));
+
+    GSSG::Grid* grid = new GSSG::Grid;
+    grid->set_renderer(&renderer);
+    grid->set_cell_stub(&em_cell_stub);
+    grid->set_on_cell_pressed_func(
+        [](LEti::Object_2D* _object)
+        {
+            const LEti::Picture* picture = nullptr;
+
+            if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+                picture = LEti::Picture_Manager::get_picture("white_texture");
+            else if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_2))
+                picture = LEti::Picture_Manager::get_picture("grid_cell_texture");
+            else
+                return;
+
+            LEti::Default_Draw_Module_2D* dm = _object->draw_module();
+            dm->set_texture(picture);
+        }
+    );
+
+    GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
+    edit_mode->set_camera(&camera);
+    edit_mode->set_player_controller(&player_controller);
+    edit_mode->set_grid(grid);
+
     //  ~game setup
 
 
@@ -409,36 +443,18 @@ int main()
         LEti::Window_Controller::update();
         LEti::Event_Controller::update();
 
-        glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
-
-//        entity_manager.update_entities_prev_state();
-//        entity_manager.apply_entities_input();
-//        entity_manager.update_entities();
-
-//        gui.update_prev_state();
-
-//        collision_detector.update();
-//        collision_resolver.resolve_all(collision_detector.get_collisions__models());
-
-//        entity_manager.remove_dead_entities();
-//        enemy_generator.update();
-//        player_controller.update();
-//        effects_controller.update();
-
-//        gui.update();
-
-//        background.update();
-
-//        renderer.draw(*background.draw_module());
-
-//        entity_manager.draw_entities();
-//        effects_controller.draw();
-
-//        gui.draw();
+        glClear(GL_COLOR_BUFFER_BIT);
 
         game_logic->update();
 
-        //        renderer.draw(*background.draw_module());
+        if(LEti::Event_Controller::key_was_released(GLFW_KEY_TAB))
+        {
+            if(game_logic == game_world)
+                game_logic = edit_mode;
+            else
+                game_logic = game_world;
+            game_logic->on_activate();
+        }
 
         ++fps_counter;
         fps_timer.update(LEti::Event_Controller::get_dt());

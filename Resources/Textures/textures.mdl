@@ -2,7 +2,7 @@
 \
     |amount|
     \
-        "8"
+        "9"
     /
     |names|
     \
@@ -14,16 +14,18 @@
         "triangle_texture"
         "explosion_animation"
         "projectile_animation"
+        "grid_cell_texture"
     /
     |paths|
     \
         "Resources/Font/font_yellow.png"
-        "Resources/Textures/white.png"
-        "Resources/Textures/arrow.png"
-        "Resources/Textures/background.png"
-        "Resources/Textures/yellow.png"
-        "Resources/Textures/triangle.png"
-        "Resources/Textures/explosion_animation.png"
-        "Resources/Textures/projectile_animation.png"
+        "Resources/Textures/gameplay_textures/white.png"
+        "Resources/Textures/gameplay_textures/arrow.png"
+        "Resources/Textures/gameplay_textures/background.png"
+        "Resources/Textures/gameplay_textures/yellow.png"
+        "Resources/Textures/gameplay_textures/triangle.png"
+        "Resources/Textures/gameplay_textures/explosion_animation.png"
+        "Resources/Textures/gameplay_textures/projectile_animation.png"
+        "Resources/Textures/editing_mode_textures/grid_cell.png"
     /
 /

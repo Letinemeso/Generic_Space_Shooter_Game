@@ -12,3 +12,10 @@ Game_Logic::~Game_Logic()
 {
 
 }
+
+
+
+void Game_Logic::on_activate()
+{
+
+}
