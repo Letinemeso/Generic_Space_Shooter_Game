@@ -21,6 +21,12 @@ void Player_Controller::M_create_player()
 
 
 
+void Player_Controller::forcefuly_kill_player()
+{
+    m_player->set_health(0);
+    m_entity_manager->remove_dead_entities();
+}
+
 void Player_Controller::notify_about_player_death()
 {
     m_player = nullptr;

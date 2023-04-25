@@ -320,7 +320,8 @@ int main()
 
 
     GSSG::Player_Stub player_stub;
-    player_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+//    player_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+    player_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
     player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     player_stub.assign_values(reader.get_stub("arrow_quad"));
     player_stub.health = 5;
@@ -385,22 +386,6 @@ int main()
     GSSG::Grid* grid = new GSSG::Grid;
     grid->set_renderer(&renderer);
     grid->set_cell_stub(&em_cell_stub);
-    grid->set_on_cell_pressed_func(
-        [](LEti::Object_2D* _object)
-        {
-            const LEti::Picture* picture = nullptr;
-
-            if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
-                picture = LEti::Picture_Manager::get_picture("white_texture");
-            else if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_2))
-                picture = LEti::Picture_Manager::get_picture("grid_cell_texture");
-            else
-                return;
-
-            LEti::Default_Draw_Module_2D* dm = _object->draw_module();
-            dm->set_texture(picture);
-        }
-    );
 
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
     edit_mode->set_camera(&camera);
@@ -449,10 +434,13 @@ int main()
 
         if(LEti::Event_Controller::key_was_released(GLFW_KEY_TAB))
         {
+            game_logic->on_deactivate();
+
             if(game_logic == game_world)
                 game_logic = edit_mode;
             else
                 game_logic = game_world;
+
             game_logic->on_activate();
         }
 

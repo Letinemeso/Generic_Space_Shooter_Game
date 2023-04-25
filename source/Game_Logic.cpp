@@ -19,3 +19,8 @@ void Game_Logic::on_activate()
 {
 
 }
+
+void Game_Logic::on_deactivate()
+{
+
+}

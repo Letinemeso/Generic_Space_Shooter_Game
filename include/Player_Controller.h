@@ -39,6 +39,7 @@ namespace GSSG
         void M_create_player();
 
     public:
+        void forcefuly_kill_player();
         void notify_about_player_death();
         void update();
 

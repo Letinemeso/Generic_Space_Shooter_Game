@@ -12,6 +12,7 @@ namespace GSSG
 
     public:
         virtual void on_activate();
+        virtual void on_deactivate();
 
     public:
         virtual void update() = 0;
