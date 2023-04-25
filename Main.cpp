@@ -31,6 +31,7 @@
 #include <Enemy.h>
 #include <GUI.h>
 #include <Effects_Controller.h>
+#include <Game_World.h>
 
 
 int main()
@@ -375,6 +376,24 @@ int main()
     //  ~game setup
 
 
+    //  game logic setup
+
+    GSSG::Game_World* game_world = new GSSG::Game_World;
+    game_world->set_entity_manager(&entity_manager);
+    game_world->set_enemy_generator(&enemy_generator);
+    game_world->set_player_controller(&player_controller);
+    game_world->set_effects_controller(&effects_controller);
+    game_world->set_gui(&gui);
+    game_world->set_background(&background);
+    game_world->set_collision_detector(&collision_detector);
+    game_world->set_collision_resolver(&collision_resolver);
+    game_world->set_renderer(&renderer);
+
+    GSSG::Game_Logic* game_logic = game_world;
+
+    //  ~game logic setup
+
+
     LST::Timer fps_timer;
 
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
@@ -392,30 +411,32 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
 
-        entity_manager.update_entities_prev_state();
-        entity_manager.apply_entities_input();
-        entity_manager.update_entities();
+//        entity_manager.update_entities_prev_state();
+//        entity_manager.apply_entities_input();
+//        entity_manager.update_entities();
 
-        gui.update_prev_state();
+//        gui.update_prev_state();
 
-        collision_detector.update();
-        collision_resolver.resolve_all(collision_detector.get_collisions__models());
+//        collision_detector.update();
+//        collision_resolver.resolve_all(collision_detector.get_collisions__models());
 
-        entity_manager.remove_dead_entities();
-        enemy_generator.update();
-        player_controller.update();
-        effects_controller.update();
+//        entity_manager.remove_dead_entities();
+//        enemy_generator.update();
+//        player_controller.update();
+//        effects_controller.update();
 
-        gui.update();
+//        gui.update();
 
-        background.update();
+//        background.update();
 
-        renderer.draw(*background.draw_module());
+//        renderer.draw(*background.draw_module());
 
-        entity_manager.draw_entities();
-        effects_controller.draw();
+//        entity_manager.draw_entities();
+//        effects_controller.draw();
 
-        gui.draw();
+//        gui.draw();
+
+        game_logic->update();
 
         //        renderer.draw(*background.draw_module());
 
@@ -434,6 +455,8 @@ int main()
     delete player_hp_tf;
     delete player_respawn_timer_tf;
     delete player_eliminations_tf;
+
+    delete game_logic;
 
     return 0;
 }

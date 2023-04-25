@@ -11,10 +11,7 @@ namespace GSSG
         virtual ~Game_Logic();
 
     public:
-        virtual void update_previous_state() = 0;
         virtual void update() = 0;
-        virtual void apply_input() = 0;
-        virtual void draw() = 0;
 
     };
 
