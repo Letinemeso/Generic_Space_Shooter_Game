@@ -40,9 +40,16 @@ void Edit_Mode::M_reconstruct_player_stub()
     if(occupied_cells == 0)
         return;
 
-    float* coords = new float[occupied_cells * 18];
-    float* colors = new float[occupied_cells * 24];
-    float* t_coords = new float[occupied_cells * 12];
+    unsigned int coords_count = occupied_cells * 18;
+    unsigned int colors_count = occupied_cells * 24;
+    unsigned int t_coords_count = occupied_cells * 12;
+
+    float* coords = new float[coords_count];
+    float* colors = new float[colors_count];
+    float* t_coords = new float[t_coords_count];
+    bool* collision_permissions = new bool[occupied_cells * 6];
+
+    float raw_coord_stride_unscaled = 0.5f / (float)m_width;
 
     unsigned int cells_reconstructed = 0;
     for(unsigned int x=0; x<m_width; ++x)
@@ -55,17 +62,61 @@ void Edit_Mode::M_reconstruct_player_stub()
             unsigned int coords_stride = cells_reconstructed * 18;
             unsigned int colors_stride = cells_reconstructed * 24;
             unsigned int t_coords_stride = cells_reconstructed * 12;
+            unsigned int collision_permissions_stride = cells_reconstructed * 6;
 
-            coords[coords_stride + 0]  = 0.5f; coords[coords_stride + 1]  = 0.5f; coords[coords_stride + 2]  = 0.0f;
-            coords[coords_stride + 9]  = -0.5f; coords[coords_stride + 4]  = 0.5f; coords[coords_stride + 5]  = 0.0f;
-            coords[coords_stride + 3]  = -0.5f; coords[coords_stride + 7]  = -0.5f; coords[coords_stride + 8]  = 0.0f;
-            coords[coords_stride + 6]  = 0.5f; coords[coords_stride + 10] = 0.5f; coords[coords_stride + 11] = 0.0f;
-            coords[coords_stride + 12] = -0.5f; coords[coords_stride + 13] = -0.5f; coords[coords_stride + 14] = 0.0f;
-            coords[coords_stride + 15] = 0.5f; coords[coords_stride + 16] = -0.5f; coords[coords_stride + 17] = 0.0f;
+            coords[coords_stride + 0]  = raw_coord_stride_unscaled;  coords[coords_stride + 1]  = raw_coord_stride_unscaled;  coords[coords_stride + 2]  = 0.0f;
+            coords[coords_stride + 3]  = -raw_coord_stride_unscaled; coords[coords_stride + 4]  = raw_coord_stride_unscaled;  coords[coords_stride + 5]  = 0.0f;
+            coords[coords_stride + 6]  = -raw_coord_stride_unscaled; coords[coords_stride + 7]  = -raw_coord_stride_unscaled; coords[coords_stride + 8]  = 0.0f;
+            coords[coords_stride + 9]  = raw_coord_stride_unscaled;  coords[coords_stride + 10] = raw_coord_stride_unscaled;  coords[coords_stride + 11] = 0.0f;
+            coords[coords_stride + 12] = -raw_coord_stride_unscaled; coords[coords_stride + 13] = -raw_coord_stride_unscaled; coords[coords_stride + 14] = 0.0f;
+            coords[coords_stride + 15] = raw_coord_stride_unscaled;  coords[coords_stride + 16] = -raw_coord_stride_unscaled; coords[coords_stride + 17] = 0.0f;
 
+            for(unsigned int i=coords_stride; i<coords_stride + 18; i+= 3)
+            {
+                coords[i] += raw_coord_stride_unscaled * 2.0f * (float)x;
+                coords[i + 1] += raw_coord_stride_unscaled * 2.0f * (float)y;
+            }
+
+            collision_permissions[collision_permissions_stride + 0] = true;  collision_permissions[collision_permissions_stride + 1] = true; collision_permissions[collision_permissions_stride + 2] = false;
+            collision_permissions[collision_permissions_stride + 3] = false; collision_permissions[collision_permissions_stride + 4] = true; collision_permissions[collision_permissions_stride + 5] = true;
+
+
+            for(unsigned int i=colors_stride; i<colors_stride + 24; ++i)
+                colors[i] = 1.0f;
+
+            t_coords[t_coords_stride + 0] = 60; t_coords[t_coords_stride + 1] = 60;
+            t_coords[t_coords_stride + 2] = 0;  t_coords[t_coords_stride + 3] = 60;
+            t_coords[t_coords_stride + 4] = 0;  t_coords[t_coords_stride + 5] = 0;
+            t_coords[t_coords_stride + 6] = 60; t_coords[t_coords_stride + 7] = 60;
+            t_coords[t_coords_stride + 8] = 0;  t_coords[t_coords_stride + 9] = 0;
+            t_coords[t_coords_stride + 10] = 60; t_coords[t_coords_stride + 11] = 0;
+
+            ++cells_reconstructed;
         }
     }
 
+    LEti::Default_Draw_Module_2D_Stub* dms = (LEti::Default_Draw_Module_2D_Stub*)m_player_stub->draw_module;
+    LEti::Dynamic_Physics_Module_2D_Stub* pms = (LEti::Dynamic_Physics_Module_2D_Stub*)m_player_stub->physics_module;
+
+    delete[] dms->coords;
+    dms->coords = coords;
+    dms->coords_count = coords_count;
+    delete[] dms->colors;
+    dms->colors = colors;
+    dms->colors_count = colors_count;
+    delete[] dms->tcoords;
+    dms->tcoords = t_coords;
+    dms->tcoords_count = t_coords_count;
+
+    float* phys_coords = new float[coords_count];
+    for(unsigned int i=0; i<coords_count; ++i)
+        phys_coords[i] = coords[i];
+
+    delete[] pms->coords;
+    pms->coords = phys_coords;
+    pms->coords_count = coords_count;
+    delete[] pms->collision_permissions;
+    pms->collision_permissions = collision_permissions;
 }
 
 
@@ -79,7 +130,7 @@ void Edit_Mode::on_deactivate()
 {
     m_player_controller->forcefuly_kill_player();
 
-//    unsigned int
+    M_reconstruct_player_stub();
 }
 
 
@@ -90,9 +141,9 @@ void Edit_Mode::M_on_cell_chosen(Grid::Cell &_cell)
 
     int material = m_chosen_material;
 
-    if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+    if(LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
         material = m_chosen_material;
-    else if(LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_2))
+    else if(LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_2))
         material = -1;
     else
         return;

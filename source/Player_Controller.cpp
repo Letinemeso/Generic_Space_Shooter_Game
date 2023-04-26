@@ -23,6 +23,9 @@ void Player_Controller::M_create_player()
 
 void Player_Controller::forcefuly_kill_player()
 {
+    if(!m_player)
+        return;
+
     m_player->set_health(0);
     m_entity_manager->remove_dead_entities();
 }
@@ -30,7 +33,7 @@ void Player_Controller::forcefuly_kill_player()
 void Player_Controller::notify_about_player_death()
 {
     m_player = nullptr;
-    m_respawn_timer.start(5.0f);
+    m_respawn_timer.start(1.0f);
     m_player_respawn_tf->set_text("Respawning in 5...");
     m_player_respawn_tf->draw_module()->set_visible(true);
 }

@@ -351,7 +351,7 @@ int main()
     effects_controller.inject_renderer(&renderer);
 
     GSSG::Enemy_Generator enemy_generator;
-    enemy_generator.set_spawn_frequency(3.0f);
+    enemy_generator.set_spawn_frequency(30000.0f);
     enemy_generator.inject_entity_manager(&entity_manager);
     enemy_generator.inject_camera(&camera);
     enemy_generator.set_enemy_stub(&enemy_entity_stub);
@@ -377,21 +377,6 @@ int main()
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
-
-    LEti::Object_2D_Stub em_cell_stub;
-    em_cell_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-    em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
-    em_cell_stub.assign_values(reader.get_stub("grid_cell"));
-
-    GSSG::Grid* grid = new GSSG::Grid;
-    grid->set_renderer(&renderer);
-    grid->set_cell_stub(&em_cell_stub);
-
-    GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
-    edit_mode->set_camera(&camera);
-    edit_mode->set_player_controller(&player_controller);
-    edit_mode->set_grid(grid);
-
     //  ~game setup
 
 
@@ -409,6 +394,23 @@ int main()
     game_world->set_renderer(&renderer);
 
     GSSG::Game_Logic* game_logic = game_world;
+
+
+
+    LEti::Object_2D_Stub em_cell_stub;
+    em_cell_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
+    em_cell_stub.assign_values(reader.get_stub("grid_cell"));
+
+    GSSG::Grid* grid = new GSSG::Grid;
+    grid->set_renderer(&renderer);
+    grid->set_cell_stub(&em_cell_stub);
+
+    GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
+    edit_mode->set_camera(&camera);
+    edit_mode->set_player_controller(&player_controller);
+    edit_mode->set_player_stub(&player_stub);
+    edit_mode->set_grid(grid);
 
     //  ~game logic setup
 
@@ -443,6 +445,9 @@ int main()
 
             game_logic->on_activate();
         }
+
+        if(LEti::Event_Controller::key_was_released(GLFW_KEY_B))
+            enemy_generator.spawn_enemy();
 
         ++fps_counter;
         fps_timer.update(LEti::Event_Controller::get_dt());
