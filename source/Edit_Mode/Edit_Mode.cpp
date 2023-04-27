@@ -64,12 +64,12 @@ void Edit_Mode::M_reconstruct_player_stub()
             unsigned int t_coords_stride = cells_reconstructed * 12;
             unsigned int collision_permissions_stride = cells_reconstructed * 6;
 
-            coords[coords_stride + 0]  = raw_coord_stride_unscaled;  coords[coords_stride + 1]  = raw_coord_stride_unscaled;  coords[coords_stride + 2]  = 0.0f;
-            coords[coords_stride + 3]  = -raw_coord_stride_unscaled; coords[coords_stride + 4]  = raw_coord_stride_unscaled;  coords[coords_stride + 5]  = 0.0f;
-            coords[coords_stride + 6]  = -raw_coord_stride_unscaled; coords[coords_stride + 7]  = -raw_coord_stride_unscaled; coords[coords_stride + 8]  = 0.0f;
-            coords[coords_stride + 9]  = raw_coord_stride_unscaled;  coords[coords_stride + 10] = raw_coord_stride_unscaled;  coords[coords_stride + 11] = 0.0f;
-            coords[coords_stride + 12] = -raw_coord_stride_unscaled; coords[coords_stride + 13] = -raw_coord_stride_unscaled; coords[coords_stride + 14] = 0.0f;
-            coords[coords_stride + 15] = raw_coord_stride_unscaled;  coords[coords_stride + 16] = -raw_coord_stride_unscaled; coords[coords_stride + 17] = 0.0f;
+            coords[coords_stride + 0]  = raw_coord_stride_unscaled;     coords[coords_stride + 1]  = raw_coord_stride_unscaled;     coords[coords_stride + 2]  = 0.0f;
+            coords[coords_stride + 3]  = -raw_coord_stride_unscaled;    coords[coords_stride + 4]  = raw_coord_stride_unscaled;     coords[coords_stride + 5]  = 0.0f;
+            coords[coords_stride + 6]  = -raw_coord_stride_unscaled;    coords[coords_stride + 7]  = -raw_coord_stride_unscaled;    coords[coords_stride + 8]  = 0.0f;
+            coords[coords_stride + 9]  = raw_coord_stride_unscaled;     coords[coords_stride + 10] = raw_coord_stride_unscaled;     coords[coords_stride + 11] = 0.0f;
+            coords[coords_stride + 12] = -raw_coord_stride_unscaled;    coords[coords_stride + 13] = -raw_coord_stride_unscaled;    coords[coords_stride + 14] = 0.0f;
+            coords[coords_stride + 15] = raw_coord_stride_unscaled;     coords[coords_stride + 16] = -raw_coord_stride_unscaled;    coords[coords_stride + 17] = 0.0f;
 
             for(unsigned int i=coords_stride; i<coords_stride + 18; i+= 3)
             {

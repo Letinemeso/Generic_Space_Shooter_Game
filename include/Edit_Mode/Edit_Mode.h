@@ -28,7 +28,7 @@ namespace GSSG
 
     private:
         int** m_materials = nullptr;
-        unsigned int m_width = 11, m_height = 11;
+        unsigned int m_width = 7, m_height = 7;
         int m_chosen_material = 0;
 
     public:
