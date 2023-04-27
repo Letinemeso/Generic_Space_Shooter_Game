@@ -3,7 +3,7 @@
 using namespace GSSG;
 
 
-bool Collision_Resolution__Entity::resolve(const LEti::Physical_Model_2D::Intersection_Data &_id)
+bool Collision_Resolution__Entity::resolve(const LEti::Intersection_Data &_id)
 {
     Entity* maybe_entity_1 = LV::cast_variable<Entity>((LEti::Object_2D*)_id.first);
     Entity* maybe_entity_2 = LV::cast_variable<Entity>((LEti::Object_2D*)_id.second);

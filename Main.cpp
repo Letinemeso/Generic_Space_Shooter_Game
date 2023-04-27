@@ -8,7 +8,6 @@
 #include <Shader.h>
 #include <Camera_2D.h>
 #include <Picture_Manager.h>
-#include <Physics/Physical_Model_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 #include <Physics/Collision_Resolver.h>
 #include <Physics/Collision_Resolution__Rigid_Body_2D.h>

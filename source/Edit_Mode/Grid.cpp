@@ -77,7 +77,7 @@ void Grid::update()
 
     m_collision_detector->update();
 
-    for(std::list<LEti::Physical_Model_2D::Intersection_Data>::const_iterator it = m_collision_detector->get_collisions__points().begin();
+    for(std::list<LEti::Intersection_Data>::const_iterator it = m_collision_detector->get_collisions__points().begin();
         it != m_collision_detector->get_collisions__points().end();
         ++it)
     {
