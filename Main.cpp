@@ -324,7 +324,9 @@ int main()
     player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     player_stub.assign_values(reader.get_stub("arrow_quad"));
     player_stub.health = 5;
-    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->mass = 10.0f;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses = new float[2];
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[0] = 5.0f;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[1] = 5.0f;
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
@@ -339,7 +341,9 @@ int main()
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
     projectile_stub.health = 1;
-    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->mass = 5.0f;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
+    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
 
     LEti::Object_2D_Stub explosion_stub;
     explosion_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
