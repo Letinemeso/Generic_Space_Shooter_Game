@@ -77,9 +77,7 @@ void Grid::update()
 
     m_collision_detector->update();
 
-    for(std::list<LEti::Intersection_Data>::const_iterator it = m_collision_detector->get_collisions__points().begin();
-        it != m_collision_detector->get_collisions__points().end();
-        ++it)
+    for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
     {
         LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
         Cell* cell = *cell_map_it;
