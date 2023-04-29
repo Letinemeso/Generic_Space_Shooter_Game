@@ -119,16 +119,12 @@ void Background::update()
     stride.x = (m_picture->width() * full_stride_x) - (LEti::Window_Controller::get_window_data().width / 2.0f);
     stride.y = (m_picture->height() * full_stride_y) - (LEti::Window_Controller::get_window_data().height / 2.0f);
 
-    glm::mat4x4 default_matrix{
+    glm::mat4x4 move_matrix{
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f
+        stride.x, stride.y, 0.0f, 1.0f
     };
 
-    glm::mat4x4 move_matrix = default_matrix;
-    move_matrix[3][0] = stride.x;
-    move_matrix[3][1] = stride.y;
-
-    m_draw_module->update(move_matrix, default_matrix, default_matrix, 1.0f);
+    m_draw_module->update(move_matrix);
 }
