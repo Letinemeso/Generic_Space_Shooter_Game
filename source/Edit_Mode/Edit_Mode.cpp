@@ -43,13 +43,16 @@ void Edit_Mode::M_reconstruct_player_stub()
     unsigned int coords_count = occupied_cells * 18;
     unsigned int colors_count = occupied_cells * 24;
     unsigned int t_coords_count = occupied_cells * 12;
+    unsigned int masses_count = occupied_cells * 2;
 
     float* coords = new float[coords_count];
     float* colors = new float[colors_count];
     float* t_coords = new float[t_coords_count];
     bool* collision_permissions = new bool[occupied_cells * 6];
+    float* masses = new float[masses_count];
 
     float raw_coord_stride_unscaled = 0.5f / (float)m_width;
+    float polygon_mass = 1.0f / (m_width * m_height * 2.0f);
 
     unsigned int cells_reconstructed = 0;
     for(unsigned int x=0; x<m_width; ++x)
@@ -63,6 +66,7 @@ void Edit_Mode::M_reconstruct_player_stub()
             unsigned int colors_stride = cells_reconstructed * 24;
             unsigned int t_coords_stride = cells_reconstructed * 12;
             unsigned int collision_permissions_stride = cells_reconstructed * 6;
+            unsigned int masses_stride = cells_reconstructed * 2;
 
             coords[coords_stride + 0]  = raw_coord_stride_unscaled;     coords[coords_stride + 1]  = raw_coord_stride_unscaled;     coords[coords_stride + 2]  = 0.0f;
             coords[coords_stride + 3]  = -raw_coord_stride_unscaled;    coords[coords_stride + 4]  = raw_coord_stride_unscaled;     coords[coords_stride + 5]  = 0.0f;
@@ -91,12 +95,15 @@ void Edit_Mode::M_reconstruct_player_stub()
             t_coords[t_coords_stride + 8] = 0;  t_coords[t_coords_stride + 9] = 0;
             t_coords[t_coords_stride + 10] = 60; t_coords[t_coords_stride + 11] = 0;
 
+            masses[masses_stride] = polygon_mass;
+            masses[masses_stride + 1] = polygon_mass;
+
             ++cells_reconstructed;
         }
     }
 
     LEti::Default_Draw_Module_2D_Stub* dms = (LEti::Default_Draw_Module_2D_Stub*)m_player_stub->draw_module;
-    LEti::Dynamic_Physics_Module_2D_Stub* pms = (LEti::Dynamic_Physics_Module_2D_Stub*)m_player_stub->physics_module;
+    LEti::Physics_Module__Rigid_Body_2D__Stub* pms = (LEti::Physics_Module__Rigid_Body_2D__Stub*)m_player_stub->physics_module;
 
     delete[] dms->coords;
     dms->coords = coords;
@@ -117,6 +124,8 @@ void Edit_Mode::M_reconstruct_player_stub()
     pms->coords_count = coords_count;
     delete[] pms->collision_permissions;
     pms->collision_permissions = collision_permissions;
+    delete[] pms->masses;
+    pms->masses = masses;
 }
 
 
