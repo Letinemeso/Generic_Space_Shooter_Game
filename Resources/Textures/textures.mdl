@@ -14,7 +14,7 @@
         "triangle_texture"
         "explosion_animation"
         "projectile_animation"
-        "grid_cell_texture"
+        "edit_mode_atlas"
     /
     |paths|
     \
@@ -26,6 +26,6 @@
         "Resources/Textures/gameplay_textures/triangle.png"
         "Resources/Textures/gameplay_textures/explosion_animation.png"
         "Resources/Textures/gameplay_textures/projectile_animation.png"
-        "Resources/Textures/editing_mode_textures/grid_cell.png"
+        "Resources/Textures/editing_mode_textures/edit_mode_atlas.png"
     /
 /

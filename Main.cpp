@@ -296,6 +296,7 @@ int main()
     reader.parse_file("Resources/Models/explosion");
     reader.parse_file("Resources/Models/projectile");
     reader.parse_file("Resources/Models/grid_cell");
+    reader.parse_file("Resources/Models/blocks");
 
     LEti::Text_Field_Stub text_field_stub;
     text_field_stub.assign_values(reader.get_stub("text_field"));
@@ -409,11 +410,15 @@ int main()
     grid->set_renderer(&renderer);
     grid->set_cell_stub(&em_cell_stub);
 
+    GSSG::Block_Controller* block_controller = new GSSG::Block_Controller;
+    block_controller->init(reader.get_stub("blocks"));
+
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
     edit_mode->set_camera(&camera);
     edit_mode->set_player_controller(&player_controller);
     edit_mode->set_player_stub(&player_stub);
     edit_mode->set_grid(grid);
+    edit_mode->set_block_controller(block_controller);
 
     //  ~game logic setup
 

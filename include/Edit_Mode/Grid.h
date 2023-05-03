@@ -18,7 +18,7 @@ namespace GSSG
         {
             LEti::Object_2D* object = nullptr;
             unsigned int index_x = 0, index_y = 0;
-            int material_id = -1;
+            unsigned int material_id = 0;
         };
 
     private:
@@ -48,6 +48,11 @@ namespace GSSG
     public:
         void set_position(const glm::vec3& _position);
         void construct();
+        void set_cell_visual_data(Cell& _cell,
+                                  const float* _coords, unsigned int _coords_amount,
+                                  const float* _colors, unsigned int _colors_amount,
+                                  const float* _texture_coords, unsigned int _texture_coords_amount);
+        void reset_cell(Cell& _cell);
 
     public:
         void update();

@@ -8,6 +8,7 @@
 #include <Physics/SAT_Narrowest_CD.h>
 
 #include <Game_Logic.h>
+#include <Edit_Mode/Block_Controller.h>
 #include <Edit_Mode/Grid.h>
 #include <Player_Controller.h>
 #include <Player.h>
@@ -24,12 +25,13 @@ namespace GSSG
     private:
         Player_Controller* m_player_controller = nullptr;
         Player_Stub* m_player_stub = nullptr;
+        Block_Controller* m_block_controller = nullptr;
         Grid* m_grid = nullptr;
 
     private:
-        int** m_materials = nullptr;
+        unsigned int** m_materials = nullptr;
         unsigned int m_width = 7, m_height = 7;
-        int m_chosen_material = 0;
+        unsigned int m_chosen_material = 0;
 
     public:
         Edit_Mode();
@@ -50,6 +52,7 @@ namespace GSSG
         inline void set_player_controller(Player_Controller* _ptr) { m_player_controller = _ptr; }
         inline void set_player_stub(Player_Stub* _ptr) { m_player_stub = _ptr; }
         void set_grid(Grid* _ptr);     //  takes ownership
+        void set_block_controller(Block_Controller* _ptr) { m_block_controller = _ptr; }    //  takes ownership
 
     public:
         void update() override;

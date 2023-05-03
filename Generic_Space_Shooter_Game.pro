@@ -50,6 +50,7 @@ SOURCES += \
     source/Behavior_Tree/Selector.cpp \
     source/Behavior_Tree/Sequence.cpp \
     source/Collision_Resolution__Entity.cpp \
+    source/Edit_Mode/Block_Controller.cpp \
     source/Edit_Mode/Edit_Mode.cpp \
     source/Edit_Mode/Grid.cpp \
     source/Effects_Controller.cpp \
@@ -85,6 +86,7 @@ HEADERS += \
 	include/Behavior_Tree/Selector.h \
 	include/Behavior_Tree/Sequence.h \
 	include/Collision_Resolution__Entity.h \
+	include/Edit_Mode/Block_Controller.h \
 	include/Edit_Mode/Edit_Mode.h \
 	include/Edit_Mode/Grid.h \
 	include/Effects_Controller.h \
