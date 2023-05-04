@@ -28,17 +28,9 @@ namespace GSSG
         Block_Controller* m_block_controller = nullptr;
         Grid* m_grid = nullptr;
 
-    private:
-        unsigned int** m_materials = nullptr;
-        unsigned int m_width = 2, m_height = 7;
-        unsigned int m_chosen_material = 0;
-
     public:
         Edit_Mode();
         ~Edit_Mode();
-
-    private:
-        void M_on_cell_chosen(Grid::Cell& _cell);
 
     public:
         void on_activate() override;
@@ -51,8 +43,8 @@ namespace GSSG
         inline void set_camera(const LEti::Camera_2D* _ptr) { m_camera = _ptr; }
         inline void set_player_controller(Player_Controller* _ptr) { m_player_controller = _ptr; }
         inline void set_player_stub(Player_Stub* _ptr) { m_player_stub = _ptr; }
-        void set_grid(Grid* _ptr);     //  takes ownership
-        void set_block_controller(Block_Controller* _ptr) { m_block_controller = _ptr; }    //  takes ownership
+        inline void set_grid(Grid* _ptr) { m_grid = _ptr; }
+        inline void set_block_controller(Block_Controller* _ptr) { m_block_controller = _ptr; }
 
     public:
         void update() override;

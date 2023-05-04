@@ -17,16 +17,24 @@ Grid::~Grid()
 
 
 
-void Grid::M_set_object_visual_data(LEti::Object_2D* _object,
-                                const float *_coords, unsigned int _coords_amount,
-                                const float *_colors, unsigned int _colors_amount,
-                                const float *_texture_coords, unsigned int _texture_coords_amount)
+void Grid::M_on_cell_pressed(Cell &_cell)
+{
+    if(!m_block_controller->block_exists(m_material_id))
+        return;
+
+    _cell.material_id = m_material_id;
+    M_set_object_visual_data(_cell.object, m_block_controller->get_block(m_material_id));
+    _cell.rotation_angle = m_cell_preview->get_rotation_angle();
+    _cell.object->set_rotation_angle(_cell.rotation_angle);
+}
+
+void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
 {
     LEti::Default_Draw_Module_2D* draw_module = _object->draw_module();
 
-    draw_module->init_vertices(_coords, _coords_amount);
-    draw_module->init_colors(_colors, _colors_amount);
-    draw_module->init_texture(draw_module->texture().get_picture(), _texture_coords, _texture_coords_amount);
+    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
+    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
+    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
 }
 
 
@@ -103,35 +111,70 @@ void Grid::construct()
     m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
 }
 
-void Grid::set_cell_visual_data(Cell& _cell,
-                                const float *_coords, unsigned int _coords_amount,
-                                const float *_colors, unsigned int _colors_amount,
-                                const float *_texture_coords, unsigned int _texture_coords_amount)
+void Grid::reset_cell(Cell& /*_cell*/)
 {
-    M_set_object_visual_data(_cell.object,
-                             _coords, _coords_amount,
-                             _colors, _colors_amount,
-                             _texture_coords, _texture_coords_amount);
+//    const LEti::Default_Draw_Module_2D_Stub* stub = (LEti::Default_Draw_Module_2D_Stub*)m_cell_stub->draw_module;
+
+//    M_set_object_visual_data(_cell.object,
+//                             stub->coords, stub->coords_count,
+//                             stub->colors, stub->colors_count,
+//                             stub->tcoords, stub->tcoords_count);
+
+//    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
+//    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
+//    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
 }
 
-void Grid::reset_cell(Cell& _cell)
+void Grid::set_preview_visual_data(const Block& _block)
 {
-    const LEti::Default_Draw_Module_2D_Stub* stub = (LEti::Default_Draw_Module_2D_Stub*)m_cell_stub->draw_module;
-
-    M_set_object_visual_data(_cell.object,
-                             stub->coords, stub->coords_count,
-                             stub->colors, stub->colors_count,
-                             stub->tcoords, stub->tcoords_count);
+    M_set_object_visual_data(m_cell_preview, _block);
 }
 
-void Grid::set_preview_visual_data(const float *_coords, unsigned int _coords_amount,
-                                   const float *_colors, unsigned int _colors_amount,
-                                   const float *_texture_coords, unsigned int _texture_coords_amount)
+
+
+const Grid::Cell& Grid::get_cell(unsigned int _x, unsigned int _y) const
 {
-    M_set_object_visual_data(m_cell_preview,
-                             _coords, _coords_amount,
-                             _colors, _colors_amount,
-                             _texture_coords, _texture_coords_amount);
+    unsigned int index = _x * m_height + _y;
+    return m_cells[index];
+}
+
+
+
+void Grid::M_apply_input()
+{
+    unsigned int material_before_input = m_material_id;
+
+    for(unsigned int i=GLFW_KEY_1; i<=GLFW_KEY_9; ++i)
+    {
+        if(!LEti::Event_Controller::key_was_pressed(i))
+            continue;
+
+        unsigned int id = i - GLFW_KEY_0;
+
+        if(!m_block_controller->block_exists(id))
+            continue;
+
+        m_material_id = id;
+    }
+
+    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
+        m_material_id = 0;
+
+    if(m_material_id != material_before_input)
+    {
+        const Block& block = m_block_controller->get_block(m_material_id);
+        set_preview_visual_data(block);
+    }
+
+    if(LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
+    {
+        for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
+        {
+            LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
+            Cell* cell = *cell_map_it;
+            M_on_cell_pressed(*cell);
+        }
+    }
 }
 
 
@@ -149,12 +192,9 @@ void Grid::update()
 
     m_collision_detector->update();
 
-    for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
-    {
-        LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
-        Cell* cell = *cell_map_it;
-        m_on_cell_pressed_func(*cell);
-    }
+
+    M_apply_input();
+
 
     for(LDS::Vector<Cell>::Iterator it = m_cells.iterator(); !it.end_reached(); ++it)
         ((Cell&)(*it)).object->draw(*m_renderer);

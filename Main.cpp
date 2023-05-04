@@ -234,6 +234,10 @@ int main()
                                     });
     srand(time(nullptr));
 
+
+    glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
+
+
     LV::MDL_Reader reader;
 
     LEti::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
@@ -406,26 +410,37 @@ int main()
     em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
 
-    GSSG::Grid* grid = new GSSG::Grid;
-    grid->set_renderer(&renderer);
-    grid->set_cell_stub(&em_cell_stub);
 
-    GSSG::Block_Controller* block_controller = new GSSG::Block_Controller;
-    block_controller->init(reader.get_stub("blocks"));
+
+    GSSG::Block_Controller block_controller;
+    block_controller.init(reader.get_stub("blocks"));
+
+    LEti::Collision_Detector_2D grid_collision_detector;
+    grid_collision_detector.set_broad_phase(new LEti::Space_Hasher_2D, 10);
+    grid_collision_detector.set_narrow_phase(new LEti::Dynamic_Narrow_CD, 10);
+    grid_collision_detector.set_narrowest_phase(new LEti::SAT_Narrowest_CD);
+    grid_collision_detector.register_point(&cursor_position);
+
+    GSSG::Grid grid;
+    grid.set_renderer(&renderer);
+    grid.set_cell_stub(&em_cell_stub);
+    grid.set_collision_detector(&grid_collision_detector);
+    grid.set_block_controller(&block_controller);
+    grid.set_size_parameters(7, 7);
+    grid.construct();
+
 
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
     edit_mode->set_camera(&camera);
     edit_mode->set_player_controller(&player_controller);
     edit_mode->set_player_stub(&player_stub);
-    edit_mode->set_grid(grid);
-    edit_mode->set_block_controller(block_controller);
+    edit_mode->set_grid(&grid);
+    edit_mode->set_block_controller(&block_controller);
 
     //  ~game logic setup
 
 
     LST::Timer fps_timer;
-
-    glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
     collision_detector.register_point(&cursor_position);
 
@@ -437,6 +452,8 @@ int main()
     {
         LEti::Window_Controller::update();
         LEti::Event_Controller::update();
+
+        cursor_position = camera.convert_window_coords(glm::vec3(LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f));
 
         glClear(GL_COLOR_BUFFER_BIT);
 

@@ -118,10 +118,26 @@ Block::~Block()
 
 
 
-void Block::copy_coords(float *_where, unsigned int _offset) const
+void Block::copy_coords(float *_where, unsigned int _offset, const glm::vec3& _stride, float _rotation, float _scale) const
 {
     L_ASSERT(coords && size.coords > 0);
     M_copy_array(coords, _where, _offset, size.coords);
+
+    float s = sin(_rotation);
+    float c = cos(_rotation);
+
+    for(unsigned int i=_offset; i<size.coords + _offset; i += 3)
+    {
+        _where[i] *= _scale;
+        _where[i + 1] *= _scale;
+
+        float x = _where[i], y = _where[i + 1];
+        _where[i] = x * c + y * (-s);
+        _where[i + 1] = x * s + y * c;
+
+        _where[i] += _stride.x;
+        _where[i + 1] += _stride.y;
+    }
 }
 
 void Block::copy_colors(float *_where, unsigned int _offset) const
@@ -136,10 +152,26 @@ void Block::copy_texture_coords(float *_where, unsigned int _offset) const
     M_copy_array(texture_coords, _where, _offset, size.texture_coords);
 }
 
-void Block::copy_phys_coords(float *_where, unsigned int _offset) const
+void Block::copy_phys_coords(float *_where, unsigned int _offset, const glm::vec3& _stride, float _rotation, float _scale) const
 {
     L_ASSERT(phys_coords && size.phys_coords > 0);
     M_copy_array(phys_coords, _where, _offset, size.phys_coords);
+
+    float s = sin(_rotation);
+    float c = cos(_rotation);
+
+    for(unsigned int i=_offset; i<size.phys_coords + _offset; i += 3)
+    {
+        _where[i] *= _scale;
+        _where[i + 1] *= _scale;
+
+        float x = _where[i], y = _where[i + 1];
+        _where[i] = x * c + y * (-s);
+        _where[i + 1] = x * s + y * c;
+
+        _where[i] += _stride.x;
+        _where[i + 1] += _stride.y;
+    }
 }
 
 void Block::copy_collision_permissions(bool *_where, unsigned int _offset) const
@@ -148,10 +180,13 @@ void Block::copy_collision_permissions(bool *_where, unsigned int _offset) const
     M_copy_array(collision_permissions, _where, _offset, size.collision_permissions);
 }
 
-void Block::copy_masses(float *_where, unsigned int _offset) const
+void Block::copy_masses(float* _where, unsigned int _offset, float _scale) const
 {
     L_ASSERT(masses && size.masses > 0);
     M_copy_array(masses, _where, _offset, size.masses);
+
+    for(unsigned int i=_offset; i<size.masses + _offset; ++i)
+        _where[i] *= _scale;
 }
 
 

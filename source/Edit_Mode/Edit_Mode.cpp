@@ -5,23 +5,12 @@ using namespace GSSG;
 
 Edit_Mode::Edit_Mode()
 {
-    m_materials = new unsigned int*[m_width];
-    for(unsigned int i=0; i<m_width; ++i)
-    {
-        m_materials[i] = new unsigned int[m_height];
-        for(unsigned int j=0; j<m_height; ++j)
-            m_materials[i][j] = 0;
-    }
+
 }
 
 Edit_Mode::~Edit_Mode()
 {
-    delete m_grid;
-    delete m_block_controller;
 
-    for(unsigned int i=0; i<m_width; ++i)
-        delete[] m_materials[i];
-    delete[] m_materials;
 }
 
 
@@ -31,15 +20,17 @@ void Edit_Mode::M_reconstruct_player_stub()
     Block::Size arrays_sizes;
 
     unsigned int occupied_cells = 0;
-    for(unsigned int x=0; x<m_width; ++x)
+    for(unsigned int x=0; x<m_grid->width(); ++x)
     {
-        for(unsigned int y=0; y<m_height; ++y)
+        for(unsigned int y=0; y<m_grid->height(); ++y)
         {
-            if(m_materials[x][y] == 0)
+            unsigned int material = m_grid->get_cell(x, y).material_id;
+
+            if(material == m_grid->no_material_id())
                 continue;
 
             ++occupied_cells;
-            arrays_sizes += m_block_controller->get_block(m_materials[x][y]).get_size();
+            arrays_sizes += m_block_controller->get_block(material).get_size();
         }
     }
 
@@ -53,44 +44,30 @@ void Edit_Mode::M_reconstruct_player_stub()
     bool* collision_permissions = new bool[arrays_sizes.collision_permissions];
     float* masses = new float[arrays_sizes.masses];
 
-    float coords_scale = 1.0f / (float)(m_width > m_height ? m_width : m_height);
-    float single_block_mass_scale = 1.0f / (float)(m_width * m_height);
+    float coords_scale = 1.0f / (float)(m_grid->width() > m_grid->height() ? m_grid->width() : m_grid->height());
+    float single_block_mass_scale = 1.0f / (float)(m_grid->width() * m_grid->height());
 
     Block::Size offsets;
 
-    for(unsigned int x=0; x<m_width; ++x)
+    for(unsigned int x=0; x<m_grid->width(); ++x)
     {
-        for(unsigned int y=0; y<m_height; ++y)
+        for(unsigned int y=0; y<m_grid->height(); ++y)
         {
-            if(m_materials[x][y] == 0)
+            unsigned int material = m_grid->get_cell(x, y).material_id;
+
+            if(material == 0)
                 continue;
 
-            const Block& block = m_block_controller->get_block(m_materials[x][y]);
+            const Block& block = m_block_controller->get_block(material);
 
-            block.copy_coords(coords, offsets.coords);
+            glm::vec3 coords_stride(coords_scale * (float)x, coords_scale * (float)y, 0.0f);
+
+            block.copy_coords(coords, offsets.coords, coords_stride, 0.0f, coords_scale);
             block.copy_colors(colors, offsets.colors);
             block.copy_texture_coords(t_coords, offsets.texture_coords);
-            block.copy_phys_coords(phys_coords, offsets.phys_coords);
+            block.copy_phys_coords(phys_coords, offsets.phys_coords, coords_stride, 0.0f, coords_scale);
             block.copy_collision_permissions(collision_permissions, offsets.collision_permissions);
-            block.copy_masses(masses, offsets.masses);
-
-            for(unsigned int i=offsets.coords; i<offsets.coords + block.get_size().coords; ++i)
-                coords[i] *= coords_scale;
-            for(unsigned int i=offsets.phys_coords; i<offsets.phys_coords + block.get_size().phys_coords; ++i)
-                phys_coords[i] *= coords_scale;
-            for(unsigned int i=offsets.masses; i<offsets.masses + block.get_size().masses; ++i)
-                masses[i] *= single_block_mass_scale;
-
-            for(unsigned int i=offsets.coords; i<offsets.coords + block.get_size().coords; i+= 3)
-            {
-                coords[i] += coords_scale * (float)x;
-                coords[i + 1] += coords_scale * (float)y;
-            }
-            for(unsigned int i=offsets.phys_coords; i<offsets.phys_coords + block.get_size().phys_coords; i+= 3)
-            {
-                phys_coords[i] += coords_scale * (float)x;
-                phys_coords[i + 1] += coords_scale * (float)y;
-            }
+            block.copy_masses(masses, offsets.masses, single_block_mass_scale);
 
             offsets += block.get_size();
         }
@@ -137,71 +114,9 @@ void Edit_Mode::on_deactivate()
 
 
 
-void Edit_Mode::M_on_cell_chosen(Grid::Cell& _cell)
-{
-    if(!LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
-        return;
-
-    m_materials[_cell.index_x][_cell.index_y] = m_chosen_material;
-
-    const Block& block = m_block_controller->get_block(m_chosen_material);
-
-    m_grid->set_cell_visual_data(_cell,
-                                 block.get_coords(), block.get_size().coords,
-                                 block.get_colors(), block.get_size().colors,
-                                 block.get_texture_coords(), block.get_size().texture_coords);
-}
-
-
-
-void Edit_Mode::set_grid(Grid *_ptr)
-{
-    delete m_grid;
-    m_grid = _ptr;
-
-    LEti::Collision_Detector_2D* grid_collision_detector = new LEti::Collision_Detector_2D;
-    grid_collision_detector->set_broad_phase(new LEti::Space_Hasher_2D, 10);
-    grid_collision_detector->set_narrow_phase(new LEti::Dynamic_Narrow_CD, 10);
-    grid_collision_detector->set_narrowest_phase(new LEti::SAT_Narrowest_CD);
-    grid_collision_detector->register_point(&m_cursor_pos);
-
-    m_grid->set_collision_detector(grid_collision_detector);
-    m_grid->set_size_parameters(m_width, m_height);
-    m_grid->construct();
-    m_grid->set_on_cell_pressed_func( [this](GSSG::Grid::Cell& _cell) { M_on_cell_chosen(_cell); } );
-}
-
-
-
 void Edit_Mode::update()
 {
     m_cursor_pos = m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
-
-    unsigned int material_before_input = m_chosen_material;
-
-    for(unsigned int i=GLFW_KEY_1; i<=GLFW_KEY_9; ++i)
-    {
-        if(!LEti::Event_Controller::key_was_pressed(i))
-            continue;
-
-        unsigned int id = i - GLFW_KEY_0;
-
-        if(!m_block_controller->block_exists(id))
-            continue;
-
-        m_chosen_material = id;
-    }
-
-    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
-        m_chosen_material = 0;
-
-    if(m_chosen_material != material_before_input)
-    {
-        const Block& block = m_block_controller->get_block(m_chosen_material);
-        m_grid->set_preview_visual_data(block.get_coords(), block.get_size().coords,
-                                        block.get_colors(), block.get_size().colors,
-                                        block.get_texture_coords(), block.get_size().texture_coords);
-    }
 
     m_grid->update();
 }

@@ -85,19 +85,18 @@ namespace GSSG
 
         ~Block();
 
-
     private:
         template<typename T>
         static void M_copy_array(const T* _what, T* _where, unsigned int _offset, unsigned int _size)
             { for(unsigned int i = 0; i < _size; ++i) _where[i + _offset] = _what[i]; }
 
     public:
-        void copy_coords(float* _where, unsigned int _offset) const;
+        void copy_coords(float* _where, unsigned int _offset, const glm::vec3& _stride, float _rotation, float _scale) const;
         void copy_colors(float* _where, unsigned int _offset) const;
         void copy_texture_coords(float* _where, unsigned int _offset) const;
-        void copy_phys_coords(float* _where, unsigned int _offset) const;
+        void copy_phys_coords(float* _where, unsigned int _offset, const glm::vec3& _stride, float _rotation, float _scale) const;
         void copy_collision_permissions(bool* _where, unsigned int _offset) const;
-        void copy_masses(float* _where, unsigned int _offset) const;
+        void copy_masses(float* _where, unsigned int _offset, float _scale) const;
 
         inline int get_id() const { return id; }
         inline const float* get_coords() const { return coords; }
