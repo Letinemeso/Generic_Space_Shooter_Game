@@ -53,8 +53,6 @@ namespace GSSG
         inline void set_cell_stub(const LEti::Object_2D_Stub* _stub) { m_cell_stub = _stub; }
         inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material_id = m_block_controller->get_block_ids()[0]; m_no_material_id = m_material_id; }
 
-        inline void set_size_parameters(unsigned int _width, unsigned int _height) { m_width = _width; m_height = _height; }
-
     public:
         inline unsigned int width() const { return m_width; }
         inline unsigned int height() const { return m_height; }
@@ -66,8 +64,7 @@ namespace GSSG
 
     public:
         void set_position(const glm::vec3& _position);
-        void construct();
-        void reset_cell(Cell& _cell);
+        void construct(unsigned int _width, unsigned int _height);
         void set_preview_visual_data(const Block& _block);
 
     public:

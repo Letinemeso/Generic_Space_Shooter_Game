@@ -426,8 +426,7 @@ int main()
     grid.set_cell_stub(&em_cell_stub);
     grid.set_collision_detector(&grid_collision_detector);
     grid.set_block_controller(&block_controller);
-    grid.set_size_parameters(7, 7);
-    grid.construct();
+    grid.construct(7, 7);
 
 
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;

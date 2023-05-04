@@ -73,8 +73,11 @@ void Grid::set_position(const glm::vec3 &_position)
     m_cell_preview->set_pos( _position - total_size_stride - cell_size_stride );
 }
 
-void Grid::construct()
+void Grid::construct(unsigned int _width, unsigned int _height)
 {
+    m_width = _width;
+    m_height = _height;
+
     m_collision_detector->unregister_all_objects();
 
     for(unsigned int i=0; i<m_cells.size(); ++i)
@@ -111,20 +114,6 @@ void Grid::construct()
 
     delete m_cell_preview;
     m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
-}
-
-void Grid::reset_cell(Cell& /*_cell*/)
-{
-//    const LEti::Default_Draw_Module_2D_Stub* stub = (LEti::Default_Draw_Module_2D_Stub*)m_cell_stub->draw_module;
-
-//    M_set_object_visual_data(_cell.object,
-//                             stub->coords, stub->coords_count,
-//                             stub->colors, stub->colors_count,
-//                             stub->tcoords, stub->tcoords_count);
-
-//    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
-//    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
-//    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
 }
 
 void Grid::set_preview_visual_data(const Block& _block)
