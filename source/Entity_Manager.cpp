@@ -96,5 +96,5 @@ void Entity_Manager::draw_entities() const
     L_ASSERT(m_renderer);
 
     for(LDS::List<Entity*>::Const_Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
-        m_renderer->draw(*(*it)->draw_module());
+        (*it)->draw(*m_renderer);
 }

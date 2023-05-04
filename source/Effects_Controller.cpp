@@ -61,5 +61,5 @@ void Effects_Controller::update()
 void Effects_Controller::draw()
 {
     for(LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
-        m_renderer->draw(*(*it)->draw_module());
+        (*it)->draw(*m_renderer);
 }

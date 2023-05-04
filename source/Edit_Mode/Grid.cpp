@@ -126,5 +126,5 @@ void Grid::update()
     }
 
     for(LDS::Vector<Cell>::Iterator it = m_cells.iterator(); !it.end_reached(); ++it)
-        m_renderer->draw(*((Cell&)(*it)).object->draw_module());
+        ((Cell&)(*it)).object->draw(*m_renderer);
 }

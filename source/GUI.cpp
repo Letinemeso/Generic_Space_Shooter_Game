@@ -98,5 +98,5 @@ void GUI::update(float _ratio)
 void GUI::draw()
 {
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
-        m_renderer.draw(*(*it).object->draw_module());
+        (*it).object->draw(m_renderer);
 }
