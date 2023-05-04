@@ -30,7 +30,7 @@ namespace GSSG
 
     private:
         unsigned int** m_materials = nullptr;
-        unsigned int m_width = 7, m_height = 7;
+        unsigned int m_width = 2, m_height = 7;
         unsigned int m_chosen_material = 0;
 
     public:

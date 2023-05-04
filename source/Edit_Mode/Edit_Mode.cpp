@@ -177,9 +177,11 @@ void Edit_Mode::update()
 {
     m_cursor_pos = m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
 
+    unsigned int material_before_input = m_chosen_material;
+
     for(unsigned int i=GLFW_KEY_1; i<=GLFW_KEY_9; ++i)
     {
-        if(!LEti::Event_Controller::key_was_released(i))
+        if(!LEti::Event_Controller::key_was_pressed(i))
             continue;
 
         unsigned int id = i - GLFW_KEY_0;
@@ -190,8 +192,16 @@ void Edit_Mode::update()
         m_chosen_material = id;
     }
 
-    if(LEti::Event_Controller::key_was_released(GLFW_KEY_BACKSPACE))
+    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
         m_chosen_material = 0;
+
+    if(m_chosen_material != material_before_input)
+    {
+        const Block& block = m_block_controller->get_block(m_chosen_material);
+        m_grid->set_preview_visual_data(block.get_coords(), block.get_size().coords,
+                                        block.get_colors(), block.get_size().colors,
+                                        block.get_texture_coords(), block.get_size().texture_coords);
+    }
 
     m_grid->update();
 }
