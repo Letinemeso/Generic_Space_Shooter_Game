@@ -53,7 +53,8 @@ void Edit_Mode::M_reconstruct_player_stub()
     {
         for(unsigned int y=0; y<m_grid->height(); ++y)
         {
-            unsigned int material = m_grid->get_cell(x, y).material_id;
+            const Grid::Cell& cell = m_grid->get_cell(x, y);
+            unsigned int material = cell.material_id;
 
             if(material == 0)
                 continue;
@@ -62,10 +63,10 @@ void Edit_Mode::M_reconstruct_player_stub()
 
             glm::vec3 coords_stride(coords_scale * (float)x, coords_scale * (float)y, 0.0f);
 
-            block.copy_coords(coords, offsets.coords, coords_stride, 0.0f, coords_scale);
+            block.copy_coords(coords, offsets.coords, coords_stride, cell.rotation_angle, coords_scale);
             block.copy_colors(colors, offsets.colors);
             block.copy_texture_coords(t_coords, offsets.texture_coords);
-            block.copy_phys_coords(phys_coords, offsets.phys_coords, coords_stride, 0.0f, coords_scale);
+            block.copy_phys_coords(phys_coords, offsets.phys_coords, coords_stride, cell.rotation_angle, coords_scale);
             block.copy_collision_permissions(collision_permissions, offsets.collision_permissions);
             block.copy_masses(masses, offsets.masses, single_block_mass_scale);
 

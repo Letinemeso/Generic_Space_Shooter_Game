@@ -26,6 +26,8 @@ void Grid::M_on_cell_pressed(Cell &_cell)
     M_set_object_visual_data(_cell.object, m_block_controller->get_block(m_material_id));
     _cell.rotation_angle = m_cell_preview->get_rotation_angle();
     _cell.object->set_rotation_angle(_cell.rotation_angle);
+
+    _cell.object->update(0.0f);
 }
 
 void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
@@ -166,14 +168,19 @@ void Grid::M_apply_input()
         set_preview_visual_data(block);
     }
 
-    if(LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
+    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_E))
+        m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() - LEti::Math::HALF_PI);
+    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_Q))
+        m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() + LEti::Math::HALF_PI);
+
+    if(!LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
+        return;
+
+    for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
     {
-        for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
-        {
-            LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
-            Cell* cell = *cell_map_it;
-            M_on_cell_pressed(*cell);
-        }
+        LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
+        Cell* cell = *cell_map_it;
+        M_on_cell_pressed(*cell);
     }
 }
 

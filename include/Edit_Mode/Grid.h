@@ -7,6 +7,7 @@
 #include <Renderer.h>
 #include <Object_System/Object_2D.h>
 #include <Physics/Collision_Detector_2D.h>
+
 #include <Edit_Mode/Block_Controller.h>
 
 
@@ -68,7 +69,6 @@ namespace GSSG
         void construct();
         void reset_cell(Cell& _cell);
         void set_preview_visual_data(const Block& _block);
-        void set_preview_rotation(float _angle);
 
     public:
         const Cell& get_cell(unsigned int _x, unsigned int _y) const;
