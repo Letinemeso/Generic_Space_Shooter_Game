@@ -12,7 +12,6 @@ Grid::~Grid()
 {
     for(unsigned int i=0; i<m_cells.size(); ++i)
         delete ((Cell&)m_cells[i]).object;
-    delete m_collision_detector;
 }
 
 

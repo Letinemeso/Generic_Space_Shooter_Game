@@ -489,7 +489,9 @@ int main()
     delete player_respawn_timer_tf;
     delete player_eliminations_tf;
 
-    delete game_logic;
+//    delete game_logic;
+    delete game_world;
+    delete edit_mode;
 
     return 0;
 }
