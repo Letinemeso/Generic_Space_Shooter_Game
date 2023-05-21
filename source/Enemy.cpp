@@ -13,28 +13,28 @@ FIELDS_END
 Enemy::Enemy()
     : Space_Ship()
 {
-//    Selector* root = new Selector;
-    Selector* root = new Selector;
+//    LGL::Selector* root = new LGL::Selector;
+    LGL::Selector* root = new LGL::Selector;
     m_behavior = root;
 
 //    Sequence* flee_subroot = new Sequence;
-//    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_find_closest_enemy();})) );
-//    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_is_low_hp();} )) );
-//    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_rotate_away_from_enemy();} )) );
-//    flee_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_accelerate();} )) );
+//    flee_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_find_closest_enemy();})) );
+//    flee_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_is_low_hp();} )) );
+//    flee_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_rotate_away_from_enemy();} )) );
+//    flee_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_accelerate();} )) );
 //    root->add_child(flee_subroot);
 
 //    Sequence* attack_subroot = new Sequence;
-//    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_find_closest_enemy();} )) );
-//    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_rotate_towards_enemy();} )) );
-//    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_get_close_to_enemy();} )) );
-//    attack_subroot->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
+//    attack_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_find_closest_enemy();} )) );
+//    attack_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_rotate_towards_enemy();} )) );
+//    attack_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_get_close_to_enemy();} )) );
+//    attack_subroot->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
 //    root->add_child(attack_subroot);
 
-//    root->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_process_idle_behavior();} )) );
+//    root->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_process_idle_behavior();} )) );
 
 
-    root->add_child( new Action( LST::Function<BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
+    root->add_child( new LGL::Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
 }
 
 Enemy::~Enemy()
@@ -46,13 +46,13 @@ Enemy::~Enemy()
 
 //  Enemy Behavior Logic
 
-BT_Execution_Result Enemy::M_find_closest_enemy()
+LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
 {
     if(m_attacked_entity)
     {
         float dist = LEti::Math::vector_length(get_pos() - m_attacked_entity->get_pos());
         if(dist < m_max_dist)
-            return BT_Execution_Result::Success;
+            return LGL::BT_Execution_Result::Success;
     }
 
     const LDS::List<Entity*>& entities = m_entity_manager->registred_entities();
@@ -84,13 +84,13 @@ BT_Execution_Result Enemy::M_find_closest_enemy()
     }
 
     if(min_dist < 0.0f)
-        return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Fail;
 
     m_attacked_entity = closest;
-    return BT_Execution_Result::Success;
+    return LGL::BT_Execution_Result::Success;
 }
 
-BT_Execution_Result Enemy::M_accelerate()
+LGL::BT_Execution_Result Enemy::M_accelerate()
 {
     glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
     M_get_physics_module()->apply_linear_impulse(look_direction * LEti::Event_Controller::get_dt());
@@ -99,28 +99,28 @@ BT_Execution_Result Enemy::M_accelerate()
     if(speed > max_speed())
         M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
 
-    return BT_Execution_Result::Success;
+    return LGL::BT_Execution_Result::Success;
 }
 
 
 //  Enemy Flee Behavior
 
-BT_Execution_Result Enemy::M_is_low_hp()
+LGL::BT_Execution_Result Enemy::M_is_low_hp()
 {
     if(health() <= 2)
-        return BT_Execution_Result::Success;
-    return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Success;
+    return LGL::BT_Execution_Result::Fail;
 }
 
-BT_Execution_Result Enemy::M_rotate_away_from_enemy()
+LGL::BT_Execution_Result Enemy::M_rotate_away_from_enemy()
 {
     if(m_attacked_entity == nullptr)
-        return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Fail;
 
     glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
 
     if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
-        return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Fail;
 
     glm::vec3 look_direction = LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
 
@@ -129,10 +129,10 @@ BT_Execution_Result Enemy::M_rotate_away_from_enemy()
     if(cos_between_vecs >= 0.0f)
     {
         if(!LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.2f))
-            return BT_Execution_Result::In_Progress;
+            return LGL::BT_Execution_Result::In_Progress;
 
         M_get_physics_module()->set_angular_velocity(0.0f);
-        return BT_Execution_Result::Success;
+        return LGL::BT_Execution_Result::Success;
     }
 
     M_get_physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
@@ -140,21 +140,21 @@ BT_Execution_Result Enemy::M_rotate_away_from_enemy()
     if(LEti::Geometry_2D::vec_points_left(look_direction, this_to_other_vec))
         M_get_physics_module()->set_angular_velocity(-M_get_physics_module()->angular_velocity());
 
-    return BT_Execution_Result::In_Progress;
+    return LGL::BT_Execution_Result::In_Progress;
 }
 
 
 // Enemy Attack Behavior
 
-BT_Execution_Result Enemy::M_rotate_towards_enemy()
+LGL::BT_Execution_Result Enemy::M_rotate_towards_enemy()
 {
     if(m_attacked_entity == nullptr)
-        return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Fail;
 
     glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
 
     if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
-        return BT_Execution_Result::Fail;
+        return LGL::BT_Execution_Result::Fail;
 
     glm::vec3 inverse_look_direction = -LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
 
@@ -163,7 +163,7 @@ BT_Execution_Result Enemy::M_rotate_towards_enemy()
     if(LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.001f))
     {
         M_get_physics_module()->set_angular_velocity(0.0f);
-        return BT_Execution_Result::Success;
+        return LGL::BT_Execution_Result::Success;
     }
 
     M_get_physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
@@ -171,10 +171,10 @@ BT_Execution_Result Enemy::M_rotate_towards_enemy()
     if(LEti::Geometry_2D::vec_points_left(inverse_look_direction, this_to_other_vec))
         M_get_physics_module()->set_angular_velocity(-M_get_physics_module()->angular_velocity());
 
-    return BT_Execution_Result::In_Progress;
+    return LGL::BT_Execution_Result::In_Progress;
 }
 
-BT_Execution_Result Enemy::M_get_close_to_enemy()
+LGL::BT_Execution_Result Enemy::M_get_close_to_enemy()
 {
     glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
 
@@ -189,26 +189,26 @@ BT_Execution_Result Enemy::M_get_close_to_enemy()
         M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
 
     if(dist < 150.0f || dist > 300.0f)
-        return BT_Execution_Result::In_Progress;
+        return LGL::BT_Execution_Result::In_Progress;
 
-    return BT_Execution_Result::Success;
+    return LGL::BT_Execution_Result::Success;
 }
 
-BT_Execution_Result Enemy::M_shoot_at_enemy()
+LGL::BT_Execution_Result Enemy::M_shoot_at_enemy()
 {
     m_shoot_timer.update(LEti::Event_Controller::get_dt());
     if(!m_shoot_timer.is_active())
     {
         m_shoot_timer.start(1.0f);
         M_shoot();
-        return BT_Execution_Result::Success;
+        return LGL::BT_Execution_Result::Success;
     }
-    return BT_Execution_Result::In_Progress;
+    return LGL::BT_Execution_Result::In_Progress;
 }
 
 
 
-BT_Execution_Result Enemy::M_process_idle_behavior()
+LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 {
     m_idle_timer.update(LEti::Event_Controller::get_dt());
     if(!m_idle_timer.is_active())
@@ -262,7 +262,7 @@ BT_Execution_Result Enemy::M_process_idle_behavior()
             M_get_physics_module()->set_velocity({0.0f, 0.0f, 0.0f});
     }
 
-    return BT_Execution_Result::Success;
+    return LGL::BT_Execution_Result::Success;
 }
 
 

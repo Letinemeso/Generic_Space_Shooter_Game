@@ -16,9 +16,102 @@ Grid::~Grid()
 
 
 
-void Grid::M_on_cell_pressed(Cell &_cell)
+bool Grid::M_cabin_is_placed() const
+{
+    for(unsigned int i = 0; i < m_cells.size(); ++i)
+    {
+        const Cell& cell = m_cells[i];
+
+        if(cell.material_id == m_cabin_material_id)
+            return true;
+    }
+
+    return false;
+}
+
+
+void Grid::M_update_cell_connections(const Cell& _cell)
+{
+    unsigned int index = _cell.index_x * m_height + _cell.index_y;
+
+    auto update_neighbour = [this, index, &_cell](unsigned int _which)->void
+    {
+        const Cell& neighbour = m_cells[_which];
+        bool should_be_connected = _cell.material_id != m_no_material_id && neighbour.material_id != m_no_material_id;
+
+        if(should_be_connected)
+        {
+            if(m_graph.distance_if_linked(index, _which) == 0)
+                m_graph.link_nodes(index, _which, 1, true);
+        }
+        else
+        {
+            if(m_graph.distance_if_linked(index, _which) > 0)
+                m_graph.unlink_nodes(index, _which, true);
+        }
+    };
+
+    if(_cell.index_x > 0)
+        update_neighbour((_cell.index_x - 1) * m_height + _cell.index_y);
+    if(_cell.index_x < m_width - 1)
+        update_neighbour((_cell.index_x + 1) * m_height + _cell.index_y);
+    if(_cell.index_y > 0)
+        update_neighbour(_cell.index_x * m_height + _cell.index_y - 1);
+    if(_cell.index_y < m_height - 1)
+        update_neighbour(_cell.index_x * m_height + _cell.index_y + 1);
+}
+
+
+void Grid::M_reset_cell(Cell& _cell)
+{
+    _cell.material_id = m_no_material_id;
+    M_set_object_visual_data(_cell.object, m_block_controller->get_block(m_no_material_id));
+    _cell.rotation_angle = 0.0f;
+    _cell.object->set_rotation_angle(_cell.rotation_angle);
+
+    _cell.object->update(0.0f);
+}
+
+void Grid::M_reset_cells()
+{
+    for(unsigned int i = 0; i < m_cells.size(); ++i)
+    {
+        Cell& cell = m_cells[i];
+        M_reset_cell(cell);
+    }
+}
+
+void Grid::M_reset_not_connected_blocks()
+{
+    for(unsigned int i = 0; i < m_cells.size(); ++i)
+    {
+        Cell& cell = m_cells[i];
+
+        if(cell.material_id == m_no_material_id || cell.material_id == m_cabin_material_id)
+            continue;
+
+        m_block_connection_check.process(i, m_cabin_cell_index);
+        if(m_block_connection_check.path_result().size() > 0)
+            continue;
+
+        M_reset_cell(cell);
+        M_update_cell_connections(cell);
+    }
+}
+
+void Grid::M_on_cell_pressed(Cell& _cell)
 {
     if(!m_block_controller->block_exists(m_material_id))
+        return;
+
+    if(m_material_id == m_cabin_material_id)
+    {
+        M_reset_cells();
+        m_cabin_cell_index = _cell.index_x * m_height + _cell.index_y;
+    }
+    else if(!M_cabin_is_placed())
+        return;
+    else if(_cell.material_id == m_cabin_material_id)
         return;
 
     _cell.material_id = m_material_id;
@@ -27,6 +120,10 @@ void Grid::M_on_cell_pressed(Cell &_cell)
     _cell.object->set_rotation_angle(_cell.rotation_angle);
 
     _cell.object->update(0.0f);
+
+    M_update_cell_connections(_cell);
+
+    M_reset_not_connected_blocks();
 }
 
 void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
@@ -113,6 +210,18 @@ void Grid::construct(unsigned int _width, unsigned int _height)
 
     delete m_cell_preview;
     m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
+
+    m_cabin_cell_index = m_cells.size();
+
+    m_graph.clear();
+    m_graph.allocate_nodes(m_cells.size());
+    m_block_connection_check.set_graph(&m_graph);
+    m_block_connection_check.set_distance_calculation_func([this](unsigned int _first, unsigned int _second)
+    {
+        const Cell& first = m_cells[_first];
+        const Cell& second = m_cells[_second];
+        return abs((int)first.index_x - (int)second.index_x) + abs((int)first.index_y - (int)second.index_y);
+    });
 }
 
 void Grid::set_preview_visual_data(const Block& _block)

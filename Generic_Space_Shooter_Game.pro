@@ -6,6 +6,7 @@ CONFIG -= qt
 unix {
     LIBS += "../L_Utility/libL_Utility.a"
     LIBS += "../L_Variable/libL_Variable.a"
+    LIBS += "../L_Gamedev_Lib/libL_Gamedev_Lib.a"
     LIBS += "../LEti_Engine/libLEti_Engine.a"
 
     LIBS += "../../LEti_Engine/OpenGL/Linux/lib/libglfw3.a"
@@ -20,6 +21,7 @@ unix {
 win32 {
     LIBS += "../L_Utility/debug/libL_Utility.a"
     LIBS += "../L_Variable/debug/libL_Variable.a"
+    LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
     LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
 
     LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
@@ -39,16 +41,13 @@ INCLUDEPATH += "../LEti_Engine/OpenGL/"
 INCLUDEPATH += "include/"
 INCLUDEPATH += "../L_Utility/include/"
 INCLUDEPATH += "../L_Variable/include/"
+INCLUDEPATH += "../L_Gamedev_Lib/include/"
 INCLUDEPATH += "../LEti_Engine/include/"
 
 
 SOURCES += \
     Main.cpp \
     source/Background.cpp \
-    source/Behavior_Tree/Action.cpp \
-    source/Behavior_Tree/Node_Base.cpp \
-    source/Behavior_Tree/Selector.cpp \
-    source/Behavior_Tree/Sequence.cpp \
     source/Collision_Resolution__Entity.cpp \
     source/Edit_Mode/Block_Controller.cpp \
     source/Edit_Mode/Edit_Mode.cpp \
@@ -76,15 +75,8 @@ Resources/Font/font_yellow.png \
 Resources/Textures/textures.mdl \
 
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LEti_Engine/OpenGL/GLFW/lib/ -lglfw3
-
 HEADERS += \
-	include/Background.h \
-	include/Behavior_Tree/Action.h \
-	include/Behavior_Tree/Node_Base.h \
-	include/Behavior_Tree/Selector.h \
-	include/Behavior_Tree/Sequence.h \
+        include/Background.h \
 	include/Collision_Resolution__Entity.h \
 	include/Edit_Mode/Block_Controller.h \
 	include/Edit_Mode/Edit_Mode.h \

@@ -8,6 +8,9 @@
 #include <Object_System/Object_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 
+#include <Graph/Graph.h>
+#include <Graph/Pathfinder.h>
+
 #include <Edit_Mode/Block_Controller.h>
 
 
@@ -39,9 +42,15 @@ namespace GSSG
         LDS::Map<const LEti::Object_2D*, Cell*> m_cells_map;
         LEti::Object_2D* m_cell_preview = nullptr;
 
+        LGL::Graph m_graph;
+        LGL::Pathfinder m_block_connection_check;
+
     private:
         unsigned int m_no_material_id = 0;
+        unsigned int m_cabin_material_id = 1;
         unsigned int m_material_id = 0;
+
+        unsigned int m_cabin_cell_index = 0;
 
     public:
         Grid();
@@ -59,6 +68,13 @@ namespace GSSG
         inline unsigned int no_material_id() const { return m_no_material_id; }
 
     private:
+        bool M_cabin_is_placed() const;
+
+        void M_update_cell_connections(const Cell& _cell);
+
+        void M_reset_cell(Cell& _cell);
+        void M_reset_cells();
+        void M_reset_not_connected_blocks();
         void M_on_cell_pressed(Cell& _cell);
         void M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block);
 
