@@ -1,9 +1,9 @@
 #ifndef SPACE_SHIP_H
 #define SPACE_SHIP_H
 
-#include <Entity_Manager.h>
-#include <Entity.h>
-#include <Projectile.h>
+#include <Game_World/Entity_Manager.h>
+#include <Game_World/Entity.h>
+#include <Game_World/Projectile.h>
 
 
 namespace GSSG

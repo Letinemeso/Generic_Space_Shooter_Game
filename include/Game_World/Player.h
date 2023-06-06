@@ -7,11 +7,11 @@
 #include <Event_Controller.h>
 #include <Object_System/Text_Field.h>
 
-#include <Enemy_Generator.h>
-#include <Entity_Manager.h>
-#include <Entity.h>
-#include <Projectile.h>
-#include <Space_Ship.h>
+#include <Game_World/Enemy_Generator.h>
+#include <Game_World/Entity_Manager.h>
+#include <Game_World/Entity.h>
+#include <Game_World/Projectile.h>
+#include <Game_World/Space_Ship.h>
 
 
 namespace GSSG

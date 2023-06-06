@@ -7,7 +7,7 @@
 
 #include <Variable_Base.h>
 
-#include <Player.h>
+#include <Game_World/Player.h>
 
 namespace GSSG
 {

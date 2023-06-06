@@ -21,16 +21,16 @@
 #include <Object_System/Modules/Draw_Module__Animation.h>
 #include <Renderer.h>
 
-#include <Background.h>
-#include <Collision_Resolution__Entity.h>
-#include <Entity_Manager.h>
-#include <Enemy_Generator.h>
-#include <Player_Controller.h>
-#include <Player.h>
-#include <Enemy.h>
+#include <Game_World/Background.h>
+#include <Game_World/Collision_Resolution__Entity.h>
+#include <Game_World/Entity_Manager.h>
+#include <Game_World/Enemy_Generator.h>
+#include <Game_World/Player_Controller.h>
+#include <Game_World/Player.h>
+#include <Game_World/Enemy.h>
+#include <Game_World/Game_World.h>
 #include <GUI.h>
 #include <Effects_Controller.h>
-#include <Game_World.h>
 #include <Edit_Mode/Edit_Mode.h>
 #include <Edit_Mode/Grid.h>
 

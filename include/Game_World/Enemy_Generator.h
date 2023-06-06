@@ -4,8 +4,8 @@
 #include <Math_Stuff.h>
 #include <Stuff/Timer.h>
 
-#include <Entity_Manager.h>
-#include <Enemy.h>
+#include <Game_World/Entity_Manager.h>
+#include <Game_World/Enemy.h>
 #include <Effects_Controller.h>
 
 

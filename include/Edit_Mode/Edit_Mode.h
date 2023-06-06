@@ -10,8 +10,8 @@
 #include <Game_Logic.h>
 #include <Edit_Mode/Block_Controller.h>
 #include <Edit_Mode/Grid.h>
-#include <Player_Controller.h>
-#include <Player.h>
+#include <Game_World/Player_Controller.h>
+#include <Game_World/Player.h>
 
 namespace GSSG
 {

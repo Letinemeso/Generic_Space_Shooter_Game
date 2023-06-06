@@ -1,6 +1,6 @@
-#include <Player.h>
+#include <Game_World/Player.h>
 
-#include <Player_Controller.h>
+#include <Game_World/Player_Controller.h>
 
 using namespace GSSG;
 

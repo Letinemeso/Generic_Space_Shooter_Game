@@ -1,4 +1,4 @@
-#include <Space_Ship.h>
+#include <Game_World/Space_Ship.h>
 
 using namespace GSSG;
 

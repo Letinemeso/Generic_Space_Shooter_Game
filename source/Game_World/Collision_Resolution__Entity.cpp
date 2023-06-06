@@ -1,4 +1,4 @@
-#include <Collision_Resolution__Entity.h>
+#include <Game_World/Collision_Resolution__Entity.h>
 
 using namespace GSSG;
 

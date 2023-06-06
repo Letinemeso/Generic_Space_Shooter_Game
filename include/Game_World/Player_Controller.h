@@ -3,8 +3,8 @@
 
 #include <Object_System/Text_Field.h>
 
-#include <Player.h>
-#include <Entity_Manager.h>
+#include <Game_World/Player.h>
+#include <Game_World/Entity_Manager.h>
 
 
 namespace GSSG

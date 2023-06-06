@@ -7,16 +7,16 @@
 #include <Physics/SAT_Narrowest_CD.h>
 #include <Physics/Collision_Resolver.h>
 
-#include <Collision_Resolution__Entity.h>
+#include <Game_World/Collision_Resolution__Entity.h>
 #include <Game_Logic.h>
-#include <Entity_Manager.h>
+#include <Game_World/Entity_Manager.h>
 #include <Effects_Controller.h>
-#include <Player_Controller.h>
+#include <Game_World/Player_Controller.h>
 #include <GUI.h>
-#include <Background.h>
-#include <Player.h>
-#include <Enemy.h>
-#include <Projectile.h>
+#include <Game_World/Background.h>
+#include <Game_World/Player.h>
+#include <Game_World/Enemy.h>
+#include <Game_World/Projectile.h>
 
 
 namespace GSSG

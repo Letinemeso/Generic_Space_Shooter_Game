@@ -1,6 +1,6 @@
-#include <Projectile.h>
+#include <Game_World/Projectile.h>
 
-#include <Player.h>
+#include <Game_World/Player.h>
 
 using namespace GSSG;
 

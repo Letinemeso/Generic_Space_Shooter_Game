@@ -6,7 +6,7 @@
 #include <Behavior_Tree/Selector.h>
 #include <Behavior_Tree/Sequence.h>
 #include <Behavior_Tree/Action.h>
-#include <Space_Ship.h>
+#include <Game_World/Space_Ship.h>
 
 
 namespace GSSG

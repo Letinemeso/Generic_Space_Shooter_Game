@@ -6,7 +6,7 @@
 #include <Renderer.h>
 #include <Physics/Collision_Detector_2D.h>
 
-#include <Entity.h>
+#include <Game_World/Entity.h>
 
 
 namespace GSSG
