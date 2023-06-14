@@ -47,11 +47,26 @@ INCLUDEPATH += "../LEti_Engine/include/"
 
 DISTFILES += \
 Resources/Models/arrow_quad.mdl \
+	Resources/Models/blocks.mdl \
+	Resources/Models/explosion.mdl \
+	Resources/Models/grid_cell.mdl \
+	Resources/Models/projectile.mdl \
     Resources/Models/text_field_new.mdl \
 Resources/Models/triangle.mdl \
 Resources/Shaders/fragment_shader.shader \
 Resources/Shaders/vertex_shader.shader \
 Resources/Font/font_yellow.png \
+	Resources/Textures/editing_mode_textures/_edit_mode_atlas.png \
+	Resources/Textures/editing_mode_textures/edit_mode_atlas.png \
+	Resources/Textures/editing_mode_textures/grid_11x11.png \
+	Resources/Textures/editing_mode_textures/grid_cell.png \
+	Resources/Textures/gameplay_textures/arrow.png \
+	Resources/Textures/gameplay_textures/background.png \
+	Resources/Textures/gameplay_textures/explosion_animation.png \
+	Resources/Textures/gameplay_textures/projectile_animation.png \
+	Resources/Textures/gameplay_textures/triangle.png \
+	Resources/Textures/gameplay_textures/white.png \
+	Resources/Textures/gameplay_textures/yellow.png \
 Resources/Textures/textures.mdl \
 
 HEADERS += \

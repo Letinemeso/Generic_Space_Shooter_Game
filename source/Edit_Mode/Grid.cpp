@@ -142,7 +142,7 @@ void Grid::set_position(const glm::vec3 &_position)
     L_ASSERT(m_cells.size() > 0);
 
     glm::vec3 cell_size = m_cell_stub->scale;
-    glm::vec3 total_size_halved(cell_size.x * m_width * 0.5f, cell_size.y * m_height * 0.5f, 0.0f);
+    glm::vec3 total_size_halved = get_size() * 0.5f;
     for(unsigned int x=0; x<m_width; ++x)
     {
         float horizontal_stride = cell_size.x * (float)x;
@@ -163,6 +163,7 @@ void Grid::set_position(const glm::vec3 &_position)
     total_size_stride.y *= -1.0f;
     glm::vec3 cell_size_stride = cell_size;
     cell_size_stride.x += cell_size.x;
+    cell_size_stride.x = 0.0f;
     cell_size_stride.y *= -1.0f;
     cell_size_stride.z = 0.0f;
 
@@ -235,6 +236,20 @@ const Grid::Cell& Grid::get_cell(unsigned int _x, unsigned int _y) const
 {
     unsigned int index = _x * m_height + _y;
     return m_cells[index];
+}
+
+
+glm::vec3 Grid::get_cell_size() const
+{
+    return m_cell_preview->get_scale();
+}
+
+glm::vec3 Grid::get_size() const
+{
+    glm::vec3 size = m_cell_preview->get_scale();
+    size.x *= (float)m_width;
+    size.y *= (float)m_height;
+    return size;
 }
 
 

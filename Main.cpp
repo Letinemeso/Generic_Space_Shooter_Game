@@ -77,8 +77,6 @@ int main()
                                             var = true;
                                             else if(_values_as_string[0] == "false" || _values_as_string[0] == "-" || _values_as_string[0] == "0")
                                             var = false;
-
-                                            //											*((bool*&)_variable_vptr) = _values_as_string[0] == "true" ? true : false;
                                         }
                                     });
     LV::Type_Manager::register_type("bool*", {
@@ -244,6 +242,9 @@ int main()
 
     //    glEnable(GL_DEPTH_TEST);
     //    glClearColor(0.0,0.0,0.0,0.0);
+
+    glEnable(GL_SCISSOR_TEST);
+//    glScissor(20, 20, 200, 200);
 
     LEti::Shader shader;
 
@@ -489,7 +490,6 @@ int main()
     delete player_respawn_timer_tf;
     delete player_eliminations_tf;
 
-//    delete game_logic;
     delete game_world;
     delete edit_mode;
 

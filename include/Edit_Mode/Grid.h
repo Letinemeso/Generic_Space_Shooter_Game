@@ -86,6 +86,9 @@ namespace GSSG
     public:
         const Cell& get_cell(unsigned int _x, unsigned int _y) const;
 
+        glm::vec3 get_cell_size() const;
+        glm::vec3 get_size() const;
+
     private:
         void M_apply_input();
 
