@@ -62,6 +62,27 @@ int main()
                                         },
                                         [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((int*)_variable_vptr) = std::stoi(_values_as_string[0]); }
                                     });
+    LV::Type_Manager::register_type("unsigned int*", {
+                                        [](const std::string& _val)
+                                        {
+                                            for(unsigned int i=0; i<_val.size(); ++i)
+                                            if(_val[i] < '0' || _val[i] > '9')
+                                            return false;
+                                            return true;
+                                        },
+                                        [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+                                        {
+                                            unsigned int** var_ptr_ptr = (unsigned int**)_variable_vptr;
+
+                                            if(*var_ptr_ptr == nullptr)
+                                                *var_ptr_ptr = new unsigned int[_values_as_string.size()];
+
+                                            unsigned int* var_ptr = *var_ptr_ptr;
+
+                                            for(unsigned int i=0; i<_values_as_string.size(); ++i)
+                                                var_ptr[i] = std::stoi(_values_as_string[i]);
+                                        }
+                                    });
     LV::Type_Manager::register_type("bool", {
                                         [](const std::string& _val)
                                         {

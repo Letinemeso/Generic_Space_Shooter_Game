@@ -13,6 +13,7 @@ ADD_FIELD(float*, texture_coords);
 ADD_FIELD(float*, phys_coords);
 ADD_FIELD(bool*, collision_permissions);
 ADD_FIELD(float*, masses);
+ADD_FIELD(bool*, connection_permissions);
 
 ADD_FIELD(unsigned int, size.coords);
 ADD_FIELD(unsigned int, size.colors);
@@ -33,11 +34,17 @@ void Block::M_on_values_assigned()
 
 Block::Block()
 {
-
+    connection_permissions = new bool[4];
+    for(unsigned int i=0; i<4; ++i)
+        connection_permissions[i] = false;
 }
 
 Block::Block(const Block& _other)
 {
+    connection_permissions = new bool[4];
+    for(unsigned int i=0; i<4; ++i)
+        connection_permissions[i] = false;
+
     id = _other.id;
 
     size = _other.size;
@@ -57,10 +64,15 @@ Block::Block(const Block& _other)
     M_copy_array(_other.phys_coords, phys_coords, 0, size.phys_coords);
     M_copy_array(_other.collision_permissions, collision_permissions, 0, size.collision_permissions);
     M_copy_array(_other.masses, masses, 0, size.masses);
+    M_copy_array(_other.connection_permissions, connection_permissions, 0, 4);
 }
 
 Block::Block(Block&& _other)
 {
+    connection_permissions = new bool[4];
+    for(unsigned int i=0; i<4; ++i)
+        connection_permissions[i] = false;
+
     id = _other.id;
     _other.id = 0;
 
@@ -76,6 +88,10 @@ Block::Block(Block&& _other)
     _other.collision_permissions = nullptr;
     masses = _other.masses;
     _other.masses = nullptr;
+
+    M_copy_array(_other.connection_permissions, connection_permissions, 0, 4);
+    for(unsigned int i=0; i<4; ++i)
+        _other.connection_permissions[i] = false;
 
     size = _other.size;
     _other.size.nullify();
@@ -103,6 +119,7 @@ void Block::operator=(const Block &_other)
     M_copy_array(_other.phys_coords, phys_coords, 0, size.phys_coords);
     M_copy_array(_other.collision_permissions, collision_permissions, 0, size.collision_permissions);
     M_copy_array(_other.masses, masses, 0, size.masses);
+    M_copy_array(_other.connection_permissions, connection_permissions, 0, 4);
 }
 
 
@@ -114,6 +131,7 @@ Block::~Block()
     delete[] phys_coords;
     delete[] collision_permissions;
     delete[] masses;
+    delete[] connection_permissions;
 }
 
 

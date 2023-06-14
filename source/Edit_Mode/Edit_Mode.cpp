@@ -24,13 +24,13 @@ void Edit_Mode::M_reconstruct_player_stub()
     {
         for(unsigned int y=0; y<m_grid->height(); ++y)
         {
-            unsigned int material = m_grid->get_cell(x, y).material_id;
+            const Block& material = *m_grid->get_cell(x, y).material;
 
-            if(material == m_grid->no_material_id())
+            if(material.get_id() == m_grid->no_material_id())
                 continue;
 
             ++occupied_cells;
-            arrays_sizes += m_block_controller->get_block(material).get_size();
+            arrays_sizes += material.get_size();
         }
     }
 
@@ -48,18 +48,16 @@ void Edit_Mode::M_reconstruct_player_stub()
     float single_block_mass_scale = 1.0f / (float)(m_grid->width() * m_grid->height());
 
     Block::Size offsets;
-
     for(unsigned int x=0; x<m_grid->width(); ++x)
     {
         for(unsigned int y=0; y<m_grid->height(); ++y)
         {
             const Grid::Cell& cell = m_grid->get_cell(x, y);
-            unsigned int material = cell.material_id;
 
-            if(material == 0)
+            const Block& block = *cell.material;
+
+            if(block.get_id() == m_grid->no_material_id())
                 continue;
-
-            const Block& block = m_block_controller->get_block(material);
 
             glm::vec3 coords_stride(coords_scale * (float)x, coords_scale * (float)y, 0.0f);
 

@@ -70,6 +70,7 @@ namespace GSSG
         float* phys_coords = nullptr;
         bool* collision_permissions = nullptr;
         float* masses = nullptr;
+        bool* connection_permissions = nullptr;
 
         Size size;
 
@@ -98,13 +99,14 @@ namespace GSSG
         void copy_collision_permissions(bool* _where, unsigned int _offset) const;
         void copy_masses(float* _where, unsigned int _offset, float _scale) const;
 
-        inline int get_id() const { return id; }
+        inline unsigned int get_id() const { return id; }
         inline const float* get_coords() const { return coords; }
         inline const float* get_colors() const { return colors; }
         inline const float* get_texture_coords() const { return texture_coords; }
         inline const float* get_phys_coords() const { return phys_coords; }
         inline const bool* get_collision_permissions() const { return collision_permissions; }
         inline const float* get_masses() const { return masses; }
+        inline const bool* get_connection_permissions() const { return connection_permissions; }
 
         inline const Size& get_size() const { return size; }
 

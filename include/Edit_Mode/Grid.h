@@ -24,7 +24,8 @@ namespace GSSG
         {
             LEti::Object_2D* object = nullptr;
             unsigned int index_x = 0, index_y = 0;
-            unsigned int material_id = 0;
+//            unsigned int material_id = 0;
+            const Block* material = nullptr;
             float rotation_angle = 0.0f;
         };
 
@@ -46,9 +47,9 @@ namespace GSSG
         LGL::Pathfinder m_block_connection_check;
 
     private:
-        unsigned int m_no_material_id = 0;
-        unsigned int m_cabin_material_id = 1;
-        unsigned int m_material_id = 0;
+        const Block* m_no_material = nullptr;
+        const Block* m_cabin_material = nullptr;
+        const Block* m_material = nullptr;
 
         unsigned int m_cabin_cell_index = 0;
 
@@ -60,15 +61,21 @@ namespace GSSG
         inline void set_collision_detector(LEti::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
         inline void set_renderer(const LEti::Renderer* _ptr) { m_renderer = _ptr; }
         inline void set_cell_stub(const LEti::Object_2D_Stub* _stub) { m_cell_stub = _stub; }
-        inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material_id = m_block_controller->get_block_ids()[0]; m_no_material_id = m_material_id; }
+        inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material = &m_block_controller->get_block(0); m_no_material = m_material; m_cabin_material = &m_block_controller->get_block(1); }
 
     public:
         inline unsigned int width() const { return m_width; }
         inline unsigned int height() const { return m_height; }
-        inline unsigned int no_material_id() const { return m_no_material_id; }
+        inline unsigned int no_material_id() const { return m_no_material->get_id(); }
 
     private:
+        const Cell& M_get_cell_with_coordinates(unsigned int x, unsigned int y) const;
+        Cell& M_get_cell_with_coordinates(unsigned int x, unsigned int y);
+
         bool M_cabin_is_placed() const;
+
+        unsigned int M_get_connection_permission_index(unsigned int _expected_index, float _rotation_angle) const;
+        bool M_block_can_be_placed(const Cell& _cell) const;
 
         void M_update_cell_connections(const Cell& _cell);
 
