@@ -48,7 +48,6 @@ namespace GSSG
 
     private:
         const Block* m_no_material = nullptr;
-        const Block* m_cabin_material = nullptr;
         const Block* m_material = nullptr;
 
         unsigned int m_cabin_cell_index = 0;
@@ -61,7 +60,7 @@ namespace GSSG
         inline void set_collision_detector(LEti::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
         inline void set_renderer(const LEti::Renderer* _ptr) { m_renderer = _ptr; }
         inline void set_cell_stub(const LEti::Object_2D_Stub* _stub) { m_cell_stub = _stub; }
-        inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material = &m_block_controller->get_block(0); m_no_material = m_material; m_cabin_material = &m_block_controller->get_block(1); }
+        inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material = &m_block_controller->get_block(0); m_no_material = m_material; }
 
     public:
         inline unsigned int width() const { return m_width; }

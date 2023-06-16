@@ -209,10 +209,34 @@ void Block::copy_masses(float* _where, unsigned int _offset, float _scale) const
 
 
 
+//  Cabin
+
+INIT_FIELDS(GSSG::Cabin, GSSG::Block)
+
+FIELDS_END
+
+
+
 //  Block_Controller
+
+
+Block_Controller::Block_Controller()
+{
+    m_block_allocators.insert("Block", [](){ return new Block(); });
+    m_block_allocators.insert("Cabin", [](){ return new Cabin(); });
+}
+
+Block_Controller::~Block_Controller()
+{
+    clear();
+}
+
 
 void Block_Controller::clear()
 {
+    for(LDS::Map<unsigned int, Block*>::Iterator it = m_blocks_map.iterator(); !it.end_reached(); ++it)
+        delete *it;
+
     m_blocks_map.clear();
 }
 
@@ -225,10 +249,15 @@ void Block_Controller::init(const LV::MDL_Variable_Stub &_blocks)
 
     for(auto it = _blocks.childs.iterator(); !it.end_reached(); ++it)
     {
-        Block block;
-        block.assign_values(*it);
-        unsigned int id = block.get_id();
-        m_blocks_map.insert(id, (Block&&)block);
+        const std::string& type = (*it->fields.find("type"))[0];
+
+        LDS::Map<std::string, LST::Function<Block*()>>::Iterator allocator_it = m_block_allocators.find(type);
+        L_ASSERT(allocator_it.is_ok());
+
+        Block* block = (*allocator_it)();
+        block->assign_values(*it);
+        unsigned int id = block->get_id();
+        m_blocks_map.insert(id, block);
         ids.push(id);
     }
 
@@ -248,7 +277,7 @@ const Block& Block_Controller::get_block(unsigned int _id) const
 {
     auto it = m_blocks_map.find(_id);
     L_ASSERT(it.is_ok());
-    return *it;
+    return *(*it);
 }
 
 const LDS::Vector<unsigned int>& Block_Controller::get_block_ids() const

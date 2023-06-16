@@ -34,7 +34,7 @@ bool Grid::M_cabin_is_placed() const
     {
         const Cell& cell = m_cells[i];
 
-        if(cell.material == m_cabin_material)
+        if(LV::cast_variable<Cabin>(cell.material) != nullptr)
             return true;
     }
 
@@ -59,7 +59,7 @@ unsigned int Grid::M_get_connection_permission_index(unsigned int _expected_inde
 
 bool Grid::M_block_can_be_placed(const Cell& _cell) const
 {
-    if(m_material == m_no_material || m_material == m_cabin_material)
+    if(m_material == m_no_material || (LV::cast_variable<Cabin>(m_material) != nullptr) )
         return true;
 
     const Block& block_data = *m_material;
@@ -178,7 +178,7 @@ void Grid::M_reset_not_connected_blocks()
     {
         Cell& cell = m_cells[i];
 
-        if(cell.material == m_no_material || cell.material == m_cabin_material)
+        if(cell.material == m_no_material || i == m_cabin_cell_index)
             continue;
 
         m_block_connection_check.process(i, m_cabin_cell_index);
@@ -192,14 +192,14 @@ void Grid::M_reset_not_connected_blocks()
 
 void Grid::M_on_cell_pressed(Cell& _cell)
 {
-    if(m_material == m_cabin_material)
+    if(LV::cast_variable<Cabin>(m_material) != nullptr)
     {
         M_reset_cells();
         m_cabin_cell_index = _cell.index_x * m_height + _cell.index_y;
     }
     else if(!M_cabin_is_placed())
         return;
-    else if(_cell.material == m_cabin_material)
+    else if(LV::cast_variable<Cabin>(_cell.material) != nullptr)
         return;
 
     if(!M_block_can_be_placed(_cell))

@@ -126,7 +126,7 @@ int main()
                                         }
                                     });
     LV::Type_Manager::register_type("std::string", {
-                                        [](const std::string& _val) { return true; },
+                                        [](const std::string& /*_val*/) { return true; },
                                         [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) {
                                             *((std::string*)_variable_vptr) = _values_as_string[0];
                                         }

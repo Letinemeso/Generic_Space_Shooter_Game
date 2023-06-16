@@ -12,7 +12,7 @@
 namespace GSSG
 {
 
-    class Block final : public LV::Variable_Base
+    class Block : public LV::Variable_Base
     {
     public:
         DECLARE_VARIABLE;
@@ -84,9 +84,9 @@ namespace GSSG
 
         void operator=(const Block& _other);
 
-        ~Block();
+        virtual ~Block();
 
-    private:
+    protected:
         template<typename T>
         static void M_copy_array(const T* _what, T* _where, unsigned int _offset, unsigned int _size)
             { for(unsigned int i = 0; i < _size; ++i) _where[i + _offset] = _what[i]; }
@@ -112,11 +112,29 @@ namespace GSSG
 
     };
 
-    class Block_Controller
+    class Cabin : public Block
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    private:
+
+
+    public:
+
+
+    };
+
+    class Block_Controller final
     {
     private:
-        LDS::Map<unsigned int, Block> m_blocks_map;
+        LDS::Map<std::string, LST::Function<Block*()>> m_block_allocators;
+        LDS::Map<unsigned int, Block*> m_blocks_map;
         LDS::Binary_Heap<unsigned int> m_ids_sorted;
+
+    public:
+        Block_Controller();
+        ~Block_Controller();
 
     public:
         void clear();
