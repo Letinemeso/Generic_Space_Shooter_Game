@@ -28,130 +28,6 @@ Grid::Cell& Grid::M_get_cell_with_coordinates(unsigned int x, unsigned int y)
     return m_cells[index];
 }
 
-bool Grid::M_cabin_is_placed() const
-{
-    for(unsigned int i = 0; i < m_cells.size(); ++i)
-    {
-        const Cell& cell = m_cells[i];
-
-        if(LV::cast_variable<Cabin>(cell.material) != nullptr)
-            return true;
-    }
-
-    return false;
-}
-
-
-unsigned int Grid::M_get_connection_permission_index(unsigned int _expected_index, float _rotation_angle) const
-{
-    float full_quarters = fabs(_rotation_angle / LEti::Math::HALF_PI);
-    unsigned int quarters = LEti::Math::float_to_int(full_quarters) % 4;
-
-    if(_rotation_angle < 0.0f)
-        quarters = abs(((int)quarters - 4) % 4);
-
-    unsigned int result = _expected_index + 4 - quarters;
-    if(result >= 4)
-        result -= 4;
-
-    return result;
-}
-
-bool Grid::M_block_can_be_placed(const Cell& _cell) const
-{
-    if(m_material == m_no_material || (LV::cast_variable<Cabin>(m_material) != nullptr) )
-        return true;
-
-    const Block& block_data = *m_material;
-
-    for(unsigned int i=0; i<4; ++i)
-    {
-        unsigned int resolution_index = M_get_connection_permission_index(i, m_cell_preview->get_rotation_angle());
-
-        int x = (int)_cell.index_x;
-        int y = (int)_cell.index_y;
-
-        if(i == 0)
-            ++x;
-        else if(i == 1)
-            ++y;
-        else if(i == 2)
-            --x;
-        else if(i == 3)
-            --y;
-
-        if(x < 0 || x >= (int)m_width || y < 0 || y >= (int)m_height)
-            continue;
-
-        const Cell& nearby_cell = M_get_cell_with_coordinates(x, y);
-
-        if(nearby_cell.material == m_no_material)
-            continue;
-
-        const Block& nearby_block_data = *nearby_cell.material;
-
-        unsigned int expected_nearby_index = i + 2;
-        if(expected_nearby_index >= 4)
-            expected_nearby_index -= 4;
-        unsigned int nearby_index = M_get_connection_permission_index(expected_nearby_index, nearby_cell.object->get_rotation_angle());
-
-        if(block_data.get_connection_permissions()[resolution_index] && nearby_block_data.get_connection_permissions()[nearby_index])
-            return true;
-    }
-
-    return false;
-}
-
-
-void Grid::M_update_cell_connections(const Cell& _cell)
-{
-    unsigned int index = _cell.index_x * m_height + _cell.index_y;
-
-    auto update_neighbour = [this, index, &_cell](unsigned int _which)->void
-    {
-        const Cell& neighbour = m_cells[_which];
-        bool should_be_connected = _cell.material != m_no_material && neighbour.material != m_no_material;
-
-        unsigned int expected_connection_permission_index = 0;
-        if(_cell.index_x < neighbour.index_x)
-            expected_connection_permission_index = 0;
-        else if(_cell.index_x > neighbour.index_x)
-            expected_connection_permission_index = 2;
-        else if(_cell.index_y < neighbour.index_y)
-            expected_connection_permission_index = 1;
-        else if(_cell.index_y > neighbour.index_y)
-            expected_connection_permission_index = 3;
-
-        unsigned int connection_permission_index = M_get_connection_permission_index(expected_connection_permission_index, _cell.object->get_rotation_angle());
-        unsigned int neighbour_connection_permission_index = M_get_connection_permission_index((expected_connection_permission_index + 2) % 4, neighbour.object->get_rotation_angle());
-
-        if(_cell.material->get_connection_permissions()[connection_permission_index] && neighbour.material->get_connection_permissions()[neighbour_connection_permission_index])\
-            should_be_connected = true;
-        else
-            should_be_connected = false;
-
-        if(should_be_connected)
-        {
-            if(m_graph.distance_if_linked(index, _which) == 0)
-                m_graph.link_nodes(index, _which, 1, true);
-        }
-        else
-        {
-            if(m_graph.distance_if_linked(index, _which) > 0)
-                m_graph.unlink_nodes(index, _which, true);
-        }
-    };
-
-    if(_cell.index_x > 0)
-        update_neighbour((_cell.index_x - 1) * m_height + _cell.index_y);
-    if(_cell.index_x < m_width - 1)
-        update_neighbour((_cell.index_x + 1) * m_height + _cell.index_y);
-    if(_cell.index_y > 0)
-        update_neighbour(_cell.index_x * m_height + _cell.index_y - 1);
-    if(_cell.index_y < m_height - 1)
-        update_neighbour(_cell.index_x * m_height + _cell.index_y + 1);
-}
-
 
 void Grid::M_reset_cell(Cell& _cell)
 {
@@ -172,49 +48,46 @@ void Grid::M_reset_cells()
     }
 }
 
-void Grid::M_reset_not_connected_blocks()
+
+void Grid::M_update_cells()
 {
-    for(unsigned int i = 0; i < m_cells.size(); ++i)
+    for(unsigned int x = 0; x < m_structure.width(); ++x)
     {
-        Cell& cell = m_cells[i];
+        for(unsigned int y = 0; y < m_structure.height(); ++y)
+        {
+            Cell& cell = M_get_cell_with_coordinates(x, y);
+            const Space_Ship_Structure::Block_Data& block_data = m_structure.block(x, y);
 
-        if(cell.material == m_no_material || i == m_cabin_cell_index)
-            continue;
+            if(cell.material == block_data.material && LEti::Math::floats_are_equal(cell.object->get_rotation_angle(), block_data.angle))
+                continue;
+            if(cell.material == m_no_material && block_data.material == nullptr)
+                continue;
 
-        m_block_connection_check.process(i, m_cabin_cell_index);
-        if(m_block_connection_check.path_result().size() > 0)
-            continue;
+            if(block_data.material)
+                M_set_object_visual_data(cell.object, *block_data.material);
+            else
+                M_set_object_visual_data(cell.object, *m_no_material);
 
-        M_reset_cell(cell);
-        M_update_cell_connections(cell);
+            cell.material = block_data.material;
+            cell.object->set_rotation_angle(block_data.angle);
+
+            cell.object->update(0.0f);
+        }
     }
 }
 
+
 void Grid::M_on_cell_pressed(Cell& _cell)
 {
-    if(LV::cast_variable<Cabin>(m_material) != nullptr)
-    {
-        M_reset_cells();
-        m_cabin_cell_index = _cell.index_x * m_height + _cell.index_y;
-    }
-    else if(!M_cabin_is_placed())
-        return;
-    else if(LV::cast_variable<Cabin>(_cell.material) != nullptr)
+    Space_Ship_Structure::Block_Data block_data;
+    block_data.angle = m_cell_preview->get_rotation_angle();
+    if(m_material != m_no_material)
+        block_data.material = m_material;
+
+    if(!m_structure.place_block(_cell.index_x, _cell.index_y, block_data))
         return;
 
-    if(!M_block_can_be_placed(_cell))
-        return;
-
-    _cell.material = m_material;
-    M_set_object_visual_data(_cell.object, *m_material);
-    _cell.rotation_angle = m_cell_preview->get_rotation_angle();
-    _cell.object->set_rotation_angle(_cell.rotation_angle);
-
-    _cell.object->update(0.0f);
-
-    M_update_cell_connections(_cell);
-
-    M_reset_not_connected_blocks();
+    M_update_cells();
 }
 
 void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
@@ -303,17 +176,7 @@ void Grid::construct(unsigned int _width, unsigned int _height)
     delete m_cell_preview;
     m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
 
-    m_cabin_cell_index = m_cells.size();
-
-    m_graph.clear();
-    m_graph.allocate_nodes(m_cells.size());
-    m_block_connection_check.set_graph(&m_graph);
-    m_block_connection_check.set_distance_calculation_func([this](unsigned int _first, unsigned int _second)
-    {
-        const Cell& first = m_cells[_first];
-        const Cell& second = m_cells[_second];
-        return abs((int)first.index_x - (int)second.index_x) + abs((int)first.index_y - (int)second.index_y);
-    });
+    m_structure.resize(_width, _height);
 }
 
 void Grid::set_preview_visual_data(const Block& _block)

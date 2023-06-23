@@ -347,13 +347,13 @@ int main()
 
     GSSG::Player_Stub player_stub;
 //    player_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
-    player_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-    player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
-    player_stub.assign_values(reader.get_stub("arrow_quad"));
+//    player_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+//    player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
+//    player_stub.assign_values(reader.get_stub("arrow_quad"));
     player_stub.health = 5;
-    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses = new float[2];
-    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[0] = 5.0f;
-    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[1] = 5.0f;
+//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses = new float[2];
+//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[0] = 5.0f;
+//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[1] = 5.0f;
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
@@ -398,12 +398,13 @@ int main()
 
     player_stub.effects_controller = &effects_controller;
     player_stub.on_death_effect = &explosion_stub;
+    player_stub.picture = LEti::Picture_Manager::get_picture("edit_mode_atlas");
     enemy_entity_stub.effects_controller = &effects_controller;
     enemy_entity_stub.on_death_effect = &explosion_stub;
     projectile_stub.effects_controller = &effects_controller;
     projectile_stub.on_death_effect = &explosion_stub;
 
-    player_controller.update();
+//    player_controller.update();
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
@@ -423,7 +424,7 @@ int main()
     game_world->set_collision_resolver(&collision_resolver);
     game_world->set_renderer(&renderer);
 
-    GSSG::Game_Logic* game_logic = game_world;
+//    GSSG::Game_Logic* game_logic = game_world;
 
 
 
@@ -443,12 +444,14 @@ int main()
     grid_collision_detector.set_narrowest_phase(new LEti::SAT_Narrowest_CD);
     grid_collision_detector.register_point(&cursor_position);
 
+    camera.set_position({0.0f, 0.0f, 0.0f});
     GSSG::Grid grid;
     grid.set_renderer(&renderer);
     grid.set_cell_stub(&em_cell_stub);
     grid.set_collision_detector(&grid_collision_detector);
     grid.set_block_controller(&block_controller);
     grid.construct(7, 7);
+    grid.set_position({0.0f, 0.0f, 0.0f});
 
 
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
@@ -457,6 +460,8 @@ int main()
     edit_mode->set_player_stub(&player_stub);
     edit_mode->set_grid(&grid);
     edit_mode->set_block_controller(&block_controller);
+
+    GSSG::Game_Logic* game_logic = edit_mode;
 
     //  ~game logic setup
 

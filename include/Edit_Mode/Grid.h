@@ -8,9 +8,6 @@
 #include <Object_System/Object_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 
-#include <Graph/Graph.h>
-#include <Graph/Pathfinder.h>
-
 #include <Edit_Mode/Block_Controller.h>
 
 
@@ -24,7 +21,6 @@ namespace GSSG
         {
             LEti::Object_2D* object = nullptr;
             unsigned int index_x = 0, index_y = 0;
-//            unsigned int material_id = 0;
             const Block* material = nullptr;
             float rotation_angle = 0.0f;
         };
@@ -38,19 +34,16 @@ namespace GSSG
         const Block_Controller* m_block_controller = nullptr;
 
     private:
+        Space_Ship_Structure m_structure;
+
         unsigned int m_width = 0, m_height = 0;
         LDS::Vector<Cell> m_cells;
         LDS::Map<const LEti::Object_2D*, Cell*> m_cells_map;
         LEti::Object_2D* m_cell_preview = nullptr;
 
-        LGL::Graph m_graph;
-        LGL::Pathfinder m_block_connection_check;
-
     private:
         const Block* m_no_material = nullptr;
         const Block* m_material = nullptr;
-
-        unsigned int m_cabin_cell_index = 0;
 
     public:
         Grid();
@@ -66,21 +59,17 @@ namespace GSSG
         inline unsigned int width() const { return m_width; }
         inline unsigned int height() const { return m_height; }
         inline unsigned int no_material_id() const { return m_no_material->get_id(); }
+        inline const Space_Ship_Structure& structure() const { return m_structure; }
 
     private:
         const Cell& M_get_cell_with_coordinates(unsigned int x, unsigned int y) const;
         Cell& M_get_cell_with_coordinates(unsigned int x, unsigned int y);
 
-        bool M_cabin_is_placed() const;
-
-        unsigned int M_get_connection_permission_index(unsigned int _expected_index, float _rotation_angle) const;
-        bool M_block_can_be_placed(const Cell& _cell) const;
-
-        void M_update_cell_connections(const Cell& _cell);
-
         void M_reset_cell(Cell& _cell);
         void M_reset_cells();
-        void M_reset_not_connected_blocks();
+
+        void M_update_cells();
+
         void M_on_cell_pressed(Cell& _cell);
         void M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block);
 

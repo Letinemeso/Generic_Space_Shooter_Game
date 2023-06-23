@@ -1,14 +1,38 @@
 #include <Game_World/Player.h>
 
 #include <Game_World/Player_Controller.h>
+#include <Edit_Mode/Block_Controller.h>
 
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Player, GSSG::Space_Ship)
+INIT_FIELDS(GSSG::Player_Stub, LEti::Builder_Stub)
 FIELDS_END
 
-INIT_FIELDS(GSSG::Player_Stub, GSSG::Entity_Stub)
+
+
+void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
+{
+    Player* product = (Player*)_product;
+
+    product->set_draw_module(new LEti::Default_Draw_Module_2D);
+    product->set_physics_module(new LEti::Physics_Module__Rigid_Body_2D);
+
+    product->set_structure(structure);
+
+    product->set_health(health);
+
+    product->inject_effects_controller(effects_controller);
+    product->set_on_death_effect(on_death_effect);
+
+    product->draw_module()->set_texture(picture);
+
+    product->reconstruct();
+}
+
+
+
+INIT_FIELDS(GSSG::Player, GSSG::Space_Ship)
 FIELDS_END
 
 
@@ -35,6 +59,98 @@ void Player::inject_eliminations_amount_caption(LEti::Text_Field *_eliminations_
 {
     m_eliminations_amount_tf = _eliminations_amount_tf;
     m_eliminations_amount_tf->set_text("Eliminations " + std::to_string(m_eliminations_amount));
+}
+
+
+
+void Player::reconstruct()
+{
+    Block::Size arrays_sizes;
+
+    unsigned int occupied_cells = 0;
+    for(unsigned int x=0; x<m_structure.width(); ++x)
+    {
+        for(unsigned int y=0; y<m_structure.height(); ++y)
+        {
+            const Block* material = m_structure.block(x, y).material;
+
+            if(!material)
+                continue;
+
+            ++occupied_cells;
+            arrays_sizes += material->get_size();
+        }
+    }
+
+    if(occupied_cells == 0)
+        return;
+
+    float* coords = new float[arrays_sizes.coords];
+    float* colors = new float[arrays_sizes.colors];
+    float* t_coords = new float[arrays_sizes.texture_coords];
+    float* phys_coords = new float[arrays_sizes.phys_coords];
+    bool* collision_permissions = new bool[arrays_sizes.collision_permissions];
+    float* masses = new float[arrays_sizes.masses];
+
+    float coords_scale = 1.0f / (float)(m_structure.width() > m_structure.height() ? m_structure.width() : m_structure.height());
+    float single_block_mass_scale = 1.0f / (float)(m_structure.width() * m_structure.height());
+
+    Block::Size offsets;
+    for(unsigned int x=0; x<m_structure.width(); ++x)
+    {
+        for(unsigned int y=0; y<m_structure.height(); ++y)
+        {
+            const Space_Ship_Structure::Block_Data& block_data = m_structure.block(x, y);
+            const Block* material = block_data.material;
+
+            if(!material)
+                continue;
+
+            glm::vec3 coords_stride(coords_scale * (float)x, coords_scale * (float)y, 0.0f);
+
+            material->copy_coords(coords, offsets.coords, coords_stride, block_data.angle, coords_scale);
+            material->copy_colors(colors, offsets.colors);
+            material->copy_texture_coords(t_coords, offsets.texture_coords);
+            material->copy_phys_coords(phys_coords, offsets.phys_coords, coords_stride, block_data.angle, coords_scale);
+            material->copy_collision_permissions(collision_permissions, offsets.collision_permissions);
+            material->copy_masses(masses, offsets.masses, single_block_mass_scale);
+
+            offsets += material->get_size();
+        }
+    }
+
+    LEti::Default_Draw_Module_2D* dm = (LEti::Default_Draw_Module_2D*)draw_module();
+    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)physics_module();
+
+    dm->init_vertices(coords, arrays_sizes.coords);
+    dm->init_colors(colors, arrays_sizes.colors);
+    dm->init_texture(dm->texture().get_picture(), t_coords, arrays_sizes.texture_coords);
+
+//    for(unsigned int i=0; i<arrays_sizes.coords; ++i)
+//        phys_coords[i] = coords[i];
+
+    pm->init_physical_model(phys_coords, arrays_sizes.phys_coords, collision_permissions);
+    pm->set_masses(masses);
+
+    delete[] coords;
+    delete[] colors;
+    delete[] t_coords;
+    delete[] phys_coords;
+    delete[] collision_permissions;
+    delete[] masses;
+
+    set_scale({100.0f, 100.0f, 1.0f});
+    set_pos({0.0f, 0.0f, 0.0f});
+    set_rotation_axis({0.0f, 0.0f, 1.0f});
+
+    ((LEti::Physics_Module__Rigid_Body_2D*)physics_module())->align_to_center_of_mass(draw_module());
+    set_on_update_func([this](float _ratio)
+    {
+        LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)physics_module();
+
+        move(pm->velocity() * LEti::Event_Controller::get_dt() * _ratio);
+        rotate(pm->angular_velocity() * LEti::Event_Controller::get_dt() * _ratio);
+    });
 }
 
 

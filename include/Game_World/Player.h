@@ -25,6 +25,9 @@ namespace GSSG
         DECLARE_VARIABLE;
 
     private:
+        Space_Ship_Structure m_structure;
+
+    private:
         LEti::Camera_2D* m_camera = nullptr;
         Player_Controller* m_player_controller = nullptr;
 
@@ -47,6 +50,14 @@ namespace GSSG
         void inject_eliminations_amount_caption(LEti::Text_Field* _eliminations_amount_tf);
 
     public:
+        inline void set_structure(const Space_Ship_Structure& _structure) { m_structure = _structure; }
+        inline void set_structure(Space_Ship_Structure&& _structure) { m_structure = (Space_Ship_Structure&&)_structure; }
+
+        inline const Space_Ship_Structure& structure() const { return m_structure; }
+
+        void reconstruct();
+
+    public:
         void temp_apply_simple_input();
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
@@ -62,13 +73,35 @@ namespace GSSG
 
     };
 
-    class Player_Stub : public Entity_Stub
+//    class Player_Stub : public Entity_Stub
+//    {
+//    public:
+//        DECLARE_VARIABLE;
+
+//    public:
+//        Space_Ship_Structure structure;
+
+//    protected:
+//        LV::Variable_Base* M_construct_product() const override { return new Player; }
+//        void M_init_constructed_product(LV::Variable_Base *_product) const override;
+
+//    };
+
+    class Player_Stub : public LEti::Builder_Stub
     {
     public:
         DECLARE_VARIABLE;
 
+    public:
+        Space_Ship_Structure structure;
+        unsigned int health = 1;
+        Effects_Controller* effects_controller = nullptr;
+        const LEti::Object_2D_Stub* on_death_effect = nullptr;
+        const LEti::Picture* picture = nullptr;
+
     protected:
         LV::Variable_Base* M_construct_product() const override { return new Player; }
+        void M_init_constructed_product(LV::Variable_Base *_product) const override;
 
     };
 
