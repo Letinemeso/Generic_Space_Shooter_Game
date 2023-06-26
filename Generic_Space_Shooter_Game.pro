@@ -83,11 +83,8 @@ HEADERS += \
 	include/Game_World/Entity.h \
 	include/Game_World/Entity_Manager.h \
 	include/Game_World/Game_World.h \
-	include/Game_World/Physical_Model__Space_Ship.h \
-	include/Game_World/Physics_Module__Space_Ship.h \
 	include/Game_World/Player.h \
 	include/Game_World/Player_Controller.h \
-	include/Game_World/Polygon__Space_Ship.h \
 	include/Game_World/Projectile.h \
 	include/Game_World/Space_Ship.h
 
@@ -106,11 +103,8 @@ SOURCES += \
 	source/Game_World/Entity.cpp \
 	source/Game_World/Entity_Manager.cpp \
 	source/Game_World/Game_World.cpp \
-	source/Game_World/Physical_Model__Space_Ship.cpp \
-	source/Game_World/Physics_Module__Space_Ship.cpp \
 	source/Game_World/Player.cpp \
 	source/Game_World/Player_Controller.cpp \
-	source/Game_World/Polygon__Space_Ship.cpp \
 	source/Game_World/Projectile.cpp \
 	source/Game_World/Space_Ship.cpp
 

@@ -17,7 +17,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     LEti::Default_Draw_Module_2D* dm = new LEti::Default_Draw_Module_2D;
     dm->assign_values({});
-    Physics_Module__Space_Ship* pm = new Physics_Module__Space_Ship;
+    LEti::Physics_Module__Rigid_Body_2D* pm = new LEti::Physics_Module__Rigid_Body_2D;
     pm->assign_values({});
 
     product->set_draw_module(dm);
@@ -97,10 +97,6 @@ void Player::reconstruct()
     bool* collision_permissions = new bool[arrays_sizes.collision_permissions];
     float* masses = new float[arrays_sizes.masses];
 
-    unsigned int polygons_amount = arrays_sizes.masses; //  one mass value per polygon
-    unsigned int* block_indices_x = new unsigned int[polygons_amount];
-    unsigned int* block_indices_y = new unsigned int[polygons_amount];
-
     float coords_scale = 1.0f / (float)(m_structure.width() > m_structure.height() ? m_structure.width() : m_structure.height());
     float single_block_mass_scale = 1.0f / (float)(m_structure.width() * m_structure.height());
 
@@ -124,26 +120,22 @@ void Player::reconstruct()
             material->copy_collision_permissions(collision_permissions, offsets.collision_permissions);
             material->copy_masses(masses, offsets.masses, single_block_mass_scale);
 
-            for(unsigned int i = offsets.masses; i < offsets.masses + material->get_size().masses; ++i)
-            {
-                block_indices_x[i] = x;
-                block_indices_y[i] = y;
-            }
-
             offsets += material->get_size();
         }
     }
 
     LEti::Default_Draw_Module_2D* dm = (LEti::Default_Draw_Module_2D*)draw_module();
-    Physics_Module__Space_Ship* pm = (Physics_Module__Space_Ship*)physics_module();
+    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)physics_module();
 
     dm->init_vertices(coords, arrays_sizes.coords);
     dm->init_colors(colors, arrays_sizes.colors);
     dm->init_texture(dm->texture().get_picture(), t_coords, arrays_sizes.texture_coords);
 
+//    for(unsigned int i=0; i<arrays_sizes.coords; ++i)
+//        phys_coords[i] = coords[i];
+
     pm->init_physical_model(phys_coords, arrays_sizes.phys_coords, collision_permissions);
     pm->set_masses(masses);
-    pm->set_block_indices(block_indices_x, block_indices_y);
 
     delete[] coords;
     delete[] colors;
@@ -151,9 +143,6 @@ void Player::reconstruct()
     delete[] phys_coords;
     delete[] collision_permissions;
     delete[] masses;
-
-    delete[] block_indices_x;
-    delete[] block_indices_y;
 
     set_scale({100.0f, 100.0f, 1.0f});
     set_pos({0.0f, 0.0f, 0.0f});
