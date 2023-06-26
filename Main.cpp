@@ -485,7 +485,7 @@ int main()
 
         game_logic->update();
 
-        if(LEti::Event_Controller::key_was_released(GLFW_KEY_TAB))
+        if(LEti::Event_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
         {
             game_logic->on_deactivate();
 

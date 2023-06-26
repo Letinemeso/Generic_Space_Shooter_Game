@@ -36,6 +36,9 @@ namespace GSSG
         void on_activate() override;
         void on_deactivate() override;
 
+    public:
+        bool can_be_deactivated() const override;
+
     private:
         void M_reconstruct_player_stub();
 

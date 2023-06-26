@@ -54,6 +54,17 @@ void Edit_Mode::on_deactivate()
 
 
 
+bool Edit_Mode::can_be_deactivated() const
+{
+    for(unsigned int x = 0; x < m_grid->structure().width(); ++x)
+        for(unsigned int y = 0; y < m_grid->structure().height(); ++y)
+            if(m_grid->structure().block(x, y).material != nullptr)
+                return true;
+    return false;
+}
+
+
+
 void Edit_Mode::update()
 {
     m_cursor_pos = m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
