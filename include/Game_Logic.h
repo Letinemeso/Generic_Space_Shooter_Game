@@ -15,6 +15,10 @@ namespace GSSG
         virtual void on_deactivate();
 
     public:
+        virtual bool can_be_activated() const { return true; }
+        virtual bool can_be_deactivated() const { return true; }
+
+    public:
         virtual void update() = 0;
 
     };

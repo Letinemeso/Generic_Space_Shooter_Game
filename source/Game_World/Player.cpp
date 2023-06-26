@@ -15,8 +15,13 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 {
     Player* product = (Player*)_product;
 
-    product->set_draw_module(new LEti::Default_Draw_Module_2D);
-    product->set_physics_module(new LEti::Physics_Module__Rigid_Body_2D);
+    LEti::Default_Draw_Module_2D* dm = new LEti::Default_Draw_Module_2D;
+    dm->assign_values({});
+    LEti::Physics_Module__Rigid_Body_2D* pm = new LEti::Physics_Module__Rigid_Body_2D;
+    pm->assign_values({});
+
+    product->set_draw_module(dm);
+    product->set_physics_module(pm);
 
     product->set_structure(structure);
 
