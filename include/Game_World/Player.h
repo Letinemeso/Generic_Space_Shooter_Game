@@ -12,6 +12,7 @@
 #include <Game_World/Entity.h>
 #include <Game_World/Projectile.h>
 #include <Game_World/Space_Ship.h>
+#include <Game_World/Physics_Module__Space_Ship.h>
 
 
 namespace GSSG
