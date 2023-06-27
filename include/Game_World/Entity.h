@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include <Object_System/Rigid_Body_2D_Stub.h>
+#include <Physics/Intersection_Data.h>
 
 #include <Effects_Controller.h>
 
@@ -45,7 +46,7 @@ namespace GSSG
 
     public:
         virtual void apply_input() { }
-        virtual void on_collision(Entity* /*_with*/) { }
+        virtual void on_collision(const LEti::Intersection_Data& /*_id*/) { }
         virtual void on_other_entity_death(const Entity* _entity_to_delete);
         virtual void on_death();
 

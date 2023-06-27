@@ -34,7 +34,7 @@ Enemy::Enemy()
 //    root->add_child( new Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_process_idle_behavior();} )) );
 
 
-    root->add_child( new LGL::Action( LST::Function<LGL::BT_Execution_Result()>([this](){return M_shoot_at_enemy();} )));
+    root->add_child( new LGL::Action( LST::Function<LGL::BT_Execution_Result()>([this](){ return /*M_shoot_at_enemy();*/ LGL::BT_Execution_Result::Success; } )));
 }
 
 Enemy::~Enemy()

@@ -21,6 +21,9 @@ Space_Ship_Structure::Space_Ship_Structure(const Space_Ship_Structure& _other)
     m_cabin_x = _other.m_cabin_x;
     m_cabin_y = _other.m_cabin_y;
     m_cabin_graph_index = _other.m_cabin_graph_index;
+
+    m_graph = _other.m_graph;
+    m_block_connection_check.set_graph(&m_graph);
 }
 
 void Space_Ship_Structure::operator=(const Space_Ship_Structure& _other)
@@ -35,6 +38,9 @@ void Space_Ship_Structure::operator=(const Space_Ship_Structure& _other)
     m_cabin_x = _other.m_cabin_x;
     m_cabin_y = _other.m_cabin_y;
     m_cabin_graph_index = _other.m_cabin_graph_index;
+
+    m_graph = _other.m_graph;
+    m_block_connection_check.set_graph(&m_graph);
 }
 
 Space_Ship_Structure::Space_Ship_Structure(Space_Ship_Structure&& _other)
@@ -52,6 +58,9 @@ Space_Ship_Structure::Space_Ship_Structure(Space_Ship_Structure&& _other)
     m_cabin_graph_index = _other.m_cabin_graph_index;
 
     _other.M_set_cabin_index(0xFFFFFFFF, 0xFFFFFFFF);
+
+    m_graph = (LGL::Graph&&)_other.m_graph;
+    m_block_connection_check.set_graph(&m_graph);
 }
 
 void Space_Ship_Structure::operator=(Space_Ship_Structure&& _other)
@@ -71,6 +80,9 @@ void Space_Ship_Structure::operator=(Space_Ship_Structure&& _other)
     m_cabin_graph_index = _other.m_cabin_graph_index;
 
     _other.M_set_cabin_index(0xFFFFFFFF, 0xFFFFFFFF);
+
+    m_graph = (LGL::Graph&&)_other.m_graph;
+    m_block_connection_check.set_graph(&m_graph);
 }
 
 Space_Ship_Structure::~Space_Ship_Structure()
@@ -278,13 +290,13 @@ void Space_Ship_Structure::M_reset_not_connected_blocks()
 
 bool Space_Ship_Structure::block_can_be_placed(unsigned int _x, unsigned int _y, const Block_Data& _block) const
 {
-    if(_block.material == nullptr )
-        return true;
     if(LV::cast_variable<Cabin>(_block.material) != nullptr)
         return true;
-    if(m_cabin_graph_index == 0xFFFFFFFF)
-        return false;
     if(m_cabin_x == _x && m_cabin_y == _y)
+        return false;
+    if(_block.material == nullptr )
+        return true;
+    if(m_cabin_graph_index == 0xFFFFFFFF)
         return false;
 
     for(unsigned int i=0; i<4; ++i)

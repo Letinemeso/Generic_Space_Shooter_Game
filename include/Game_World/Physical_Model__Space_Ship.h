@@ -11,10 +11,6 @@ namespace GSSG
 
     class Physical_Model__Space_Ship : public LEti::Rigid_Body_Physical_Model_2D
     {
-    private:
-        unsigned int* m_block_indices_x = nullptr;
-        unsigned int* m_block_indices_y = nullptr;
-
     public:
         ~Physical_Model__Space_Ship();
 

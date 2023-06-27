@@ -26,7 +26,8 @@ namespace GSSG
         DECLARE_VARIABLE;
 
     private:
-        Space_Ship_Structure m_structure;
+        Space_Ship_Structure m_initial_structure;
+        Space_Ship_Structure m_current_structure;
 
     private:
         LEti::Camera_2D* m_camera = nullptr;
@@ -51,19 +52,20 @@ namespace GSSG
         void inject_eliminations_amount_caption(LEti::Text_Field* _eliminations_amount_tf);
 
     public:
-        inline void set_structure(const Space_Ship_Structure& _structure) { m_structure = _structure; }
-        inline void set_structure(Space_Ship_Structure&& _structure) { m_structure = (Space_Ship_Structure&&)_structure; }
+        inline void set_structure(const Space_Ship_Structure& _structure) { m_initial_structure = _structure; m_current_structure = _structure; }
+        inline void set_structure(Space_Ship_Structure&& _structure) { m_initial_structure = (Space_Ship_Structure&&)_structure; m_current_structure = m_initial_structure; }
 
-        inline const Space_Ship_Structure& structure() const { return m_structure; }
+        inline const Space_Ship_Structure& initial_structure() const { return m_initial_structure; }
+        inline const Space_Ship_Structure& current_structure() const { return m_current_structure; }
 
-        void reconstruct();
+        void reconstruct();     //  only reconstructs physical model (and other stuff)
 
     public:
         void temp_apply_simple_input();
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
         void on_other_entity_death(const Entity* _entity_to_delete) override;
-        void on_collision(Entity* _with) override;
+        void on_collision(const LEti::Intersection_Data& _id) override;
         void on_death() override;
 
     public:
@@ -73,20 +75,6 @@ namespace GSSG
         inline unsigned int eliminations_amount() const { return m_eliminations_amount; }
 
     };
-
-//    class Player_Stub : public Entity_Stub
-//    {
-//    public:
-//        DECLARE_VARIABLE;
-
-//    public:
-//        Space_Ship_Structure structure;
-
-//    protected:
-//        LV::Variable_Base* M_construct_product() const override { return new Player; }
-//        void M_init_constructed_product(LV::Variable_Base *_product) const override;
-
-//    };
 
     class Player_Stub : public LEti::Builder_Stub
     {

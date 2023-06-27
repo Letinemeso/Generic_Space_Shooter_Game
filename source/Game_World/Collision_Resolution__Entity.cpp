@@ -23,8 +23,8 @@ bool Collision_Resolution__Entity::resolve(const LEti::Intersection_Data &_id)
     if(!LEti::Collision_Resolution__Rigid_Body_2D::resolve(_id))
         return false;
 
-    maybe_entity_1->on_collision(maybe_entity_2);
-    maybe_entity_2->on_collision(maybe_entity_1);
+    maybe_entity_1->on_collision(_id);
+    maybe_entity_2->on_collision(_id);
 
     return true;
 }

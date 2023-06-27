@@ -48,11 +48,13 @@ void Projectile::update(float _ratio)
 
 
 
-void Projectile::on_collision(Entity* _with)
+void Projectile::on_collision(const LEti::Intersection_Data& _id)
 {
-    Entity::on_collision(_with);
+    Entity::on_collision(_id);
 
-    if(_with->health() > 0)
+    Entity* with = (Entity*)(_id.first == this ? _id.second : _id.first);
+
+    if(with->health() > 0)
         return;
 
     //  TODO: think of better way to inform player
@@ -61,7 +63,7 @@ void Projectile::on_collision(Entity* _with)
     if(!maybe_player)
         return;
 
-    if(!LV::cast_variable<Enemy>(_with))
+    if(!LV::cast_variable<Enemy>(with))
         return;
 
     maybe_player->set_eliminations_amount(maybe_player->eliminations_amount() + 1);

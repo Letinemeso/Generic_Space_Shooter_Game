@@ -33,6 +33,17 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->draw_module()->set_texture(picture);
 
     product->reconstruct();
+
+    product->set_scale({100.0f, 100.0f, 1.0f});
+    product->set_pos({0.0f, 0.0f, 0.0f});
+    product->set_rotation_axis({0.0f, 0.0f, 1.0f});
+    product->set_on_update_func([product](float _ratio)
+    {
+        LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)product->physics_module();
+
+        product->move(pm->velocity() * LEti::Event_Controller::get_dt() * _ratio);
+        product->rotate(pm->angular_velocity() * LEti::Event_Controller::get_dt() * _ratio);
+    });
 }
 
 
@@ -73,11 +84,11 @@ void Player::reconstruct()
     Block::Size arrays_sizes;
 
     unsigned int occupied_cells = 0;
-    for(unsigned int x=0; x<m_structure.width(); ++x)
+    for(unsigned int x=0; x<current_structure().width(); ++x)
     {
-        for(unsigned int y=0; y<m_structure.height(); ++y)
+        for(unsigned int y=0; y<current_structure().height(); ++y)
         {
-            const Block* material = m_structure.block(x, y).material;
+            const Block* material = current_structure().block(x, y).material;
 
             if(!material)
                 continue;
@@ -101,15 +112,15 @@ void Player::reconstruct()
     unsigned int* block_indices_x = new unsigned int[polygons_amount];
     unsigned int* block_indices_y = new unsigned int[polygons_amount];
 
-    float coords_scale = 1.0f / (float)(m_structure.width() > m_structure.height() ? m_structure.width() : m_structure.height());
-    float single_block_mass_scale = 1.0f / (float)(m_structure.width() * m_structure.height());
+    float coords_scale = 1.0f / (float)(current_structure().width() > current_structure().height() ? current_structure().width() : current_structure().height());
+    float single_block_mass_scale = 1.0f / (float)(current_structure().width() * current_structure().height());
 
     Block::Size offsets;
-    for(unsigned int x=0; x<m_structure.width(); ++x)
+    for(unsigned int x=0; x<current_structure().width(); ++x)
     {
-        for(unsigned int y=0; y<m_structure.height(); ++y)
+        for(unsigned int y=0; y<current_structure().height(); ++y)
         {
-            const Space_Ship_Structure::Block_Data& block_data = m_structure.block(x, y);
+            const Space_Ship_Structure::Block_Data& block_data = current_structure().block(x, y);
             const Block* material = block_data.material;
 
             if(!material)
@@ -141,9 +152,11 @@ void Player::reconstruct()
     dm->init_colors(colors, arrays_sizes.colors);
     dm->init_texture(dm->texture().get_picture(), t_coords, arrays_sizes.texture_coords);
 
-    pm->init_physical_model(phys_coords, arrays_sizes.phys_coords, collision_permissions);
+    pm->init_physical_model();
+    pm->setup_base_data(phys_coords, arrays_sizes.phys_coords, collision_permissions);
     pm->set_masses(masses);
     pm->set_block_indices(block_indices_x, block_indices_y);
+    pm->init_prev_state();
 
     delete[] coords;
     delete[] colors;
@@ -155,18 +168,7 @@ void Player::reconstruct()
     delete[] block_indices_x;
     delete[] block_indices_y;
 
-    set_scale({100.0f, 100.0f, 1.0f});
-    set_pos({0.0f, 0.0f, 0.0f});
-    set_rotation_axis({0.0f, 0.0f, 1.0f});
-
     ((LEti::Physics_Module__Rigid_Body_2D*)physics_module())->align_to_center_of_mass(draw_module());
-    set_on_update_func([this](float _ratio)
-    {
-        LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)physics_module();
-
-        move(pm->velocity() * LEti::Event_Controller::get_dt() * _ratio);
-        rotate(pm->angular_velocity() * LEti::Event_Controller::get_dt() * _ratio);
-    });
 }
 
 
@@ -210,8 +212,8 @@ void Player::temp_apply_simple_input()
 
 void Player::apply_input()
 {
-    temp_apply_simple_input();
-    return;
+//    temp_apply_simple_input();
+//    return;
 
     bool has_rotational_input = false;
 
@@ -289,14 +291,30 @@ void Player::on_other_entity_death(const Entity *_entity_to_delete)
     Space_Ship::on_other_entity_death(_entity_to_delete);
 }
 
-void Player::on_collision(Entity *_with)
+void Player::on_collision(const LEti::Intersection_Data& _id)
 {
-    Space_Ship::on_collision(_with);
+    Space_Ship::on_collision(_id);
+
+    set_health(999);
 
     if(health() > 0)
         m_player_hp_tf->set_text("HP " + std::to_string(health()));
     else
         m_player_hp_tf->set_text(" ");
+
+    unsigned int hit_polygon_index = (_id.first == this ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
+
+    Polygon__Space_Ship* hit_polygon = (Polygon__Space_Ship*)(physics_module()->get_physical_model()->get_polygon(hit_polygon_index));
+
+    unsigned int hit_index_x = hit_polygon->block_index_x();
+    unsigned int hit_index_y = hit_polygon->block_index_y();
+
+    m_current_structure.place_block(hit_index_x, hit_index_y, {0.0f, nullptr});
+
+    reconstruct();
+
+    update(0.0f);
+    update_previous_state();
 }
 
 void Player::on_death()
