@@ -20,6 +20,8 @@ ADD_FIELD(unsigned int, size.colors);
 ADD_FIELD(unsigned int, size.texture_coords);
 ADD_FIELD(unsigned int, size.phys_coords);
 
+ADD_FIELD(unsigned int, block_health);
+
 FIELDS_END
 
 

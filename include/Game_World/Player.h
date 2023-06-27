@@ -29,6 +29,8 @@ namespace GSSG
         Space_Ship_Structure m_initial_structure;
         Space_Ship_Structure m_current_structure;
 
+        bool m_cabin_is_broken = false;
+
     private:
         LEti::Camera_2D* m_camera = nullptr;
         Player_Controller* m_player_controller = nullptr;
@@ -60,6 +62,9 @@ namespace GSSG
 
         void reconstruct();     //  only reconstructs physical model (and other stuff)
 
+    private:
+        void M_process_hit_block(unsigned int _x, unsigned int _y);
+
     public:
         void temp_apply_simple_input();
         void apply_input() override;
@@ -67,6 +72,8 @@ namespace GSSG
         void on_other_entity_death(const Entity* _entity_to_delete) override;
         void on_collision(const LEti::Intersection_Data& _id) override;
         void on_death() override;
+
+        bool should_be_destroyed() const override;
 
     public:
         void set_eliminations_amount(unsigned int _amount);

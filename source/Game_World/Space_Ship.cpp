@@ -280,6 +280,7 @@ void Space_Ship_Structure::M_reset_not_connected_blocks()
 
             block_data.angle = 0.0f;
             block_data.material = nullptr;
+            block_data.health = 0;
 
             M_update_connections(x, y);
         }
@@ -347,6 +348,11 @@ bool Space_Ship_Structure::place_block(unsigned int _x, unsigned int _y, const B
     }
 
     m_blocks_data[_x][_y] = _block;
+
+    if(_block.material != nullptr)
+        m_blocks_data[_x][_y].health = _block.material->get_block_health();
+    else
+        m_blocks_data[_x][_y].health = 0;
 
     M_update_connections(_x, _y);
 

@@ -72,6 +72,8 @@ namespace GSSG
         float* masses = nullptr;
         bool* connection_permissions = nullptr;
 
+        unsigned int block_health = 0;
+
         Size size;
 
     protected:
@@ -107,6 +109,8 @@ namespace GSSG
         inline const bool* get_collision_permissions() const { return collision_permissions; }
         inline const float* get_masses() const { return masses; }
         inline const bool* get_connection_permissions() const { return connection_permissions; }
+
+        inline unsigned int get_block_health() const { return block_health; }
 
         inline const Size& get_size() const { return size; }
 

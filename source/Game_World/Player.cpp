@@ -173,6 +173,29 @@ void Player::reconstruct()
 
 
 
+void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
+{
+    m_current_structure.block(_x, _y).health -= 1;
+
+    if(m_current_structure.block(_x, _y).health > 0)
+        return;
+
+    if(_x == m_current_structure.cabin_x() && _y == m_current_structure.cabin_y())
+    {
+        m_cabin_is_broken = true;
+        return;
+    }
+
+    m_current_structure.place_block(_x, _y, {0.0f, 0, nullptr});
+
+    reconstruct();
+
+    update(0.0f);
+    update_previous_state();
+}
+
+
+
 void Player::temp_apply_simple_input()
 {
     glm::vec3 impulse = {0.0f, 0.0f, 0.0f};
@@ -309,12 +332,7 @@ void Player::on_collision(const LEti::Intersection_Data& _id)
     unsigned int hit_index_x = hit_polygon->block_index_x();
     unsigned int hit_index_y = hit_polygon->block_index_y();
 
-    m_current_structure.place_block(hit_index_x, hit_index_y, {0.0f, nullptr});
-
-    reconstruct();
-
-    update(0.0f);
-    update_previous_state();
+    M_process_hit_block(hit_index_x, hit_index_y);
 }
 
 void Player::on_death()
@@ -322,6 +340,12 @@ void Player::on_death()
     Space_Ship::on_death();
 
     m_player_controller->notify_about_player_death();
+}
+
+
+bool Player::should_be_destroyed() const
+{
+    return m_cabin_is_broken;
 }
 
 

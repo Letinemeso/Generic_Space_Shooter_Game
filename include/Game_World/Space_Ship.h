@@ -20,6 +20,7 @@ namespace GSSG
         struct Block_Data
         {
             float angle = 0.0f;
+            unsigned int health = 0;
             const Block* material = nullptr;
         };
 
@@ -50,6 +51,8 @@ namespace GSSG
     public:
         inline unsigned int width() const { return m_width; }
         inline unsigned int height() const { return m_height; }
+        inline unsigned int cabin_x() const { return m_cabin_x; }
+        inline unsigned int cabin_y() const { return m_cabin_y; }
 
         Block_Data& block(unsigned int _x, unsigned int _y);
         const Block_Data& block(unsigned int _x, unsigned int _y) const;
