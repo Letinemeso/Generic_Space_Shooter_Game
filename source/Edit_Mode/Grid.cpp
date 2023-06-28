@@ -134,10 +134,12 @@ void Grid::set_position(const glm::vec3 &_position)
     m_cell_preview->set_pos( _position - total_size_stride - cell_size_stride );
 }
 
-void Grid::construct(unsigned int _width, unsigned int _height)
+void Grid::construct()
 {
-    m_width = _width;
-    m_height = _height;
+    L_ASSERT(m_structure.width() > 0 && m_structure.height() > 0);
+
+    m_width = m_structure.width();
+    m_height = m_structure.height();
 
     m_collision_detector->unregister_all_objects();
 
@@ -175,13 +177,22 @@ void Grid::construct(unsigned int _width, unsigned int _height)
 
     delete m_cell_preview;
     m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
+    M_set_object_visual_data(m_cell_preview, *m_no_material);
 
-    m_structure.resize(_width, _height);
+    m_material = m_no_material;
+
+    M_update_cells();
 }
 
 void Grid::set_preview_visual_data(const Block& _block)
 {
     M_set_object_visual_data(m_cell_preview, _block);
+}
+
+void Grid::set_structure(const Space_Ship_Structure &_structure)
+{
+    m_structure = _structure;
+    construct();
 }
 
 

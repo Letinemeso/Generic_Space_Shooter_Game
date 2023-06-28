@@ -11,14 +11,21 @@ FIELDS_END
 
 
 
+LV::Variable_Base* Player_Stub::M_construct_product() const
+{
+    return new Player;
+}
+
 void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 {
     Player* product = (Player*)_product;
 
     LEti::Default_Draw_Module_2D* dm = new LEti::Default_Draw_Module_2D;
     dm->assign_values({});
+    dm->on_values_assigned();
     Physics_Module__Space_Ship* pm = new Physics_Module__Space_Ship;
     pm->assign_values({});
+    pm->on_values_assigned();
 
     product->set_draw_module(dm);
     product->set_physics_module(pm);

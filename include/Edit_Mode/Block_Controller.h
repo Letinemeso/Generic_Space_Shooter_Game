@@ -76,8 +76,8 @@ namespace GSSG
 
         Size size;
 
-    protected:
-        void M_on_values_assigned() override;
+    public:
+        void on_values_assigned() override;
 
     public:
         Block();

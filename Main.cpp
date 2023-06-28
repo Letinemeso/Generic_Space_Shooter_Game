@@ -297,6 +297,7 @@ int main()
     reader.parse_file("Resources/Textures/textures");
     LEti::Picture_Manager::Picture_Autoload_Stub texture_autoload;
     texture_autoload.assign_values(reader.get_stub("textures"));
+    texture_autoload.on_values_assigned();
 
 
     LEti::Event_Controller::set_max_dt(60.0f / 1000.0f);
@@ -323,9 +324,11 @@ int main()
     reader.parse_file("Resources/Models/projectile");
     reader.parse_file("Resources/Models/grid_cell");
     reader.parse_file("Resources/Models/blocks");
+    reader.parse_file("Resources/Models/structure");
 
     LEti::Text_Field_Stub text_field_stub;
     text_field_stub.assign_values(reader.get_stub("text_field"));
+    text_field_stub.on_values_assigned();
 
     LEti::Text_Field* player_hp_tf = (LEti::Text_Field*)text_field_stub.construct();
     player_hp_tf->set_pos({20.0f, 20.0f, 0.0f});
@@ -345,26 +348,34 @@ int main()
     gui.add_object(player_eliminations_tf);
 
 
+    GSSG::Block_Controller block_controller;
+    block_controller.init(reader.get_stub("blocks"));
+
+    GSSG::Space_Ship_Structure_Stub space_ship_structure_stub;
+    space_ship_structure_stub.block_controller = &block_controller;
+    space_ship_structure_stub.assign_values(reader.get_stub("structure"));
+    space_ship_structure_stub.on_values_assigned();
+
+    GSSG::Space_Ship_Structure* temp_structure = (GSSG::Space_Ship_Structure*)space_ship_structure_stub.construct();
     GSSG::Player_Stub player_stub;
-//    player_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
-//    player_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
-//    player_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
-//    player_stub.assign_values(reader.get_stub("arrow_quad"));
-    player_stub.health = 5;
-//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses = new float[2];
-//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[0] = 5.0f;
-//    ((LEti::Physics_Module__Rigid_Body_2D__Stub*)player_stub.physics_module)->masses[1] = 5.0f;
+    player_stub.assign_values({});
+    player_stub.on_values_assigned();
+    player_stub.structure = (GSSG::Space_Ship_Structure&&)*temp_structure;
+//    player_stub.structure.resize(9, 9);
+    delete temp_structure;
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
     enemy_entity_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
+    enemy_entity_stub.on_values_assigned();
     ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
     projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
+    projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
@@ -373,7 +384,7 @@ int main()
     LEti::Object_2D_Stub explosion_stub;
     explosion_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
     explosion_stub.assign_values(reader.get_stub("explosion"));
-
+    explosion_stub.on_values_assigned();
 
     GSSG::Effects_Controller effects_controller;
     effects_controller.inject_renderer(&renderer);
@@ -430,11 +441,9 @@ int main()
     em_cell_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
     em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
+    em_cell_stub.on_values_assigned();
 
 
-
-    GSSG::Block_Controller block_controller;
-    block_controller.init(reader.get_stub("blocks"));
 
     LEti::Collision_Detector_2D grid_collision_detector;
     grid_collision_detector.set_broad_phase(new LEti::Space_Hasher_2D, 10);
@@ -448,8 +457,6 @@ int main()
     grid.set_cell_stub(&em_cell_stub);
     grid.set_collision_detector(&grid_collision_detector);
     grid.set_block_controller(&block_controller);
-    grid.construct(7, 7);
-    grid.set_position({0.0f, 0.0f, 0.0f});
 
 
     GSSG::Edit_Mode* edit_mode = new GSSG::Edit_Mode;
@@ -459,7 +466,13 @@ int main()
     edit_mode->set_grid(&grid);
     edit_mode->set_block_controller(&block_controller);
 
-    GSSG::Game_Logic* game_logic = edit_mode;
+    GSSG::Game_Logic* game_logic = nullptr;
+
+    if(player_stub.structure.block_placement_is_valid())
+        game_logic = game_world;
+    else
+        game_logic = edit_mode;
+
     game_logic->on_activate();
 
     //  ~game logic setup

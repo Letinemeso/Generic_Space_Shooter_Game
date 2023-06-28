@@ -25,9 +25,9 @@ ADD_FIELD(unsigned int, block_health);
 FIELDS_END
 
 
-void Block::M_on_values_assigned()
+void Block::on_values_assigned()
 {
-    LV::Variable_Base::M_on_values_assigned();
+    LV::Variable_Base::on_values_assigned();
     size.collision_permissions = size.phys_coords / 3;
     size.masses = size.phys_coords / 9;
 }
@@ -258,6 +258,7 @@ void Block_Controller::init(const LV::MDL_Variable_Stub &_blocks)
 
         Block* block = (*allocator_it)();
         block->assign_values(*it);
+        block->on_values_assigned();
         unsigned int id = block->get_id();
         m_blocks_map.insert(id, block);
         ids.push(id);

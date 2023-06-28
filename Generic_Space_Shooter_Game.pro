@@ -89,7 +89,8 @@ HEADERS += \
 	include/Game_World/Player_Controller.h \
 	include/Game_World/Polygon__Space_Ship.h \
 	include/Game_World/Projectile.h \
-	include/Game_World/Space_Ship.h
+	include/Game_World/Space_Ship.h \
+	include/Game_World/Space_Ship_Structure.h
 
 SOURCES += \
 	Main.cpp \
@@ -112,6 +113,7 @@ SOURCES += \
 	source/Game_World/Player_Controller.cpp \
 	source/Game_World/Polygon__Space_Ship.cpp \
 	source/Game_World/Projectile.cpp \
-	source/Game_World/Space_Ship.cpp
+	source/Game_World/Space_Ship.cpp \
+	source/Game_World/Space_Ship_Structure.cpp
 
 

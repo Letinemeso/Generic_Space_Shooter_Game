@@ -75,8 +75,9 @@ namespace GSSG
 
     public:
         void set_position(const glm::vec3& _position);
-        void construct(unsigned int _width, unsigned int _height);
+        void construct();
         void set_preview_visual_data(const Block& _block);
+        void set_structure(const Space_Ship_Structure& _structure);
 
     public:
         const Cell& get_cell(unsigned int _x, unsigned int _y) const;

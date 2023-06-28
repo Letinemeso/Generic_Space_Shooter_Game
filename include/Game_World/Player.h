@@ -18,6 +18,27 @@
 namespace GSSG
 {
 
+    class Player;
+
+    class Player_Stub : public LEti::Builder_Stub
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    public:
+        Space_Ship_Structure structure;
+        Effects_Controller* effects_controller = nullptr;
+        const LEti::Object_2D_Stub* on_death_effect = nullptr;
+        const LEti::Picture* picture = nullptr;
+
+    protected:
+        LV::Variable_Base* M_construct_product() const override;
+        void M_init_constructed_product(LV::Variable_Base *_product) const override;
+
+    };
+
+
+
     class Player_Controller;
 
     class Player : public GSSG::Space_Ship
@@ -60,7 +81,7 @@ namespace GSSG
         inline const Space_Ship_Structure& initial_structure() const { return m_initial_structure; }
         inline const Space_Ship_Structure& current_structure() const { return m_current_structure; }
 
-        void reconstruct();     //  only reconstructs physical model (and other stuff)
+        void reconstruct();
 
     private:
         void M_create_block_destruction_effect(unsigned int _x, unsigned int _y);
@@ -82,24 +103,6 @@ namespace GSSG
 
     public:
         inline unsigned int eliminations_amount() const { return m_eliminations_amount; }
-
-    };
-
-    class Player_Stub : public LEti::Builder_Stub
-    {
-    public:
-        DECLARE_VARIABLE;
-
-    public:
-        Space_Ship_Structure structure;
-        unsigned int health = 1;
-        Effects_Controller* effects_controller = nullptr;
-        const LEti::Object_2D_Stub* on_death_effect = nullptr;
-        const LEti::Picture* picture = nullptr;
-
-    protected:
-        LV::Variable_Base* M_construct_product() const override { return new Player; }
-        void M_init_constructed_product(LV::Variable_Base *_product) const override;
 
     };
 
