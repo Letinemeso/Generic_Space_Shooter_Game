@@ -16,8 +16,6 @@ namespace GSSG
         DECLARE_VARIABLE;
 
     protected:
-        int m_health = 0.0f;
-
         const Entity* m_parent = nullptr;
 
     protected:
@@ -38,11 +36,8 @@ namespace GSSG
         inline void set_parent(const Entity* _parent) { m_parent = _parent; }
         inline const Entity* parent() const { return m_parent; }
 
-        inline void set_health(int _health) { m_health = _health; }
-
     public:
-        inline int health() const { return m_health; }
-        inline virtual bool should_be_destroyed() const { return m_health < 1; }
+        virtual bool should_be_destroyed() const { return true; }
 
     public:
         virtual void apply_input() { }
@@ -60,9 +55,6 @@ namespace GSSG
     public:
         Effects_Controller* effects_controller = nullptr;
         const LEti::Object_2D_Stub* on_death_effect = nullptr;
-
-    public:
-        int health = 1;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;

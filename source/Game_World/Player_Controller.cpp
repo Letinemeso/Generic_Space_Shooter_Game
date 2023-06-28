@@ -26,7 +26,7 @@ void Player_Controller::forcefuly_kill_player()
     if(!m_player)
         return;
 
-    m_player->set_health(0);
+    m_player->kill_force();
     m_entity_manager->remove_dead_entities();
 }
 

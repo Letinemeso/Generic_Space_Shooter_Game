@@ -15,7 +15,7 @@ FIELDS_END
 
 Projectile::Projectile()
 {
-    m_health = 1;
+
 }
 
 Projectile::~Projectile()
@@ -52,10 +52,9 @@ void Projectile::on_collision(const LEti::Intersection_Data& _id)
 {
     Entity::on_collision(_id);
 
-    Entity* with = (Entity*)(_id.first == this ? _id.second : _id.first);
+    m_time_until_death = -1.0f;
 
-    if(with->health() > 0)
-        return;
+    Entity* with = (Entity*)(_id.first == this ? _id.second : _id.first);
 
     //  TODO: think of better way to inform player
     //  IDEA: make another projectile derived from this and override this method
@@ -82,9 +81,6 @@ void Projectile::set_lifetime(float _seconds)
 
 bool Projectile::should_be_destroyed() const
 {
-    if(Entity::should_be_destroyed())
-        return true;
-
     if(m_has_limited_lifetime)
         return m_time_until_death <= 0.0f;
 

@@ -408,6 +408,13 @@ return;
 
 
 
+//bool Space_Ship::should_be_destroyed() const
+//{
+
+//}
+
+
+
 void Space_Ship::update(float _ratio)
 {
     Entity::update(_ratio);

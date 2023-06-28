@@ -14,11 +14,11 @@ bool Collision_Resolution__Entity::resolve(const LEti::Intersection_Data &_id)
     if(maybe_entity_1->parent() == maybe_entity_2 || maybe_entity_2->parent() == maybe_entity_1)
         return true;
 
-    int health_1 = maybe_entity_1->health();
-    int health_2 = maybe_entity_2->health();
+//    int health_1 = maybe_entity_1->health();
+//    int health_2 = maybe_entity_2->health();
 
-    maybe_entity_1->set_health(health_1 - health_2);
-    maybe_entity_2->set_health(health_2 - health_1);
+//    maybe_entity_1->set_health(health_1 - health_2);
+//    maybe_entity_2->set_health(health_2 - health_1);
 
     if(!LEti::Collision_Resolution__Rigid_Body_2D::resolve(_id))
         return false;

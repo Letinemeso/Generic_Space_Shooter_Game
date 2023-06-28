@@ -359,7 +359,6 @@ int main()
     enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
     enemy_entity_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
-    enemy_entity_stub.health = 1;
     ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
@@ -367,7 +366,6 @@ int main()
     projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
-    projectile_stub.health = 1;
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
@@ -462,6 +460,7 @@ int main()
     edit_mode->set_block_controller(&block_controller);
 
     GSSG::Game_Logic* game_logic = edit_mode;
+    game_logic->on_activate();
 
     //  ~game logic setup
 

@@ -32,9 +32,13 @@ namespace GSSG
         Space_Ship* m_attacked_entity = nullptr;
         float m_max_dist = 400.0f;
 
+        int m_health = 1;   //  temporary stuff
+
     public:
         Enemy();
         ~Enemy();
+
+        inline void temp_set_health(int _health) { m_health = _health; };
 
     private:
         float m_idle_rotation = 0.0f;
@@ -61,6 +65,11 @@ namespace GSSG
         LGL::BT_Execution_Result M_process_idle_behavior();
 
     public:
+        inline bool should_be_destroyed() const override { return m_health <= 0; }
+
+    public:
+        void on_collision(const LEti::Intersection_Data& _id) override;
+
         void apply_input() override;
 
         void update(float _ratio = 1.0f) override;

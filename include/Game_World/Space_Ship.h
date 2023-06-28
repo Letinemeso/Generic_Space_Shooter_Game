@@ -108,6 +108,9 @@ namespace GSSG
         void M_shoot();
 
     public:
+//        bool should_be_destroyed() const override;
+
+    public:
         void update(float _ratio = 1.0f) override;
 
     };

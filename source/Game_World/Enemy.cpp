@@ -107,7 +107,7 @@ LGL::BT_Execution_Result Enemy::M_accelerate()
 
 LGL::BT_Execution_Result Enemy::M_is_low_hp()
 {
-    if(health() <= 2)
+    if(m_health <= 2)
         return LGL::BT_Execution_Result::Success;
     return LGL::BT_Execution_Result::Fail;
 }
@@ -265,6 +265,14 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
     return LGL::BT_Execution_Result::Success;
 }
 
+
+
+void Enemy::on_collision(const LEti::Intersection_Data &_id)
+{
+    Space_Ship::on_collision(_id);
+
+    m_health -= 1;
+}
 
 
 void Enemy::apply_input()

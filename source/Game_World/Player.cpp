@@ -25,7 +25,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     product->set_structure(structure);
 
-    product->set_health(health);
+//    product->set_health(health);
 
     product->inject_effects_controller(effects_controller);
     product->set_on_death_effect(on_death_effect);
@@ -68,7 +68,7 @@ Player::~Player()
 void Player::inject_player_hp_caption(LEti::Text_Field *_player_hp_tf)
 {
     m_player_hp_tf = _player_hp_tf;
-    m_player_hp_tf->set_text("HP " + std::to_string(health()));
+//    m_player_hp_tf->set_text("HP " + std::to_string(health()));
 }
 
 void Player::inject_eliminations_amount_caption(LEti::Text_Field *_eliminations_amount_tf)
@@ -173,6 +173,22 @@ void Player::reconstruct()
 
 
 
+void Player::M_create_block_destruction_effect(unsigned int _x, unsigned int _y)
+{
+    glm::vec3 effect_scale(1.0f / m_current_structure.width(), 1.0f / m_current_structure.height(), 1.0f);
+    glm::vec3 effect_pos(effect_scale.x * (float)_x, effect_scale.y * (float)_y, 0.0f);
+    effect_pos -= glm::vec3(0.4f, 0.4f, 0.0f);
+    effect_pos = glm::vec4(effect_pos, 1.0f) * m_current_state.rotation_matrix * m_current_state.scale_matrix;
+    effect_pos += get_pos();
+    effect_scale = get_scale() * ( 1.0f / (float)(m_current_structure.width() > m_current_structure.height() ? m_current_structure.height() : m_current_structure.width()) );
+
+    LEti::Object_2D* effect = (LEti::Object_2D*)m_on_death_effect->construct();
+    effect->set_scale(effect_scale);
+    effect->set_pos(effect_pos);
+    effect->set_rotation_angle(get_rotation_angle());
+    m_effects_controller->add_object(effect);
+}
+
 void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 {
     m_current_structure.block(_x, _y).health -= 1;
@@ -185,6 +201,8 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
         m_cabin_is_broken = true;
         return;
     }
+
+    M_create_block_destruction_effect(_x, _y);
 
     m_current_structure.place_block(_x, _y, {0.0f, 0, nullptr});
 
@@ -317,13 +335,6 @@ void Player::on_other_entity_death(const Entity *_entity_to_delete)
 void Player::on_collision(const LEti::Intersection_Data& _id)
 {
     Space_Ship::on_collision(_id);
-
-    set_health(999);
-
-    if(health() > 0)
-        m_player_hp_tf->set_text("HP " + std::to_string(health()));
-    else
-        m_player_hp_tf->set_text(" ");
 
     unsigned int hit_polygon_index = (_id.first == this ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
 

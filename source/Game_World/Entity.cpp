@@ -20,7 +20,6 @@ void Entity_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 
     result->inject_effects_controller(effects_controller);
     result->set_on_death_effect(on_death_effect);
-    result->set_health(health);
 }
 
 
@@ -52,7 +51,7 @@ void Entity::on_death()
         return;
 
     LEti::Object_2D* effect = (LEti::Object_2D*)m_on_death_effect->construct();
-    effect->set_scale(get_scale() * 2.0f);
+    effect->set_scale(get_scale()/* * 2.0f*/);
     effect->set_pos(get_pos());
     effect->set_rotation_angle(get_rotation_angle());
     m_effects_controller->add_object(effect);

@@ -63,9 +63,11 @@ namespace GSSG
         void reconstruct();     //  only reconstructs physical model (and other stuff)
 
     private:
+        void M_create_block_destruction_effect(unsigned int _x, unsigned int _y);
         void M_process_hit_block(unsigned int _x, unsigned int _y);
 
     public:
+        void kill_force() { m_cabin_is_broken = true; }
         void temp_apply_simple_input();
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
