@@ -114,6 +114,10 @@ namespace GSSG
 
         inline const Size& get_size() const { return size; }
 
+    public:
+        virtual void apply_block_effect_on_construction(Space_Ship* _space_ship) const;
+        virtual void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const;
+
     };
 
     class Cabin : public Block
@@ -122,10 +126,25 @@ namespace GSSG
         DECLARE_VARIABLE;
 
     private:
-
+        float shoot_delay = 1.0f;
 
     public:
+        void apply_block_effect_on_construction(Space_Ship* _space_ship) const override;
+        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const override;
 
+    };
+
+    class Engine : public Block
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    private:
+        float acceleration = 1.0f;
+
+    public:
+        void apply_block_effect_on_construction(Space_Ship* _space_ship) const override;
+        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const override;
 
     };
 

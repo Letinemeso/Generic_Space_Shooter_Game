@@ -52,6 +52,50 @@ int main()
                                         },
                                         [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string) { *((int*)_variable_vptr) = std::stoi(_values_as_string[0]); }
                                     });
+    LV::Type_Manager::register_type("int*", {
+                                        [](const std::string& _val)
+                                        {
+                                            unsigned int i=0;
+                                            if(_val[0] == '+' || _val[0] == '-')
+                                            ++i;
+                                            for(; i<_val.size(); ++i)
+                                            if(_val[i] < '0' || _val[i] > '9')
+                                            return false;
+                                            return true;
+                                        },
+                                        [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+                                        {
+                                            int** var_ptr_ptr = (int**)_variable_vptr;
+
+                                            if(*var_ptr_ptr == nullptr)
+                                                *var_ptr_ptr = new int[_values_as_string.size()];
+
+                                            int* var_ptr = *var_ptr_ptr;
+
+                                            for(unsigned int i=0; i<_values_as_string.size(); ++i)
+                                                var_ptr[i] = std::stoi(_values_as_string[i]);
+                                        }
+                                    });
+    LV::Type_Manager::register_type("unsigned char*", {
+                                        [](const std::string& _val)
+                                        {
+                                            if(_val.size() != 1)
+                                                return false;
+                                            return true;
+                                        },
+                                        [](void* _variable_vptr, const LDS::Vector<std::string>& _values_as_string)
+                                        {
+                                            unsigned char** var_ptr_ptr = (unsigned char**)_variable_vptr;
+
+                                            if(*var_ptr_ptr == nullptr)
+                                                *var_ptr_ptr = new unsigned char[_values_as_string.size()];
+
+                                            unsigned char* var_ptr = *var_ptr_ptr;
+
+                                            for(unsigned int i=0; i<_values_as_string.size(); ++i)
+                                                var_ptr[i] = _values_as_string[i][0];
+                                        }
+                                    });
     LV::Type_Manager::register_type("unsigned int", {
                                         [](const std::string& _val)
                                         {

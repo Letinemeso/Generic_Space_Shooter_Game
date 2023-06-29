@@ -120,7 +120,7 @@ void Player::reconstruct()
     unsigned int* block_indices_y = new unsigned int[polygons_amount];
 
     float coords_scale = 1.0f / (float)(current_structure().width() > current_structure().height() ? current_structure().width() : current_structure().height());
-    float single_block_mass_scale = 1.0f / (float)(current_structure().width() * current_structure().height());
+//    float single_block_mass_scale = 1.0f / (float)(current_structure().width() * current_structure().height());
 
     Block::Size offsets;
     for(unsigned int x=0; x<current_structure().width(); ++x)
@@ -140,7 +140,7 @@ void Player::reconstruct()
             material->copy_texture_coords(t_coords, offsets.texture_coords);
             material->copy_phys_coords(phys_coords, offsets.phys_coords, coords_stride, block_data.angle, coords_scale);
             material->copy_collision_permissions(collision_permissions, offsets.collision_permissions);
-            material->copy_masses(masses, offsets.masses, single_block_mass_scale);
+            material->copy_masses(masses, offsets.masses, 1.0f);
 
             for(unsigned int i = offsets.masses; i < offsets.masses + material->get_size().masses; ++i)
             {
@@ -175,23 +175,46 @@ void Player::reconstruct()
     delete[] block_indices_x;
     delete[] block_indices_y;
 
-    ((LEti::Physics_Module__Rigid_Body_2D*)physics_module())->align_to_center_of_mass(draw_module());
+    m_block_pos_offset = pm->calculate_raw_center_of_mass();
+    pm->align_to_center_of_mass(draw_module());
+
+    for(unsigned int x=0; x<current_structure().width(); ++x)
+    {
+        for(unsigned int y=0; y<current_structure().height(); ++y)
+        {
+            const Space_Ship_Structure::Block_Data& block_data = current_structure().block(x, y);
+            const Block* material = block_data.material;
+
+            if(!material)
+                continue;
+
+            material->apply_block_effect_on_construction(this);
+        }
+    }
 }
 
 
 
+glm::vec3 Player::M_calculate_block_global_pos(unsigned int _x, unsigned int _y) const
+{
+    glm::vec3 block_scale(1.0f / m_current_structure.width(), 1.0f / m_current_structure.height(), 1.0f);
+    glm::vec3 block_pos(block_scale.x * (float)_x, block_scale.y * (float)_y, 0.0f);
+//    block_pos -= glm::vec3(0.5f, 0.5f, 0.0f);
+    block_pos -= m_block_pos_offset;
+    block_pos = glm::vec4(block_pos, 1.0f) * m_current_state.rotation_matrix * m_current_state.scale_matrix;
+    block_pos += get_pos();
+
+    return block_pos;
+}
+
 void Player::M_create_block_destruction_effect(unsigned int _x, unsigned int _y)
 {
     glm::vec3 effect_scale(1.0f / m_current_structure.width(), 1.0f / m_current_structure.height(), 1.0f);
-    glm::vec3 effect_pos(effect_scale.x * (float)_x, effect_scale.y * (float)_y, 0.0f);
-    effect_pos -= glm::vec3(0.4f, 0.4f, 0.0f);
-    effect_pos = glm::vec4(effect_pos, 1.0f) * m_current_state.rotation_matrix * m_current_state.scale_matrix;
-    effect_pos += get_pos();
     effect_scale = get_scale() * ( 1.0f / (float)(m_current_structure.width() > m_current_structure.height() ? m_current_structure.height() : m_current_structure.width()) );
 
     LEti::Object_2D* effect = (LEti::Object_2D*)m_on_death_effect->construct();
     effect->set_scale(effect_scale);
-    effect->set_pos(effect_pos);
+    effect->set_pos(M_calculate_block_global_pos(_x, _y));
     effect->set_rotation_angle(get_rotation_angle());
     m_effects_controller->add_object(effect);
 }
@@ -211,7 +234,8 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 
     M_create_block_destruction_effect(_x, _y);
 
-    m_current_structure.place_block(_x, _y, {0.0f, 0, nullptr});
+    Space_Ship_Structure::Block_Data block_data;
+    m_current_structure.place_block(_x, _y, block_data);
 
     reconstruct();
 
@@ -263,8 +287,35 @@ void Player::apply_input()
 //    temp_apply_simple_input();
 //    return;
 
-    bool has_rotational_input = false;
+//    bool has_rotational_input = false;
 
+    for(unsigned int x=0; x<current_structure().width(); ++x)
+    {
+        for(unsigned int y=0; y<current_structure().height(); ++y)
+        {
+            const Space_Ship_Structure::Block_Data& block_data = current_structure().block(x, y);
+            const Block* material = block_data.material;
+
+            if(!material)
+                continue;
+
+            if(!LEti::Event_Controller::is_key_down(block_data.bound_key))
+                continue;
+
+            material->apply_block_effect(this, m_current_structure.block(x, y).angle, M_calculate_block_global_pos(x, y));
+        }
+    }
+
+    float rotation_ratio = fabs(M_get_physics_module()->angular_velocity() / max_rotation_speed());
+    float velocity_ratio = fabs(LEti::Math::vector_length(M_get_physics_module()->velocity()) / max_speed());
+
+    if(rotation_ratio > 1.0f)
+        M_get_physics_module()->set_angular_velocity(M_get_physics_module()->angular_velocity() / rotation_ratio);
+
+    if(velocity_ratio > 1.0f)
+        M_get_physics_module()->set_velocity(M_get_physics_module()->velocity() / velocity_ratio);
+
+    /*
     if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
     {
         M_get_physics_module()->apply_rotation(rotation_acceleration() * LEti::Event_Controller::get_dt());
@@ -316,6 +367,7 @@ void Player::apply_input()
 
 //        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
     }
+    */
 
     m_shoot_timer.update(LEti::Event_Controller::get_dt());
 

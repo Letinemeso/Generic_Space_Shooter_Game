@@ -28,6 +28,7 @@ namespace GSSG
 
         unsigned int* block_ids = nullptr;
         unsigned int* block_rotations = nullptr;
+        unsigned int* key_bounds = nullptr;
 
     private:
         LV::Variable_Base* M_construct_product() const override;
@@ -47,6 +48,7 @@ namespace GSSG
     public:
         struct Block_Data
         {
+            unsigned int bound_key = 0;
             float angle = 0.0f;
             unsigned int health = 0;
             const Block* material = nullptr;

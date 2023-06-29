@@ -211,11 +211,70 @@ void Block::copy_masses(float* _where, unsigned int _offset, float _scale) const
 
 
 
+void Block::apply_block_effect_on_construction(Space_Ship* /*_space_ship*/) const
+{
+
+}
+
+void Block::apply_block_effect(Space_Ship* /*_space_ship*/, float /*_block_rotation*/, const glm::vec3& /*_block_position*/) const
+{
+//    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+}
+
+
+
 //  Cabin
 
 INIT_FIELDS(GSSG::Cabin, GSSG::Block)
-
+ADD_FIELD(float, shoot_delay);
 FIELDS_END
+
+
+
+void Cabin::apply_block_effect_on_construction(Space_Ship* _space_ship) const
+{
+    //  set shoot delay
+}
+
+void Cabin::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
+{
+//    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+}
+
+
+
+//  Engine
+
+INIT_FIELDS(GSSG::Engine, GSSG::Block)
+ADD_FIELD(float, acceleration);
+FIELDS_END
+
+
+
+void Engine::apply_block_effect_on_construction(Space_Ship* _space_ship) const
+{
+
+}
+
+void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
+{
+    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+
+    glm::vec3 ss_engine_vector_normalized = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) * glm::rotate(_space_ship->get_rotation_angle() + _block_rotation, _space_ship->get_rotation_axis());
+    glm::vec3 linear_impulse = ss_engine_vector_normalized * acceleration;
+
+    float torque = LEti::Math::cross_product(_block_position - pm->get_physical_model()->center_of_mass(), linear_impulse);
+    float angular_impulse = torque / pm->moment_of_inertia();
+
+    linear_impulse /= pm->mass();
+    linear_impulse *= LEti::Event_Controller::get_dt();
+    angular_impulse *= LEti::Event_Controller::get_dt();
+
+    linear_impulse.y *= -1.0f;
+
+    pm->apply_linear_impulse(linear_impulse);
+    pm->apply_rotation(angular_impulse);
+}
 
 
 
@@ -226,6 +285,7 @@ Block_Controller::Block_Controller()
 {
     m_block_allocators.insert("Block", [](){ return new Block(); });
     m_block_allocators.insert("Cabin", [](){ return new Cabin(); });
+    m_block_allocators.insert("Engine", [](){ return new Engine(); });
 }
 
 Block_Controller::~Block_Controller()

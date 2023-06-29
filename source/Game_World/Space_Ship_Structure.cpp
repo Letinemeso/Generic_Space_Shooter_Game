@@ -10,6 +10,7 @@ ADD_FIELD(unsigned int, width)
 ADD_FIELD(unsigned int, height)
 ADD_FIELD(unsigned int*, block_ids)
 ADD_FIELD(unsigned int*, block_rotations)
+ADD_FIELD(unsigned int*, key_bounds)
 FIELDS_END;
 
 
@@ -40,6 +41,7 @@ void Space_Ship_Structure_Stub::M_init_constructed_product(LV::Variable_Base *_p
             Space_Ship_Structure::Block_Data block_data;
             block_data.angle = LEti::Math::HALF_PI * (float)block_rotations[array_index];
             block_data.material = material;
+            block_data.bound_key = key_bounds[array_index];
 
             structure->place_block_force(x, y, block_data);
         }
@@ -83,6 +85,7 @@ Space_Ship_Structure_Stub::~Space_Ship_Structure_Stub()
 {
     delete[] block_ids;
     delete[] block_rotations;
+    delete[] key_bounds;
 }
 
 

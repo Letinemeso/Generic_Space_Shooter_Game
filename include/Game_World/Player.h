@@ -64,6 +64,9 @@ namespace GSSG
         LEti::Text_Field* m_eliminations_amount_tf = nullptr;
         unsigned int m_eliminations_amount = 0;
 
+    private:
+        glm::vec3 m_block_pos_offset;
+
     public:
         Player();
         ~Player();
@@ -84,6 +87,7 @@ namespace GSSG
         void reconstruct();
 
     private:
+        glm::vec3 M_calculate_block_global_pos(unsigned int _x, unsigned int _y) const;
         void M_create_block_destruction_effect(unsigned int _x, unsigned int _y);
         void M_process_hit_block(unsigned int _x, unsigned int _y);
 
