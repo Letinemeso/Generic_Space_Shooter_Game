@@ -6,7 +6,7 @@ using namespace GSSG;
 GUI::GUI()
 {
     m_camera.set_view_scale(1.0f);
-    m_camera.set_position({LEti::Window_Controller::get_window_data().width / 2.0f, LEti::Window_Controller::get_window_data().height / 2.0f, 0.0f});
+    m_camera.set_position({LR::Window_Controller::get_window_data().width / 2.0f, LR::Window_Controller::get_window_data().height / 2.0f, 0.0f});
 
     m_renderer.set_camera(&m_camera);
 
@@ -48,12 +48,12 @@ void GUI::remove_object(LEti::Object_2D* _object)
 
 void GUI::M_update_cursor_position()
 {
-    m_cursor_position = m_camera.convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
+    m_cursor_position = m_camera.convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
 }
 
 void GUI::M_process_mouse_down()
 {
-    if(!LEti::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
@@ -67,7 +67,7 @@ void GUI::M_process_mouse_down()
 
 void GUI::M_process_mouse_up()
 {
-    if(!LEti::Event_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Event_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)

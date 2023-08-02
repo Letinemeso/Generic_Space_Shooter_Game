@@ -43,7 +43,7 @@ void Projectile::update(float _ratio)
 {
     Entity::update(_ratio);
 
-    m_time_until_death -= LEti::Event_Controller::get_dt() * _ratio;
+    m_time_until_death -= LR::Event_Controller::get_dt() * _ratio;
 }
 
 

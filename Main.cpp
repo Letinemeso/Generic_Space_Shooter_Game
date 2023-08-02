@@ -4,10 +4,10 @@
 #include <MDL_Reader.h>
 
 #include <Stuff/Timer.h>
-#include <Event_Controller.h>
-#include <Shader.h>
-#include <Camera_2D.h>
-#include <Picture_Manager.h>
+#include <Event_Controller/Event_Controller.h>
+#include <Shader/Shader.h>
+#include <Camera/Camera_2D.h>
+#include <Picture/Picture_Manager.h>
 #include <Physics/Collision_Detector_2D.h>
 #include <Physics/Collision_Resolver.h>
 #include <Physics/Collision_Resolution__Rigid_Body_2D.h>
@@ -18,8 +18,8 @@
 #include <Object_System/Text_Field.h>
 #include <Object_System/Object_2D.h>
 #include <Object_System/Rigid_Body_2D_Stub.h>
-#include <Object_System/Modules/Draw_Module__Animation.h>
-#include <Renderer.h>
+#include <Draw_Modules/Draw_Module__Animation.h>
+#include <Renderer/Renderer.h>
 
 #include <Game_World/Background.h>
 #include <Game_World/Collision_Resolution__Entity.h>
@@ -303,7 +303,7 @@ int main()
 
     LV::MDL_Reader reader;
 
-    LEti::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
+    LR::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
 
     //    glEnable(GL_DEPTH_TEST);
     //    glClearColor(0.0,0.0,0.0,0.0);
@@ -311,12 +311,12 @@ int main()
     glEnable(GL_SCISSOR_TEST);
 //    glScissor(20, 20, 200, 200);
 
-    LEti::Shader shader;
+    LR::Shader shader;
 
-    LEti::Camera_2D camera;
+    LR::Camera_2D camera;
     camera.set_view_scale(1.0f);
 
-    LEti::Renderer renderer;
+    LR::Renderer renderer;
     renderer.set_camera(&camera);
     renderer.set_shader(&shader);
 
@@ -339,12 +339,12 @@ int main()
     collision_resolver.add_resolution(new LEti::Collision_Resolution__Rigid_Body_2D);
 
     reader.parse_file("Resources/Textures/textures");
-    LEti::Picture_Manager::Picture_Autoload_Stub texture_autoload;
+    LR::Picture_Manager::Picture_Autoload_Stub texture_autoload;
     texture_autoload.assign_values(reader.get_stub("textures"));
     texture_autoload.on_values_assigned();
 
 
-    LEti::Event_Controller::set_max_dt(60.0f / 1000.0f);
+    LR::Event_Controller::set_max_dt(60.0f / 1000.0f);
 
     //  ~engine setup
 
@@ -353,7 +353,7 @@ int main()
 
     GSSG::Background background;
     background.inject_camera(&camera);
-    background.set_picture(LEti::Picture_Manager::get_picture("background_texture"));
+    background.set_picture(LR::Picture_Manager::get_picture("background_texture"));
 
     GSSG::Entity_Manager entity_manager;
     entity_manager.inject_collision_detector(&collision_detector);
@@ -409,14 +409,14 @@ int main()
     delete temp_structure;
 
     GSSG::Enemy_Stub enemy_entity_stub;
-    enemy_entity_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    enemy_entity_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
     enemy_entity_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
     enemy_entity_stub.on_values_assigned();
-    ((LEti::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
+    ((LR::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
-    projectile_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+    projectile_stub.draw_module = new LR::Draw_Module__Animation__Stub;
     projectile_stub.physics_module = new LEti::Physics_Module__Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.on_values_assigned();
@@ -426,7 +426,7 @@ int main()
     ((LEti::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
 
     LEti::Object_2D_Stub explosion_stub;
-    explosion_stub.draw_module = new LEti::Draw_Module__Animation__Stub;
+    explosion_stub.draw_module = new LR::Draw_Module__Animation__Stub;
     explosion_stub.assign_values(reader.get_stub("explosion"));
     explosion_stub.on_values_assigned();
 
@@ -451,7 +451,7 @@ int main()
 
     player_stub.effects_controller = &effects_controller;
     player_stub.on_death_effect = &explosion_stub;
-    player_stub.picture = LEti::Picture_Manager::get_picture("edit_mode_atlas");
+    player_stub.picture = LR::Picture_Manager::get_picture("edit_mode_atlas");
     enemy_entity_stub.effects_controller = &effects_controller;
     enemy_entity_stub.on_death_effect = &explosion_stub;
     projectile_stub.effects_controller = &effects_controller;
@@ -482,7 +482,7 @@ int main()
 
 
     LEti::Object_2D_Stub em_cell_stub;
-    em_cell_stub.draw_module = new LEti::Default_Draw_Module_2D_Stub;
+    em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
     em_cell_stub.physics_module = new LEti::Dynamic_Physics_Module_2D_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();
@@ -530,18 +530,18 @@ int main()
 
     //    enemy_generator.update();
 
-    while (!LEti::Window_Controller::window_should_close())
+    while (!LR::Window_Controller::window_should_close())
     {
-        LEti::Window_Controller::update();
-        LEti::Event_Controller::update();
+        LR::Window_Controller::update();
+        LR::Event_Controller::update();
 
-        cursor_position = camera.convert_window_coords(glm::vec3(LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f));
+        cursor_position = camera.convert_window_coords(glm::vec3(LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f));
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         game_logic->update();
 
-        if(LEti::Event_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
+        if(LR::Event_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
         {
             game_logic->on_deactivate();
 
@@ -553,11 +553,11 @@ int main()
             game_logic->on_activate();
         }
 
-        if(LEti::Event_Controller::key_was_released(GLFW_KEY_B))
+        if(LR::Event_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();
 
         ++fps_counter;
-        fps_timer.update(LEti::Event_Controller::get_dt());
+        fps_timer.update(LR::Event_Controller::get_dt());
 
         if(!fps_timer.is_active())
         {
@@ -565,7 +565,7 @@ int main()
             fps_counter = 0;
         }
 
-        LEti::Window_Controller::swap_buffers();
+        LR::Window_Controller::swap_buffers();
     }
 
     delete player_hp_tf;

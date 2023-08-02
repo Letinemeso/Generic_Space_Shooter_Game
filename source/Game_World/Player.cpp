@@ -20,7 +20,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 {
     Player* product = (Player*)_product;
 
-    LEti::Default_Draw_Module_2D* dm = new LEti::Default_Draw_Module_2D;
+    LR::Default_Draw_Module_2D* dm = new LR::Default_Draw_Module_2D;
     dm->assign_values({});
     dm->on_values_assigned();
     Physics_Module__Space_Ship* pm = new Physics_Module__Space_Ship;
@@ -32,8 +32,6 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     product->set_structure(structure);
 
-//    product->set_health(health);
-
     product->inject_effects_controller(effects_controller);
     product->set_on_death_effect(on_death_effect);
 
@@ -44,12 +42,13 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->set_scale({100.0f, 100.0f, 1.0f});
     product->set_pos({0.0f, 0.0f, 0.0f});
     product->set_rotation_axis({0.0f, 0.0f, 1.0f});
+    product->set_rotation_angle(LEti::Math::HALF_PI);
     product->set_on_update_func([product](float _ratio)
     {
         LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)product->physics_module();
 
-        product->move(pm->velocity() * LEti::Event_Controller::get_dt() * _ratio);
-        product->rotate(pm->angular_velocity() * LEti::Event_Controller::get_dt() * _ratio);
+        product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
+        product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
     });
 }
 
@@ -152,7 +151,7 @@ void Player::reconstruct()
         }
     }
 
-    LEti::Default_Draw_Module_2D* dm = (LEti::Default_Draw_Module_2D*)draw_module();
+    LR::Default_Draw_Module_2D* dm = (LR::Default_Draw_Module_2D*)draw_module();
     Physics_Module__Space_Ship* pm = (Physics_Module__Space_Ship*)physics_module();
 
     dm->init_vertices(coords, arrays_sizes.coords);
@@ -201,7 +200,7 @@ glm::vec3 Player::M_calculate_block_global_pos(unsigned int _x, unsigned int _y)
     glm::vec3 block_pos(block_scale.x * (float)_x, block_scale.y * (float)_y, 0.0f);
 //    block_pos -= glm::vec3(0.5f, 0.5f, 0.0f);
     block_pos -= m_block_pos_offset;
-    block_pos = glm::vec4(block_pos, 1.0f) * m_current_state.rotation_matrix * m_current_state.scale_matrix;
+    block_pos = (m_current_state.rotation_matrix * m_current_state.scale_matrix) * glm::vec4(block_pos, 1.0f);
     block_pos += get_pos();
 
     return block_pos;
@@ -249,33 +248,33 @@ void Player::temp_apply_simple_input()
 {
     glm::vec3 impulse = {0.0f, 0.0f, 0.0f};
 
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
+    if(LR::Event_Controller::is_key_down(GLFW_KEY_A))
     {
         impulse.x -= acceleration();
     }
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
+    if(LR::Event_Controller::is_key_down(GLFW_KEY_D))
     {
         impulse.x += acceleration();
     }
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
+    if(LR::Event_Controller::is_key_down(GLFW_KEY_W))
     {
         impulse.y += acceleration();
     }
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
+    if(LR::Event_Controller::is_key_down(GLFW_KEY_S))
     {
         impulse.y -= acceleration();
     }
     M_get_physics_module()->set_velocity(impulse);
 
-    glm::vec3 pos_to_cursor = get_pos() - m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
+    glm::vec3 pos_to_cursor = get_pos() - m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
     LEti::Math::shrink_vector_to_1(pos_to_cursor);
     set_rotation_angle(LEti::Math::PI - acos(pos_to_cursor.x));
     if(pos_to_cursor.y > 0.0f)
         set_rotation_angle(LEti::Math::DOUBLE_PI - get_rotation_angle());
 
-    m_shoot_timer.update(LEti::Event_Controller::get_dt());
+    m_shoot_timer.update(LR::Event_Controller::get_dt());
 
-    if((LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) || LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1)) && !m_shoot_timer.is_active())
+    if((LR::Event_Controller::is_key_down(GLFW_KEY_SPACE) || LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1)) && !m_shoot_timer.is_active())
     {
         M_shoot();
         m_shoot_timer.start(0.6f);
@@ -284,11 +283,6 @@ void Player::temp_apply_simple_input()
 
 void Player::apply_input()
 {
-//    temp_apply_simple_input();
-//    return;
-
-//    bool has_rotational_input = false;
-
     for(unsigned int x=0; x<current_structure().width(); ++x)
     {
         for(unsigned int y=0; y<current_structure().height(); ++y)
@@ -299,7 +293,7 @@ void Player::apply_input()
             if(!material)
                 continue;
 
-            if(!LEti::Event_Controller::is_key_down(block_data.bound_key))
+            if(!LR::Event_Controller::is_key_down(block_data.bound_key))
                 continue;
 
             material->apply_block_effect(this, m_current_structure.block(x, y).angle, M_calculate_block_global_pos(x, y));
@@ -315,63 +309,9 @@ void Player::apply_input()
     if(velocity_ratio > 1.0f)
         M_get_physics_module()->set_velocity(M_get_physics_module()->velocity() / velocity_ratio);
 
-    /*
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_A))
-    {
-        M_get_physics_module()->apply_rotation(rotation_acceleration() * LEti::Event_Controller::get_dt());
-        if(M_get_physics_module()->angular_velocity() > max_rotation_speed())
-            M_get_physics_module()->set_angular_velocity(max_rotation_speed());
-        has_rotational_input = true;
+    m_shoot_timer.update(LR::Event_Controller::get_dt());
 
-//        move(glm::vec3{-300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
-    }
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_D))
-    {
-        M_get_physics_module()->apply_rotation(-rotation_acceleration() * LEti::Event_Controller::get_dt());
-        if(M_get_physics_module()->angular_velocity() < -max_rotation_speed())
-            M_get_physics_module()->set_angular_velocity(-max_rotation_speed());
-        has_rotational_input = true;
-
-//        move(glm::vec3{300.0f, 0.0f, 0.0f} * LEti::Event_Controller::get_dt());
-    }
-
-    if(!has_rotational_input && !LEti::Math::floats_are_equal(M_get_physics_module()->angular_velocity(), 0.0f))
-    {
-        float multiplier = M_get_physics_module()->angular_velocity() < 0.0f ? 1.0f : -1.0f;
-
-        M_get_physics_module()->set_angular_velocity(M_get_physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * LEti::Event_Controller::get_dt()));
-
-        if(fabs(M_get_physics_module()->angular_velocity()) < rotation_acceleration() * LEti::Event_Controller::get_dt())
-            M_get_physics_module()->set_angular_velocity(0.0f);
-    }
-
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_W))
-    {
-        glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        M_get_physics_module()->apply_linear_impulse(impulse);
-
-        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
-        if(speed > max_speed())
-            M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
-
-//        move(glm::vec3{0.0f, 300.0f, 0.0f} * LEti::Event_Controller::get_dt());
-    }
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_S))
-    {
-        glm::vec3 impulse = LEti::Math::rotate_vector({-acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LEti::Event_Controller::get_dt();
-        M_get_physics_module()->apply_linear_impulse(impulse);
-
-        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
-        if(speed > max_speed())
-            M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
-
-//        move(glm::vec3{0.0f, -300.0f, 0.0f} * LEti::Event_Controller::get_dt());
-    }
-    */
-
-    m_shoot_timer.update(LEti::Event_Controller::get_dt());
-
-    if(LEti::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
+    if(LR::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
     {
         M_shoot();
         m_shoot_timer.start(0.6f);

@@ -3,9 +3,9 @@
 
 #include <Data_Structures/List.h>
 
-#include <Renderer.h>
+#include <Renderer/Renderer.h>
 #include <Object_System/Object_2D.h>
-#include <Object_System/Modules/Draw_Module__Animation.h>
+#include <Draw_Modules/Draw_Module__Animation.h>
 
 
 namespace GSSG
@@ -14,7 +14,7 @@ namespace GSSG
     class Effects_Controller
     {
     private:
-        const LEti::Renderer* m_renderer = nullptr;
+        const LR::Renderer* m_renderer = nullptr;
 
     private:
         LDS::List<LEti::Object_2D*> m_effect_objects;
@@ -26,7 +26,7 @@ namespace GSSG
         ~Effects_Controller();
 
     public:
-        inline void inject_renderer(LEti::Renderer* _renderer) { m_renderer = _renderer; }
+        inline void inject_renderer(LR::Renderer* _renderer) { m_renderer = _renderer; }
 
     public:
         void add_object(LEti::Object_2D* _object);

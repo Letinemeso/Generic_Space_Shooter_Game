@@ -92,7 +92,7 @@ void Grid::M_on_cell_pressed(Cell& _cell)
 
 void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
 {
-    LEti::Default_Draw_Module_2D* draw_module = _object->draw_module();
+    LR::Default_Draw_Module_2D* draw_module = _object->draw_module();
 
     draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
     draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
@@ -225,7 +225,7 @@ void Grid::M_apply_input()
 
     for(unsigned int i=GLFW_KEY_1; i<=GLFW_KEY_9; ++i)
     {
-        if(!LEti::Event_Controller::key_was_pressed(i))
+        if(!LR::Event_Controller::key_was_pressed(i))
             continue;
 
         unsigned int id = i - GLFW_KEY_0;
@@ -236,7 +236,7 @@ void Grid::M_apply_input()
         m_material = &m_block_controller->get_block(id);
     }
 
-    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
+    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
         m_material = m_no_material;
 
     if(m_material->get_id() != material_before_input)
@@ -245,12 +245,12 @@ void Grid::M_apply_input()
         set_preview_visual_data(block);
     }
 
-    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_E))
+    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_E))
         m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() - LEti::Math::HALF_PI);
-    if(LEti::Event_Controller::key_was_pressed(GLFW_KEY_Q))
+    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_Q))
         m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() + LEti::Math::HALF_PI);
 
-    if(!LEti::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)

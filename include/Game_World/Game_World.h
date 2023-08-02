@@ -39,7 +39,7 @@ namespace GSSG
         LEti::Collision_Resolver* m_collision_resolver = nullptr;
 
     private:
-        const LEti::Renderer* m_renderer = nullptr;
+        const LR::Renderer* m_renderer = nullptr;
 
     public:
         inline void set_entity_manager(GSSG::Entity_Manager* _ptr) { m_entity_manager = _ptr; }
@@ -50,7 +50,7 @@ namespace GSSG
         inline void set_background(GSSG::Background* _ptr) { m_background = _ptr; }
         inline void set_collision_detector(LEti::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
         inline void set_collision_resolver(LEti::Collision_Resolver* _ptr) { m_collision_resolver = _ptr; }
-        inline void set_renderer(const LEti::Renderer* _ptr) { m_renderer = _ptr; }
+        inline void set_renderer(const LR::Renderer* _ptr) { m_renderer = _ptr; }
 
     public:
         void update() override;

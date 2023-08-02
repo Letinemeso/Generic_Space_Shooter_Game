@@ -23,8 +23,8 @@ void Background::M_reconfigure()
     m_screen_size_scale = m_camera->view_scale();
 
     glm::vec2 screen_size;
-    screen_size.x = LEti::Window_Controller::get_window_data().width * m_screen_size_scale;
-    screen_size.y = LEti::Window_Controller::get_window_data().height * m_screen_size_scale;
+    screen_size.x = LR::Window_Controller::get_window_data().width * m_screen_size_scale;
+    screen_size.y = LR::Window_Controller::get_window_data().height * m_screen_size_scale;
 
     unsigned int full_images_amount_x = (unsigned int)screen_size.x / (unsigned int)m_picture->width();
     unsigned int full_images_amount_y = (unsigned int)screen_size.y / (unsigned int)m_picture->height();
@@ -87,12 +87,12 @@ void Background::M_reconfigure()
 
     for(unsigned int i=0; i<total_images_amount * 18; i += 3)
     {
-        coords[i] -= LEti::Window_Controller::get_window_data().width * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->width();
-        coords[i + 1] -= LEti::Window_Controller::get_window_data().height * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->height();
+        coords[i] -= LR::Window_Controller::get_window_data().width * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->width();
+        coords[i + 1] -= LR::Window_Controller::get_window_data().height * (m_screen_size_scale - 1.0f) * 0.5f + m_picture->height();
     }
 
     delete m_draw_module;
-    m_draw_module = new LEti::Default_Draw_Module_2D;
+    m_draw_module = new LR::Default_Draw_Module_2D;
 
     m_draw_module->init_vertices(coords, total_images_amount * 18);
     m_draw_module->init_colors(colors, total_images_amount * 24);
@@ -116,8 +116,8 @@ void Background::update()
     int full_stride_y = (int)m_camera->position().y / m_picture->height();
 
     glm::vec2 stride;
-    stride.x = (m_picture->width() * full_stride_x) - (LEti::Window_Controller::get_window_data().width / 2.0f);
-    stride.y = (m_picture->height() * full_stride_y) - (LEti::Window_Controller::get_window_data().height / 2.0f);
+    stride.x = (m_picture->width() * full_stride_x) - (LR::Window_Controller::get_window_data().width / 2.0f);
+    stride.y = (m_picture->height() * full_stride_y) - (LR::Window_Controller::get_window_data().height / 2.0f);
 
     glm::mat4x4 move_matrix{
         1.0f, 0.0f, 0.0f, 0.0f,

@@ -6,8 +6,9 @@ CONFIG -= qt
 unix {
     LIBS += "../L_Utility/libL_Utility.a"
     LIBS += "../L_Variable/libL_Variable.a"
-    LIBS += "../L_Gamedev_Lib/libL_Gamedev_Lib.a"
     LIBS += "../LEti_Engine/libLEti_Engine.a"
+    LIBS += "../L_Renderer/libL_Renderer.a"
+    LIBS += "../L_Gamedev_Lib/libL_Gamedev_Lib.a"
 
     LIBS += "../../LEti_Engine/OpenGL/Linux/lib/libglfw3.a"
     LIBS += "../../LEti_Engine/OpenGL/Linux/lib/libGLEW.a"
@@ -21,8 +22,9 @@ unix {
 win32 {
     LIBS += "../L_Utility/debug/libL_Utility.a"
     LIBS += "../L_Variable/debug/libL_Variable.a"
-    LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
     LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
+    LIBS += "../L_Renderer/debug/libL_Renderer.a"
+    LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
 
     LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
     LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglew32.a"
@@ -43,6 +45,8 @@ INCLUDEPATH += "../L_Utility/include/"
 INCLUDEPATH += "../L_Variable/include/"
 INCLUDEPATH += "../L_Gamedev_Lib/include/"
 INCLUDEPATH += "../LEti_Engine/include/"
+INCLUDEPATH += "../L_Renderer/include/"
+INCLUDEPATH += "../L_/include/"
 
 
 DISTFILES += \

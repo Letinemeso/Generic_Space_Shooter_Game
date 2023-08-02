@@ -18,7 +18,7 @@ Effects_Controller::~Effects_Controller()
 
 void Effects_Controller::add_object(LEti::Object_2D *_object)
 {
-    L_ASSERT(LV::cast_variable<LEti::Draw_Module__Animation>(_object->draw_module()));  //  non-animations shall not pass
+    L_ASSERT(LV::cast_variable<LR::Draw_Module__Animation>(_object->draw_module()));  //  non-animations shall not pass
 
     m_effect_objects.push_back(_object);
 }
@@ -37,7 +37,7 @@ void Effects_Controller::update()
 
     while(true)
     {
-        LEti::Draw_Module__Animation* dm = (LEti::Draw_Module__Animation*)((*it)->draw_module());
+        LR::Draw_Module__Animation* dm = (LR::Draw_Module__Animation*)((*it)->draw_module());
 
         if(dm->repetitions() >= 1)
         {

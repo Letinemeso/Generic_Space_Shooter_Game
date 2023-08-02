@@ -4,7 +4,7 @@
 #include <Data_Structures/Map.h>
 #include <Stuff/Function_Wrapper.h>
 
-#include <Renderer.h>
+#include <Renderer/Renderer.h>
 #include <Object_System/Object_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 
@@ -26,7 +26,7 @@ namespace GSSG
         };
 
     private:
-        const LEti::Renderer* m_renderer = nullptr;
+        const LR::Renderer* m_renderer = nullptr;
         LEti::Collision_Detector_2D* m_collision_detector = nullptr;
 
         const LEti::Object_2D_Stub* m_cell_stub = nullptr;
@@ -51,7 +51,7 @@ namespace GSSG
 
     public:
         inline void set_collision_detector(LEti::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
-        inline void set_renderer(const LEti::Renderer* _ptr) { m_renderer = _ptr; }
+        inline void set_renderer(const LR::Renderer* _ptr) { m_renderer = _ptr; }
         inline void set_cell_stub(const LEti::Object_2D_Stub* _stub) { m_cell_stub = _stub; }
         inline void set_block_controller(const Block_Controller* _ptr) { m_block_controller = _ptr; m_material = &m_block_controller->get_block(0); m_no_material = m_material; }
 

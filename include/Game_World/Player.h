@@ -4,7 +4,7 @@
 
 #include <Data_Structures/List.h>
 
-#include <Event_Controller.h>
+#include <Event_Controller/Event_Controller.h>
 #include <Object_System/Text_Field.h>
 
 #include <Game_World/Enemy_Generator.h>
@@ -29,7 +29,7 @@ namespace GSSG
         Space_Ship_Structure structure;
         Effects_Controller* effects_controller = nullptr;
         const LEti::Object_2D_Stub* on_death_effect = nullptr;
-        const LEti::Picture* picture = nullptr;
+        const LR::Picture* picture = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
@@ -53,7 +53,7 @@ namespace GSSG
         bool m_cabin_is_broken = false;
 
     private:
-        LEti::Camera_2D* m_camera = nullptr;
+        LR::Camera_2D* m_camera = nullptr;
         Player_Controller* m_player_controller = nullptr;
 
         LST::Timer m_shoot_timer;
@@ -72,7 +72,7 @@ namespace GSSG
         ~Player();
 
     public:
-        inline void inject_camera(LEti::Camera_2D* _camera) { m_camera = _camera; }
+        inline void inject_camera(LR::Camera_2D* _camera) { m_camera = _camera; }
         inline void inject_player_controller(Player_Controller* _player_controller) { m_player_controller = _player_controller; }
         void inject_player_hp_caption(LEti::Text_Field* _player_hp_tf);
         void inject_eliminations_amount_caption(LEti::Text_Field* _eliminations_amount_tf);

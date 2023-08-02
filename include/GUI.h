@@ -4,12 +4,14 @@
 #include <Data_Structures/List.h>
 #include <Stuff/Function_Wrapper.h>
 
-#include <Renderer.h>
+#include <Renderer/Renderer.h>
 #include <Object_System/Object_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 #include <Physics/Space_Hasher_2D.h>
 #include <Physics/Dynamic_Narrow_CD.h>
 #include <Physics/SAT_Narrowest_CD.h>
+
+#include <Camera/Camera_2D.h>
 
 
 namespace GSSG
@@ -30,8 +32,8 @@ namespace GSSG
         };
 
     private:
-        LEti::Renderer m_renderer;
-        LEti::Camera_2D m_camera;
+        LR::Renderer m_renderer;
+        LR::Camera_2D m_camera;
 
         LEti::Collision_Detector_2D m_collision_detector;
 
@@ -43,7 +45,7 @@ namespace GSSG
         ~GUI();
 
     public:
-        inline void inject_shader(const LEti::Shader* _shader) { m_renderer.set_shader(_shader); }
+        inline void inject_shader(const LR::Shader* _shader) { m_renderer.set_shader(_shader); }
 
     public:
         void add_object(LEti::Object_2D* _object, const LST::Function<void(unsigned int)>& _on_pressed = {}, const LST::Function<void(unsigned int)>& _on_released = {});

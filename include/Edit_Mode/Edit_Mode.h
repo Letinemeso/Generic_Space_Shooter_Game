@@ -1,7 +1,7 @@
 #ifndef EDIT_MODE_H
 #define EDIT_MODE_H
 
-#include <Camera_2D.h>
+#include <Camera/Camera_2D.h>
 #include <Physics/Collision_Detector_2D.h>
 #include <Physics/Space_Hasher_2D.h>
 #include <Physics/Dynamic_Narrow_CD.h>
@@ -19,7 +19,7 @@ namespace GSSG
     class Edit_Mode : public Game_Logic
     {
     private:
-        const LEti::Camera_2D* m_camera = nullptr;
+        const LR::Camera_2D* m_camera = nullptr;
         glm::vec3 m_cursor_pos{0.0f, 0.0f, 0.0f};
 
     private:
@@ -43,7 +43,7 @@ namespace GSSG
         void M_reconstruct_player_stub();
 
     public:
-        inline void set_camera(const LEti::Camera_2D* _ptr) { m_camera = _ptr; }
+        inline void set_camera(const LR::Camera_2D* _ptr) { m_camera = _ptr; }
         inline void set_player_controller(Player_Controller* _ptr) { m_player_controller = _ptr; }
         inline void set_player_stub(Player_Stub* _ptr) { m_player_stub = _ptr; }
         inline void set_grid(Grid* _ptr) { m_grid = _ptr; }

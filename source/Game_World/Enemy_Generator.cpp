@@ -19,7 +19,7 @@ void Enemy_Generator::update()
 {
     L_ASSERT(m_enemy_stub);
 
-    m_timer.update(LEti::Event_Controller::get_dt());
+    m_timer.update(LR::Event_Controller::get_dt());
     if(!m_timer.is_active())
     {
         spawn_enemy();

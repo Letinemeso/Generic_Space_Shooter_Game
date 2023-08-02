@@ -32,7 +32,7 @@ void Edit_Mode::on_activate()
     grid_cell_size.z = 0.0f;
     glm::vec3 grid_size = m_grid->get_size();
     grid_size.z = 0.0f;
-    glm::vec3 window_size(LEti::Window_Controller::get_window_data().width, LEti::Window_Controller::get_window_data().height, 0.0f);
+    glm::vec3 window_size(LR::Window_Controller::get_window_data().width, LR::Window_Controller::get_window_data().height, 0.0f);
 
     glm::vec3 grid_pos = m_camera->position();
 
@@ -71,7 +71,7 @@ bool Edit_Mode::can_be_deactivated() const
 
 void Edit_Mode::update()
 {
-    m_cursor_pos = m_camera->convert_window_coords({LEti::Window_Controller::get_cursor_position().x, LEti::Window_Controller::get_cursor_position().y, 0.0f});
+    m_cursor_pos = m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
 
     m_grid->update();
 }
