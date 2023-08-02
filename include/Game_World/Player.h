@@ -30,6 +30,7 @@ namespace GSSG
         Effects_Controller* effects_controller = nullptr;
         const LEti::Object_2D_Stub* on_death_effect = nullptr;
         const LR::Picture* picture = nullptr;
+        LR::Camera_2D* camera = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;

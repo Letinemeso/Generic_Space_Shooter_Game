@@ -32,6 +32,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     product->set_structure(structure);
 
+    product->inject_camera(camera);
     product->inject_effects_controller(effects_controller);
     product->set_on_death_effect(on_death_effect);
 
@@ -50,6 +51,9 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
         product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
         product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
     });
+
+    product->update(0.0f);
+    product->update_previous_state();
 }
 
 
@@ -175,7 +179,12 @@ void Player::reconstruct()
     delete[] block_indices_y;
 
     m_block_pos_offset = pm->calculate_raw_center_of_mass();
-    pm->align_to_center_of_mass(draw_module());
+
+    pm->set_on_alignment_func([this, pm]()
+    {
+        draw_module()->move_raw(-pm->calculate_raw_center_of_mass());
+    });
+    pm->align_to_center_of_mass();
 
     for(unsigned int x=0; x<current_structure().width(); ++x)
     {

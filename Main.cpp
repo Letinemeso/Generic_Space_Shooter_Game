@@ -406,6 +406,7 @@ int main()
     player_stub.on_values_assigned();
     player_stub.structure = (GSSG::Space_Ship_Structure&&)*temp_structure;
 //    player_stub.structure.resize(9, 9);
+    player_stub.camera = &camera;
     delete temp_structure;
 
     GSSG::Enemy_Stub enemy_entity_stub;

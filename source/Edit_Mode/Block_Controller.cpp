@@ -263,16 +263,12 @@ void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, 
     glm::vec3 ss_engine_vector_normalized = glm::rotate(_space_ship->get_rotation_angle() + _block_rotation, _space_ship->get_rotation_axis()) * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     glm::vec3 linear_impulse = ss_engine_vector_normalized * acceleration;
 
-glm::vec3 com = pm->get_physical_model()->center_of_mass();
-
     float torque = LEti::Math::cross_product(_block_position - pm->get_physical_model()->center_of_mass(), linear_impulse);
     float angular_impulse = torque / pm->moment_of_inertia();
 
     linear_impulse /= pm->mass();
     linear_impulse *= LR::Event_Controller::get_dt();
     angular_impulse *= LR::Event_Controller::get_dt();
-
-//    linear_impulse.y *= -1.0f;
 
     pm->apply_linear_impulse(linear_impulse);
     pm->apply_rotation(angular_impulse);
