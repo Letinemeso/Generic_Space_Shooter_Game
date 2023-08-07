@@ -3,12 +3,12 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Physics_Module__Space_Ship, LEti::Physics_Module__Rigid_Body_2D)
+INIT_FIELDS(GSSG::Physics_Module__Space_Ship, LPhys::Physics_Module__Rigid_Body_2D)
 FIELDS_END
 
 
 
-LEti::Physical_Model_2D* Physics_Module__Space_Ship::M_create_physical_model() const
+LPhys::Physical_Model_2D* Physics_Module__Space_Ship::M_create_physical_model() const
 {
     return new Physical_Model__Space_Ship;
 }

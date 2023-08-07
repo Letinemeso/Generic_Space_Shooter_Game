@@ -4,7 +4,7 @@
 #include <Data_Structures/List.h>
 
 #include <Renderer/Renderer.h>
-#include <Physics/Collision_Detector_2D.h>
+#include <Collision_Detection/Collision_Detector_2D.h>
 
 #include <Camera/Camera_2D.h>
 
@@ -17,7 +17,7 @@ namespace GSSG
     class Entity_Manager
     {
     private:
-        LEti::Collision_Detector_2D* m_collision_detector = nullptr;
+        LPhys::Collision_Detector_2D* m_collision_detector = nullptr;
         const LR::Renderer* m_renderer = nullptr;
         const LR::Camera_2D* m_camera = nullptr;
 
@@ -32,7 +32,7 @@ namespace GSSG
         ~Entity_Manager();
 
     public:
-        inline void inject_collision_detector(LEti::Collision_Detector_2D* _collision_detector) { m_collision_detector = _collision_detector; }
+        inline void inject_collision_detector(LPhys::Collision_Detector_2D* _collision_detector) { m_collision_detector = _collision_detector; }
         inline void inject_renderer(LR::Renderer* _renderer) { m_renderer = _renderer; }
         inline void inject_camera(LR::Camera_2D* _camera) { m_camera = _camera; }
 

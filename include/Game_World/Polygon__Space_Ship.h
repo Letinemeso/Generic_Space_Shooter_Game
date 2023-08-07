@@ -1,13 +1,13 @@
 #ifndef POLYGON__SPACE_SHIP_H
 #define POLYGON__SPACE_SHIP_H
 
-#include <Physics/Physical_Models/Rigid_Body_Polygon.h>
+#include <Physical_Models/Rigid_Body_Polygon.h>
 
 
 namespace GSSG
 {
 
-    class Polygon__Space_Ship : public LEti::Rigid_Body_Polygon
+    class Polygon__Space_Ship : public LPhys::Rigid_Body_Polygon
     {
     private:
         unsigned int m_block_index_x = 0;

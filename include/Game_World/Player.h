@@ -98,7 +98,7 @@ namespace GSSG
         void apply_input() override;
         void update(float _ratio = 1.0f) override;
         void on_other_entity_death(const Entity* _entity_to_delete) override;
-        void on_collision(const LEti::Intersection_Data& _id) override;
+        void on_collision(const LPhys::Intersection_Data& _id) override;
         void on_death() override;
 
         bool should_be_destroyed() const override;

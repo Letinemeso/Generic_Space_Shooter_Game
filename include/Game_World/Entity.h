@@ -2,7 +2,7 @@
 #define ENTITY_H
 
 #include <Object_System/Rigid_Body_2D_Stub.h>
-#include <Physics/Intersection_Data.h>
+#include <Collision_Detection/Intersection_Data.h>
 
 #include <Effects_Controller.h>
 
@@ -27,7 +27,7 @@ namespace GSSG
         ~Entity();
 
     protected:
-        inline LEti::Physics_Module__Rigid_Body_2D* M_get_physics_module() { return (LEti::Physics_Module__Rigid_Body_2D*)physics_module(); }
+        inline LPhys::Physics_Module__Rigid_Body_2D* M_get_physics_module() { return (LPhys::Physics_Module__Rigid_Body_2D*)physics_module(); }
 
     public:
         inline void inject_effects_controller(Effects_Controller* _effects_controller) { m_effects_controller = _effects_controller; }
@@ -41,7 +41,7 @@ namespace GSSG
 
     public:
         virtual void apply_input() { }
-        virtual void on_collision(const LEti::Intersection_Data& /*_id*/) { }
+        virtual void on_collision(const LPhys::Intersection_Data& /*_id*/) { }
         virtual void on_other_entity_death(const Entity* _entity_to_delete);
         virtual void on_death();
 

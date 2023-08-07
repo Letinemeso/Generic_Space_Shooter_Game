@@ -1,7 +1,7 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include <Physics/Collision_Detector_2D.h>
+#include <Collision_Detection/Collision_Detector_2D.h>
 
 #include <Game_World/Entity.h>
 
@@ -28,7 +28,7 @@ namespace GSSG
         void update_previous_state() override;
         void update(float _ratio = 1.0f) override;
 
-        void on_collision(const LEti::Intersection_Data& _id) override;
+        void on_collision(const LPhys::Intersection_Data& _id) override;
 
         void apply_input() override { }
 

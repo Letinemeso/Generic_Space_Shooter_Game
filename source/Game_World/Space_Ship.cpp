@@ -24,7 +24,7 @@ void Space_Ship::M_shoot()
     L_ASSERT(m_projectile_stub);
 
     Projectile* projectile = (Projectile*)m_projectile_stub->construct();
-    LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)projectile->physics_module();
+    LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)projectile->physics_module();
 
     glm::vec3 projectile_impulse = LEti::Math::rotate_vector({500.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
 

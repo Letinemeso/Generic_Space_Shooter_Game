@@ -48,7 +48,7 @@ void Projectile::update(float _ratio)
 
 
 
-void Projectile::on_collision(const LEti::Intersection_Data& _id)
+void Projectile::on_collision(const LPhys::Intersection_Data& _id)
 {
     Entity::on_collision(_id);
 

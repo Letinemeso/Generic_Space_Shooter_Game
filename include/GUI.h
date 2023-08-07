@@ -6,10 +6,10 @@
 
 #include <Renderer/Renderer.h>
 #include <Object_System/Object_2D.h>
-#include <Physics/Collision_Detector_2D.h>
-#include <Physics/Space_Hasher_2D.h>
-#include <Physics/Dynamic_Narrow_CD.h>
-#include <Physics/SAT_Narrowest_CD.h>
+#include <Collision_Detection/Collision_Detector_2D.h>
+#include <Collision_Detection/Space_Hasher_2D.h>
+#include <Collision_Detection/Dynamic_Narrow_CD.h>
+#include <Collision_Detection/SAT_Narrowest_CD.h>
 
 #include <Camera/Camera_2D.h>
 
@@ -35,7 +35,7 @@ namespace GSSG
         LR::Renderer m_renderer;
         LR::Camera_2D m_camera;
 
-        LEti::Collision_Detector_2D m_collision_detector;
+        LPhys::Collision_Detector_2D m_collision_detector;
 
         LDS::List<GUI_Element_Data> m_objects;
         glm::vec3 m_cursor_position{0.0f, 0.0f, 0.0f};

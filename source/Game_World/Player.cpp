@@ -46,7 +46,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->set_rotation_angle(LEti::Math::HALF_PI);
     product->set_on_update_func([product](float _ratio)
     {
-        LEti::Physics_Module__Rigid_Body_2D* pm = (LEti::Physics_Module__Rigid_Body_2D*)product->physics_module();
+        LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)product->physics_module();
 
         product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
         product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
@@ -340,7 +340,7 @@ void Player::on_other_entity_death(const Entity *_entity_to_delete)
     Space_Ship::on_other_entity_death(_entity_to_delete);
 }
 
-void Player::on_collision(const LEti::Intersection_Data& _id)
+void Player::on_collision(const LPhys::Intersection_Data& _id)
 {
     Space_Ship::on_collision(_id);
 

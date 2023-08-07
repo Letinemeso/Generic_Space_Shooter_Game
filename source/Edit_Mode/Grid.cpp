@@ -253,7 +253,7 @@ void Grid::M_apply_input()
     if(!LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
         return;
 
-    for(LDS::List<LEti::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
+    for(LDS::List<LPhys::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
     {
         LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
         Cell* cell = *cell_map_it;

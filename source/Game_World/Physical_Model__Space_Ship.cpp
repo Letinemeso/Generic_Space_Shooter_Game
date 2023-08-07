@@ -10,9 +10,9 @@ Physical_Model__Space_Ship::~Physical_Model__Space_Ship()
 
 
 
-LEti::Polygon_Holder_Base* Physical_Model__Space_Ship::M_create_polygons_holder() const
+LPhys::Polygon_Holder_Base* Physical_Model__Space_Ship::M_create_polygons_holder() const
 {
-    return new LEti::Polygon_Holder<Polygon__Space_Ship>;
+    return new LPhys::Polygon_Holder<Polygon__Space_Ship>;
 }
 
 

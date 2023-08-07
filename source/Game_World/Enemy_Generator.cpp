@@ -44,7 +44,7 @@ void Enemy_Generator::spawn_enemy() const
     enemy->inject_entity_manager(m_entity_manager);
     enemy->set_pos(position);
     enemy->set_scale(5.0f * (float)random_scale);
-    ((LEti::Physics_Module__Rigid_Body_2D*)enemy->physics_module())->set_mass_multiplier(3.0f * (float)random_scale);
+    ((LPhys::Physics_Module__Rigid_Body_2D*)enemy->physics_module())->set_mass_multiplier(3.0f * (float)random_scale);
     enemy->set_rotation_angle(LEti::Math::DOUBLE_PI / 360.0f * (float)LEti::Math::random_number(0, 360));
 
     for(unsigned int i=0; i<3; ++i)

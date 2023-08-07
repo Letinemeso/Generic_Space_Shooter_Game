@@ -267,7 +267,7 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 
 
 
-void Enemy::on_collision(const LEti::Intersection_Data &_id)
+void Enemy::on_collision(const LPhys::Intersection_Data &_id)
 {
     Space_Ship::on_collision(_id);
 

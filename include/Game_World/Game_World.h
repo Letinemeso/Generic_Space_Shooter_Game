@@ -1,11 +1,11 @@
 #ifndef GAME_WORLD_H
 #define GAME_WORLD_H
 
-#include <Physics/Collision_Detector_2D.h>
-#include <Physics/Space_Hasher_2D.h>
-#include <Physics/Dynamic_Narrow_CD.h>
-#include <Physics/SAT_Narrowest_CD.h>
-#include <Physics/Collision_Resolver.h>
+#include <Collision_Detection/Collision_Detector_2D.h>
+#include <Collision_Detection/Space_Hasher_2D.h>
+#include <Collision_Detection/Dynamic_Narrow_CD.h>
+#include <Collision_Detection/SAT_Narrowest_CD.h>
+#include <Collision_Resolution//Collision_Resolver.h>
 
 #include <Game_World/Collision_Resolution__Entity.h>
 #include <Game_Logic.h>
@@ -35,8 +35,8 @@ namespace GSSG
         GSSG::Background* m_background = nullptr;
 
     private:
-        LEti::Collision_Detector_2D* m_collision_detector = nullptr;
-        LEti::Collision_Resolver* m_collision_resolver = nullptr;
+        LPhys::Collision_Detector_2D* m_collision_detector = nullptr;
+        LPhys::Collision_Resolver* m_collision_resolver = nullptr;
 
     private:
         const LR::Renderer* m_renderer = nullptr;
@@ -48,8 +48,8 @@ namespace GSSG
         inline void set_effects_controller(GSSG::Effects_Controller* _ptr) { m_effects_controller = _ptr; }
         inline void set_gui(GSSG::GUI* _ptr) { m_gui = _ptr; }
         inline void set_background(GSSG::Background* _ptr) { m_background = _ptr; }
-        inline void set_collision_detector(LEti::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
-        inline void set_collision_resolver(LEti::Collision_Resolver* _ptr) { m_collision_resolver = _ptr; }
+        inline void set_collision_detector(LPhys::Collision_Detector_2D* _ptr) { m_collision_detector = _ptr; }
+        inline void set_collision_resolver(LPhys::Collision_Resolver* _ptr) { m_collision_resolver = _ptr; }
         inline void set_renderer(const LR::Renderer* _ptr) { m_renderer = _ptr; }
 
     public:

@@ -8,6 +8,7 @@ unix {
     LIBS += "../L_Variable/libL_Variable.a"
     LIBS += "../LEti_Engine/libLEti_Engine.a"
     LIBS += "../L_Renderer/libL_Renderer.a"
+    LIBS += "../L_Physics/libL_Physics.a"
     LIBS += "../L_Gamedev_Lib/libL_Gamedev_Lib.a"
 
     LIBS += "../../LEti_Engine/OpenGL/Linux/lib/libglfw3.a"
@@ -24,6 +25,7 @@ win32 {
     LIBS += "../L_Variable/debug/libL_Variable.a"
     LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
     LIBS += "../L_Renderer/debug/libL_Renderer.a"
+    LIBS += "../L_Physics/debug/libL_Physics.a"
     LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
 
     LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
@@ -46,6 +48,7 @@ INCLUDEPATH += "../L_Variable/include/"
 INCLUDEPATH += "../L_Gamedev_Lib/include/"
 INCLUDEPATH += "../LEti_Engine/include/"
 INCLUDEPATH += "../L_Renderer/include/"
+INCLUDEPATH += "../L_Physics/include/"
 INCLUDEPATH += "../L_/include/"
 
 

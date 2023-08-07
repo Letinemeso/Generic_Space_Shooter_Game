@@ -4,13 +4,13 @@ using namespace GSSG;
 
 
 Polygon__Space_Ship::Polygon__Space_Ship()
-    : LEti::Rigid_Body_Polygon()
+    : LPhys::Rigid_Body_Polygon()
 {
 
 }
 
 Polygon__Space_Ship::Polygon__Space_Ship(const Polygon__Space_Ship& _other)
-    : LEti::Rigid_Body_Polygon(_other)
+    : LPhys::Rigid_Body_Polygon(_other)
 {
     m_block_index_x = _other.m_block_index_x;
     m_block_index_y = _other.m_block_index_y;

@@ -68,7 +68,7 @@ namespace GSSG
         inline bool should_be_destroyed() const override { return m_health <= 0; }
 
     public:
-        void on_collision(const LEti::Intersection_Data& _id) override;
+        void on_collision(const LPhys::Intersection_Data& _id) override;
 
         void apply_input() override;
 
