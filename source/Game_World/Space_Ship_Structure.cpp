@@ -5,7 +5,7 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Space_Ship_Structure_Stub, LEti::Builder_Stub)
+INIT_FIELDS(GSSG::Space_Ship_Structure_Stub, LV::Builder_Stub)
 ADD_FIELD(unsigned int, width)
 ADD_FIELD(unsigned int, height)
 ADD_FIELD(unsigned int*, block_ids)

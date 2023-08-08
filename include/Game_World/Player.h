@@ -20,7 +20,7 @@ namespace GSSG
 
     class Player;
 
-    class Player_Stub : public LEti::Builder_Stub
+    class Player_Stub : public LV::Builder_Stub
     {
     public:
         DECLARE_VARIABLE;

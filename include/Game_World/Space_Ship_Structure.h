@@ -3,7 +3,7 @@
 
 #include <Variable_Base.h>
 
-#include <Object_System/Builder_Stub.h>
+#include <Builder_Stub.h>
 
 #include <Graph/Graph.h>
 #include <Graph/Pathfinder.h>
@@ -14,7 +14,7 @@ namespace GSSG
     class Block_Controller;
     class Block;
 
-    class Space_Ship_Structure_Stub : public LEti::Builder_Stub
+    class Space_Ship_Structure_Stub : public LV::Builder_Stub
     {
     public:
         DECLARE_VARIABLE;

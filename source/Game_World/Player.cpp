@@ -6,7 +6,7 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Player_Stub, LEti::Builder_Stub)
+INIT_FIELDS(GSSG::Player_Stub, LV::Builder_Stub)
 FIELDS_END
 
 
