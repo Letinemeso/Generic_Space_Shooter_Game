@@ -32,6 +32,13 @@ void Projectile::revert_to_previous_state()
     m_time_until_death = m_time_until_death_prev_state;
 }
 
+void Projectile::revert_to_ratio_between_frames(float _ratio)
+{
+    Entity::revert_to_ratio_between_frames(_ratio);
+
+    m_time_until_death = m_time_until_death_prev_state + ((m_time_until_death - m_time_until_death_prev_state) * _ratio);
+}
+
 void Projectile::update_previous_state()
 {
     Entity::update_previous_state();
@@ -39,11 +46,11 @@ void Projectile::update_previous_state()
     m_time_until_death_prev_state = m_time_until_death;
 }
 
-void Projectile::update(float _ratio)
+void Projectile::update()
 {
-    Entity::update(_ratio);
+    Entity::update();
 
-    m_time_until_death -= LR::Event_Controller::get_dt() * _ratio;
+    m_time_until_death -= LR::Event_Controller::get_dt();
 }
 
 
@@ -54,7 +61,7 @@ void Projectile::on_collision(const LPhys::Intersection_Data& _id)
 
     m_time_until_death = -1.0f;
 
-    Entity* with = (Entity*)(_id.first == this ? _id.second : _id.first);
+    Entity* with = (Entity*)(_id.first->associated_object() == this ? _id.second->associated_object() : _id.first->associated_object());
 
     //  TODO: think of better way to inform player
     //  IDEA: make another projectile derived from this and override this method

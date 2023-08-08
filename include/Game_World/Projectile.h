@@ -25,8 +25,9 @@ namespace GSSG
 
     public:
         void revert_to_previous_state() override;
+        void revert_to_ratio_between_frames(float _ratio) override;
         void update_previous_state() override;
-        void update(float _ratio = 1.0f) override;
+        void update() override;
 
         void on_collision(const LPhys::Intersection_Data& _id) override;
 

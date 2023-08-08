@@ -96,7 +96,7 @@ namespace GSSG
         void kill_force() { m_cabin_is_broken = true; }
         void temp_apply_simple_input();
         void apply_input() override;
-        void update(float _ratio = 1.0f) override;
+        void update() override;
         void on_other_entity_death(const Entity* _entity_to_delete) override;
         void on_collision(const LPhys::Intersection_Data& _id) override;
         void on_death() override;

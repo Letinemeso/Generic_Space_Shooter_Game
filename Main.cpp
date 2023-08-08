@@ -411,20 +411,20 @@ int main()
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
-    enemy_entity_stub.physics_module = new LPhys::Physics_Module__Rigid_Body_2D__Stub;
+    enemy_entity_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
     enemy_entity_stub.on_values_assigned();
     ((LR::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LR::Draw_Module__Animation__Stub;
-    projectile_stub.physics_module = new LPhys::Physics_Module__Rigid_Body_2D__Stub;
+    projectile_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
-    ((LPhys::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
-    ((LPhys::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
-    ((LPhys::Physics_Module__Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
+    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
+    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
+    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
 
     LEti::Object_2D_Stub explosion_stub;
     explosion_stub.draw_module = new LR::Draw_Module__Animation__Stub;
@@ -460,7 +460,7 @@ int main()
 
 //    player_controller.update();
     entity_manager.update_entities_prev_state();
-    entity_manager.update_entities(0.0f);
+    entity_manager.update_entities();
 
     //  ~game setup
 
@@ -482,9 +482,9 @@ int main()
 
 
 
-    LEti::Object_2D_Stub em_cell_stub;
+    GSSG::Grid_Cell_Stub em_cell_stub;
     em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
-    em_cell_stub.physics_module = new LPhys::Dynamic_Physics_Module_2D_Stub;
+    em_cell_stub.physics_module = new LPhys::Physics_Module_2D_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();
 

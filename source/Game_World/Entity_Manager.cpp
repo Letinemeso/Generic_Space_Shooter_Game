@@ -1,5 +1,7 @@
 #include <Game_World/Entity_Manager.h>
 
+#include <Modules/Rigid_Body_2D.h>  //  TODO: this is not right but ill fix this later
+
 using namespace GSSG;
 
 
@@ -21,7 +23,7 @@ void Entity_Manager::add_entity(Entity *_entity)
     L_ASSERT(_entity);
 
     m_entities.push_front(_entity);
-    m_collision_detector->register_object(_entity);
+    m_collision_detector->register_object(_entity->physics_module());
 }
 
 
@@ -42,10 +44,10 @@ void Entity_Manager::update_entities_prev_state() const
         (*it)->update_previous_state();
 }
 
-void Entity_Manager::update_entities(float _ratio) const
+void Entity_Manager::update_entities() const
 {
     for(LDS::List<Entity*>::Const_Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
-        (*it)->update(_ratio);
+        (*it)->update();
 }
 
 void Entity_Manager::apply_entities_input() const
@@ -76,7 +78,7 @@ void Entity_Manager::remove_dead_entities()
             m_entities.erase(it);
 
             M_notify_other_entities_about_death(entity);
-            m_collision_detector->unregister_object(entity);
+            m_collision_detector->unregister_object(entity->physics_module());
             entity->on_death();
             delete entity;
 

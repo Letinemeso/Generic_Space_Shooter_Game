@@ -23,21 +23,22 @@ GUI::~GUI()
 
 
 
-void GUI::add_object(LEti::Object_2D* _object, const LST::Function<void(unsigned int)>& _on_pressed, const LST::Function<void(unsigned int)>& _on_released)
+void GUI::add_object(LEti::Object_2D* _object, LPhys::Physics_Module_2D* _pm, const LST::Function<void(unsigned int)>& _on_pressed, const LST::Function<void(unsigned int)>& _on_released)
 {
-    m_objects.push_back(GUI_Element_Data(_object, _on_pressed, _on_released));
+    m_objects.push_back(GUI_Element_Data(_object, _pm, _on_pressed, _on_released));
 
-    m_collision_detector.register_object(_object);
+    if(_pm)
+        m_collision_detector.register_object(_pm);
 }
 
 void GUI::remove_object(LEti::Object_2D* _object)
 {
-    m_collision_detector.unregister_object(_object);
-
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
     {
         if((*it).object == _object)
         {
+            if((*it).pm)
+                m_collision_detector.unregister_object((*it).pm);
             m_objects.erase(it);
             return;
         }
@@ -83,20 +84,20 @@ void GUI::M_process_mouse_up()
 
 void GUI::update_prev_state()
 {
-    for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
+    for(auto it = m_objects.begin(); !it.end_reached(); ++it)
         (*it).object->update_previous_state();
 }
 
-void GUI::update(float _ratio)
+void GUI::update()
 {
-    for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
-        (*it).object->update(_ratio);
+    for(auto it = m_objects.begin(); !it.end_reached(); ++it)
+        (*it).pm->update(LR::Event_Controller::get_dt());
 
     m_collision_detector.update();
 }
 
 void GUI::draw()
 {
-    for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
+    for(auto it = m_objects.begin(); !it.end_reached(); ++it)
         (*it).object->draw(m_renderer);
 }

@@ -44,15 +44,18 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->set_pos({0.0f, 0.0f, 0.0f});
     product->set_rotation_axis({0.0f, 0.0f, 1.0f});
     product->set_rotation_angle(LEti::Math::HALF_PI);
-    product->set_on_update_func([product](float _ratio)
-    {
-        LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)product->physics_module();
 
-        product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
-        product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
-    });
+    pm->set_associated_object(product);
 
-    product->update(0.0f);
+//    product->set_on_update_func([product](float _ratio)
+//    {
+//        LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)product->physics_module();
+
+//        product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
+//        product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
+//    });
+
+    product->update();
     product->update_previous_state();
 }
 
@@ -247,7 +250,7 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 
     reconstruct();
 
-    update(0.0f);
+    update();
     update_previous_state();
 }
 
@@ -273,7 +276,7 @@ void Player::temp_apply_simple_input()
     {
         impulse.y -= acceleration();
     }
-    M_get_physics_module()->set_velocity(impulse);
+    physics_module()->set_velocity(impulse);
 
     glm::vec3 pos_to_cursor = get_pos() - m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
     LEti::Math::shrink_vector_to_1(pos_to_cursor);
@@ -309,14 +312,14 @@ void Player::apply_input()
         }
     }
 
-    float rotation_ratio = fabs(M_get_physics_module()->angular_velocity() / max_rotation_speed());
-    float velocity_ratio = fabs(LEti::Math::vector_length(M_get_physics_module()->velocity()) / max_speed());
+    float rotation_ratio = fabs(physics_module()->angular_velocity() / max_rotation_speed());
+    float velocity_ratio = fabs(LEti::Math::vector_length(physics_module()->velocity()) / max_speed());
 
     if(rotation_ratio > 1.0f)
-        M_get_physics_module()->set_angular_velocity(M_get_physics_module()->angular_velocity() / rotation_ratio);
+        physics_module()->set_angular_velocity(physics_module()->angular_velocity() / rotation_ratio);
 
     if(velocity_ratio > 1.0f)
-        M_get_physics_module()->set_velocity(M_get_physics_module()->velocity() / velocity_ratio);
+        physics_module()->set_velocity(physics_module()->velocity() / velocity_ratio);
 
     m_shoot_timer.update(LR::Event_Controller::get_dt());
 
@@ -328,9 +331,9 @@ void Player::apply_input()
 
 }
 
-void Player::update(float _ratio)
+void Player::update()
 {
-    Space_Ship::update(_ratio);
+    Space_Ship::update();
 
     m_camera->set_position(get_pos());
 }
@@ -344,7 +347,7 @@ void Player::on_collision(const LPhys::Intersection_Data& _id)
 {
     Space_Ship::on_collision(_id);
 
-    unsigned int hit_polygon_index = (_id.first == this ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
+    unsigned int hit_polygon_index = (_id.first->associated_object() == this ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
 
     Polygon__Space_Ship* hit_polygon = (Polygon__Space_Ship*)(physics_module()->get_physical_model()->get_polygon(hit_polygon_index));
 

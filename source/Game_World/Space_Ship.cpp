@@ -1,5 +1,7 @@
 #include <Game_World/Space_Ship.h>
 
+#include <Modules/Rigid_Body_2D.h>  //  TODO: this is not right but ill fix this later
+
 using namespace GSSG;
 
 
@@ -24,7 +26,7 @@ void Space_Ship::M_shoot()
     L_ASSERT(m_projectile_stub);
 
     Projectile* projectile = (Projectile*)m_projectile_stub->construct();
-    LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)projectile->physics_module();
+    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)projectile->physics_module();
 
     glm::vec3 projectile_impulse = LEti::Math::rotate_vector({500.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
 
@@ -35,13 +37,13 @@ void Space_Ship::M_shoot()
     pm->set_velocity(projectile_impulse);
 
     projectile->update_previous_state();
-    projectile->update(0.0f);
+    projectile->update();
 
     m_entity_manager->add_entity(projectile);
 return;
-    M_get_physics_module()->apply_linear_impulse(-projectile_impulse * (pm->mass() / M_get_physics_module()->mass()));
-    if(LEti::Math::vector_length(M_get_physics_module()->velocity()) > max_speed())
-        M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
+    physics_module()->apply_linear_impulse(-projectile_impulse * (pm->mass() / physics_module()->mass()));
+    if(LEti::Math::vector_length(physics_module()->velocity()) > max_speed())
+        physics_module()->set_velocity(LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()));
 }
 
 
@@ -53,7 +55,7 @@ return;
 
 
 
-void Space_Ship::update(float _ratio)
+void Space_Ship::update()
 {
-    Entity::update(_ratio);
+    Entity::update();
 }

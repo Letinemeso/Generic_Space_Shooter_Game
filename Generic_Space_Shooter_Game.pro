@@ -80,6 +80,7 @@ HEADERS += \
 	include/Edit_Mode/Block_Controller.h \
 	include/Edit_Mode/Edit_Mode.h \
 	include/Edit_Mode/Grid.h \
+	include/Edit_Mode/Grid_Cell.h \
 	include/Effects_Controller.h \
 	include/GUI.h \
 	include/Game_Logic.h \
@@ -104,6 +105,7 @@ SOURCES += \
 	source/Edit_Mode/Block_Controller.cpp \
 	source/Edit_Mode/Edit_Mode.cpp \
 	source/Edit_Mode/Grid.cpp \
+	source/Edit_Mode/Grid_Cell.cpp \
 	source/Effects_Controller.cpp \
 	source/GUI.cpp \
 	source/Game_Logic.cpp \

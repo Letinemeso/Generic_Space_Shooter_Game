@@ -1,11 +1,15 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <Object_System/Rigid_Body_2D_Stub.h>
-#include <Collision_Detection/Intersection_Data.h>
-
 #include <Effects_Controller.h>
 
+
+namespace LPhys
+{
+    struct Intersection_Data;
+    class Rigid_Body_2D;
+    class Rigid_Body_2D__Stub;
+}
 
 namespace GSSG
 {
@@ -22,12 +26,20 @@ namespace GSSG
         Effects_Controller* m_effects_controller = nullptr;
         const LEti::Object_2D_Stub* m_on_death_effect = nullptr;
 
+    protected:
+        LPhys::Rigid_Body_2D* m_physics_module = nullptr;
+
     public:
         Entity();
         ~Entity();
 
-    protected:
-        inline LPhys::Physics_Module__Rigid_Body_2D* M_get_physics_module() { return (LPhys::Physics_Module__Rigid_Body_2D*)physics_module(); }
+    public:
+        void update() override;
+
+    public:
+        inline void set_physics_module(LPhys::Rigid_Body_2D* _ptr) { m_physics_module = _ptr; }
+        inline LPhys::Rigid_Body_2D* physics_module() { return m_physics_module; }
+        inline const LPhys::Rigid_Body_2D* physics_module() const { return m_physics_module; }
 
     public:
         inline void inject_effects_controller(Effects_Controller* _effects_controller) { m_effects_controller = _effects_controller; }
@@ -47,18 +59,23 @@ namespace GSSG
 
     };
 
-    class Entity_Stub : public LEti::Rigid_Body_2D_Stub
+    class Entity_Stub : public LEti::Object_2D_Stub
     {
     public:
         DECLARE_VARIABLE;
 
     public:
+        LPhys::Rigid_Body_2D__Stub* physics_module = nullptr;
+
         Effects_Controller* effects_controller = nullptr;
         const LEti::Object_2D_Stub* on_death_effect = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
         void M_init_constructed_product(LV::Variable_Base* _product) const override;
+
+    public:
+        ~Entity_Stub();
 
     };
 

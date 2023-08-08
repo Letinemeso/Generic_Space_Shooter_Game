@@ -218,7 +218,7 @@ void Block::apply_block_effect_on_construction(Space_Ship* /*_space_ship*/) cons
 
 void Block::apply_block_effect(Space_Ship* /*_space_ship*/, float /*_block_rotation*/, const glm::vec3& /*_block_position*/) const
 {
-//    LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+//    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 }
 
 
@@ -238,7 +238,7 @@ void Cabin::apply_block_effect_on_construction(Space_Ship* _space_ship) const
 
 void Cabin::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
 {
-//    LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+//    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 }
 
 
@@ -258,7 +258,7 @@ void Engine::apply_block_effect_on_construction(Space_Ship* _space_ship) const
 
 void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
 {
-    LPhys::Physics_Module__Rigid_Body_2D* pm = (LPhys::Physics_Module__Rigid_Body_2D*)_space_ship->physics_module();
+    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 
     glm::vec3 ss_engine_vector_normalized = glm::rotate(_space_ship->get_rotation_angle() + _block_rotation, _space_ship->get_rotation_axis()) * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     glm::vec3 linear_impulse = ss_engine_vector_normalized * acceleration;

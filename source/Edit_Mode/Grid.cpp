@@ -11,41 +11,37 @@ Grid::Grid()
 Grid::~Grid()
 {
     for(unsigned int i=0; i<m_cells.size(); ++i)
-        delete ((Cell&)m_cells[i]).object;
+        delete m_cells[i];
 }
 
 
 
-const Grid::Cell& Grid::M_get_cell_with_coordinates(unsigned int x, unsigned int y) const
+const Grid_Cell& Grid::M_get_cell_with_coordinates(unsigned int x, unsigned int y) const
 {
     unsigned int index = x * m_height + y;
-    return m_cells[index];
+    return *m_cells[index];
 }
 
-Grid::Cell& Grid::M_get_cell_with_coordinates(unsigned int x, unsigned int y)
+Grid_Cell& Grid::M_get_cell_with_coordinates(unsigned int x, unsigned int y)
 {
     unsigned int index = x * m_height + y;
-    return m_cells[index];
+    return *m_cells[index];
 }
 
 
-void Grid::M_reset_cell(Cell& _cell)
+void Grid::M_reset_cell(Grid_Cell& _cell)
 {
-    _cell.material = m_no_material;
-    M_set_object_visual_data(_cell.object, *m_no_material);
-    _cell.rotation_angle = 0.0f;
-    _cell.object->set_rotation_angle(_cell.rotation_angle);
+    _cell.set_material(m_no_material);
+    M_set_cell_visual_data(_cell, *m_no_material);
+    _cell.set_rotation_angle(0.0f);
 
-    _cell.object->update(0.0f);
+    _cell.update();
 }
 
 void Grid::M_reset_cells()
 {
     for(unsigned int i = 0; i < m_cells.size(); ++i)
-    {
-        Cell& cell = m_cells[i];
-        M_reset_cell(cell);
-    }
+        M_reset_cell(*m_cells[i]);
 }
 
 
@@ -55,44 +51,44 @@ void Grid::M_update_cells()
     {
         for(unsigned int y = 0; y < m_structure.height(); ++y)
         {
-            Cell& cell = M_get_cell_with_coordinates(x, y);
+            Grid_Cell& cell = M_get_cell_with_coordinates(x, y);
             const Space_Ship_Structure::Block_Data& block_data = m_structure.block(x, y);
 
-            if(cell.material == block_data.material && LEti::Math::floats_are_equal(cell.object->get_rotation_angle(), block_data.angle))
+            if(cell.material() == block_data.material && LEti::Math::floats_are_equal(cell.get_rotation_angle(), block_data.angle))
                 continue;
-            if(cell.material == m_no_material && block_data.material == nullptr)
+            if(cell.material() == m_no_material && block_data.material == nullptr)
                 continue;
 
             if(block_data.material)
-                M_set_object_visual_data(cell.object, *block_data.material);
+                M_set_cell_visual_data(cell, *block_data.material);
             else
-                M_set_object_visual_data(cell.object, *m_no_material);
+                M_set_cell_visual_data(cell, *m_no_material);
 
-            cell.material = block_data.material;
-            cell.object->set_rotation_angle(block_data.angle);
+            cell.set_material(block_data.material);
+            cell.set_rotation_angle(block_data.angle);
 
-            cell.object->update(0.0f);
+            cell.update();
         }
     }
 }
 
 
-void Grid::M_on_cell_pressed(Cell& _cell)
+void Grid::M_on_cell_pressed(Grid_Cell& _cell)
 {
     Space_Ship_Structure::Block_Data block_data;
     block_data.angle = m_cell_preview->get_rotation_angle();
     if(m_material != m_no_material)
         block_data.material = m_material;
 
-    if(!m_structure.place_block(_cell.index_x, _cell.index_y, block_data))
+    if(!m_structure.place_block(_cell.index_x(), _cell.index_y(), block_data))
         return;
 
     M_update_cells();
 }
 
-void Grid::M_set_object_visual_data(LEti::Object_2D* _object, const Block& _block)
+void Grid::M_set_cell_visual_data(Grid_Cell& _object, const Block& _block)
 {
-    LR::Default_Draw_Module_2D* draw_module = _object->draw_module();
+    LR::Default_Draw_Module_2D* draw_module = _object.draw_module();
 
     draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
     draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
@@ -118,8 +114,8 @@ void Grid::set_position(const glm::vec3 &_position)
             float vertical_stride = cell_size.y * (float)y;
             glm::vec3 total_stride = glm::vec3(horizontal_stride, vertical_stride, 0.0f) - total_size_halved + _position;
 
-            Cell& cell = m_cells[index];
-            cell.object->set_pos(total_stride);
+            Grid_Cell& cell = *m_cells[index];
+            cell.set_pos(total_stride);
         }
     }
 
@@ -144,9 +140,8 @@ void Grid::construct()
     m_collision_detector->unregister_all_objects();
 
     for(unsigned int i=0; i<m_cells.size(); ++i)
-        delete ((Cell&)m_cells[i]).object;
+        delete m_cells[i];
     m_cells.clear();
-    m_cells_map.clear();
 
     m_cells.resize(m_width * m_height);
 
@@ -162,22 +157,19 @@ void Grid::construct()
             float vertical_stride = cell_size.y * (float)y;
             glm::vec3 total_stride = glm::vec3(horizontal_stride, vertical_stride, 0.0f) - total_size_halved;
 
-            Cell cell;
-            cell.object = (LEti::Object_2D*)m_cell_stub->construct();
-            cell.object->set_pos(total_stride);
-            cell.index_x = x;
-            cell.index_y = y;
+            Grid_Cell* cell = (Grid_Cell*)m_cell_stub->construct();
+            cell->set_pos(total_stride);
+            cell->set_indices(x, y);
             m_cells.push(cell);
-            m_cells_map.insert(cell.object, &((Cell&)m_cells[m_cells.size() - 1]));
         }
     }
 
     for(unsigned int i=0; i<m_cells.size(); ++i)
-        m_collision_detector->register_object(((Cell&)m_cells[i]).object);
+        m_collision_detector->register_object((*m_cells[i]).physics_module());
 
     delete m_cell_preview;
-    m_cell_preview = (LEti::Object_2D*)m_cell_stub->construct();
-    M_set_object_visual_data(m_cell_preview, *m_no_material);
+    m_cell_preview = (Grid_Cell*)m_cell_stub->construct();
+    M_set_cell_visual_data(*m_cell_preview, *m_no_material);
 
     m_material = m_no_material;
 
@@ -186,7 +178,7 @@ void Grid::construct()
 
 void Grid::set_preview_visual_data(const Block& _block)
 {
-    M_set_object_visual_data(m_cell_preview, _block);
+    M_set_cell_visual_data(*m_cell_preview, _block);
 }
 
 void Grid::set_structure(const Space_Ship_Structure &_structure)
@@ -197,10 +189,10 @@ void Grid::set_structure(const Space_Ship_Structure &_structure)
 
 
 
-const Grid::Cell& Grid::get_cell(unsigned int _x, unsigned int _y) const
+const Grid_Cell& Grid::get_cell(unsigned int _x, unsigned int _y) const
 {
     unsigned int index = _x * m_height + _y;
-    return m_cells[index];
+    return *m_cells[index];
 }
 
 
@@ -254,11 +246,7 @@ void Grid::M_apply_input()
         return;
 
     for(LDS::List<LPhys::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
-    {
-        LDS::Map<const LEti::Object_2D*, Cell*>::Iterator cell_map_it = m_cells_map.find(it->first);
-        Cell* cell = *cell_map_it;
-        M_on_cell_pressed(*cell);
-    }
+        M_on_cell_pressed(*(Grid_Cell*)it->first->associated_object());
 }
 
 
@@ -268,10 +256,10 @@ void Grid::update()
     m_cell_preview->update_previous_state();
     m_cell_preview->update();
 
-    for(LDS::Vector<Cell>::Iterator it = m_cells.iterator(); !it.end_reached(); ++it)
+    for(unsigned int i=0; i<m_cells.size(); ++i)
     {
-        ((Cell&)(*it)).object->update_previous_state();
-        ((Cell&)(*it)).object->update();
+        ((Grid_Cell&)(*m_cells[i])).update_previous_state();
+        ((Grid_Cell&)(*m_cells[i])).update();
     }
 
     m_collision_detector->update();
@@ -279,8 +267,8 @@ void Grid::update()
 
     M_apply_input();
 
+    for(unsigned int i=0; i<m_cells.size(); ++i)
+        ((Grid_Cell&)(*m_cells[i])).draw(*m_renderer);
 
-    for(LDS::Vector<Cell>::Iterator it = m_cells.iterator(); !it.end_reached(); ++it)
-        ((Cell&)(*it)).object->draw(*m_renderer);
     m_cell_preview->draw(*m_renderer);
 }

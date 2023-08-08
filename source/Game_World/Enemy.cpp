@@ -1,5 +1,7 @@
 #include <Game_World/Enemy.h>
 
+#include <Modules/Rigid_Body_2D.h>  //  TODO: this is not right but ill fix this later
+
 using namespace GSSG;
 
 
@@ -93,11 +95,11 @@ LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
 LGL::BT_Execution_Result Enemy::M_accelerate()
 {
     glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
-    M_get_physics_module()->apply_linear_impulse(look_direction * LR::Event_Controller::get_dt());
+    physics_module()->apply_linear_impulse(look_direction * LR::Event_Controller::get_dt());
 
-    float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
+    float speed = LEti::Math::vector_length(physics_module()->velocity());
     if(speed > max_speed())
-        M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
+        physics_module()->set_velocity(LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()));
 
     return LGL::BT_Execution_Result::Success;
 }
@@ -131,14 +133,14 @@ LGL::BT_Execution_Result Enemy::M_rotate_away_from_enemy()
         if(!LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.2f))
             return LGL::BT_Execution_Result::In_Progress;
 
-        M_get_physics_module()->set_angular_velocity(0.0f);
+        physics_module()->set_angular_velocity(0.0f);
         return LGL::BT_Execution_Result::Success;
     }
 
-    M_get_physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
+    physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
 
     if(LEti::Geometry_2D::vec_points_left(look_direction, this_to_other_vec))
-        M_get_physics_module()->set_angular_velocity(-M_get_physics_module()->angular_velocity());
+        physics_module()->set_angular_velocity(-physics_module()->angular_velocity());
 
     return LGL::BT_Execution_Result::In_Progress;
 }
@@ -162,14 +164,14 @@ LGL::BT_Execution_Result Enemy::M_rotate_towards_enemy()
 
     if(LEti::Math::floats_are_equal(cos_between_vecs, 1.0f, 0.001f))
     {
-        M_get_physics_module()->set_angular_velocity(0.0f);
+        physics_module()->set_angular_velocity(0.0f);
         return LGL::BT_Execution_Result::Success;
     }
 
-    M_get_physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
+    physics_module()->set_angular_velocity( LEti::Math::PI - acos(cos_between_vecs) );
 
     if(LEti::Geometry_2D::vec_points_left(inverse_look_direction, this_to_other_vec))
-        M_get_physics_module()->set_angular_velocity(-M_get_physics_module()->angular_velocity());
+        physics_module()->set_angular_velocity(-physics_module()->angular_velocity());
 
     return LGL::BT_Execution_Result::In_Progress;
 }
@@ -182,11 +184,11 @@ LGL::BT_Execution_Result Enemy::M_get_close_to_enemy()
     if(dist < 150.0f)
         impulse *= -1.0f;
 
-    M_get_physics_module()->apply_linear_impulse(impulse * LR::Event_Controller::get_dt());
+    physics_module()->apply_linear_impulse(impulse * LR::Event_Controller::get_dt());
 
-    float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
+    float speed = LEti::Math::vector_length(physics_module()->velocity());
     if(speed > max_speed())
-        M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
+        physics_module()->set_velocity(LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()));
 
     if(dist < 150.0f || dist > 300.0f)
         return LGL::BT_Execution_Result::In_Progress;
@@ -231,35 +233,35 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 
     if(fabs(m_idle_rotation) > 0.0001f)
     {
-        M_get_physics_module()->apply_rotation(m_idle_rotation * LR::Event_Controller::get_dt());
-        if(M_get_physics_module()->angular_velocity() > max_rotation_speed())
-            M_get_physics_module()->set_angular_velocity(max_rotation_speed());
+        physics_module()->apply_rotation(m_idle_rotation * LR::Event_Controller::get_dt());
+        if(physics_module()->angular_velocity() > max_rotation_speed())
+            physics_module()->set_angular_velocity(max_rotation_speed());
     }
-    else if(!LEti::Math::floats_are_equal(M_get_physics_module()->angular_velocity(), 0.0f))
+    else if(!LEti::Math::floats_are_equal(physics_module()->angular_velocity(), 0.0f))
     {
-        float multiplier = M_get_physics_module()->angular_velocity() < 0.0f ? 1.0f : -1.0f;
-        M_get_physics_module()->set_angular_velocity(M_get_physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * LR::Event_Controller::get_dt()));
-        if(fabs(M_get_physics_module()->angular_velocity()) < rotation_acceleration() * LR::Event_Controller::get_dt())
-            M_get_physics_module()->set_angular_velocity(0.0f);
+        float multiplier = physics_module()->angular_velocity() < 0.0f ? 1.0f : -1.0f;
+        physics_module()->set_angular_velocity(physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * LR::Event_Controller::get_dt()));
+        if(fabs(physics_module()->angular_velocity()) < rotation_acceleration() * LR::Event_Controller::get_dt())
+            physics_module()->set_angular_velocity(0.0f);
     }
 
     if(m_idle_acceleration > 0.0001f)
     {
         glm::vec3 impulse = LEti::Math::rotate_vector({m_idle_acceleration, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LR::Event_Controller::get_dt();
-        M_get_physics_module()->apply_linear_impulse(impulse);
+        physics_module()->apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
+        float speed = LEti::Math::vector_length(physics_module()->velocity());
         if(speed > max_speed())
-            M_get_physics_module()->set_velocity(LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()));
+            physics_module()->set_velocity(LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()));
     }
-    else if(!LEti::Math::floats_are_equal(LEti::Math::vector_length(M_get_physics_module()->velocity()), 0.0f))
+    else if(!LEti::Math::floats_are_equal(LEti::Math::vector_length(physics_module()->velocity()), 0.0f))
     {
-        glm::vec3 impulse = -LEti::Math::extend_vector_to_length(M_get_physics_module()->velocity(), max_speed()) * LR::Event_Controller::get_dt();
-        M_get_physics_module()->apply_linear_impulse(impulse);
+        glm::vec3 impulse = -LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()) * LR::Event_Controller::get_dt();
+        physics_module()->apply_linear_impulse(impulse);
 
-        float speed = LEti::Math::vector_length(M_get_physics_module()->velocity());
+        float speed = LEti::Math::vector_length(physics_module()->velocity());
         if(speed < LEti::Math::vector_length(impulse))
-            M_get_physics_module()->set_velocity({0.0f, 0.0f, 0.0f});
+            physics_module()->set_velocity({0.0f, 0.0f, 0.0f});
     }
 
     return LGL::BT_Execution_Result::Success;
@@ -281,9 +283,9 @@ void Enemy::apply_input()
 }
 
 
-void Enemy::update(float _ratio)
+void Enemy::update()
 {
-    Space_Ship::update(_ratio);
+    Space_Ship::update();
 }
 
 

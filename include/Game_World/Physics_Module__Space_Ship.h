@@ -1,7 +1,7 @@
 #ifndef PHYSICS_MODULE__SPACE_SHIP_H
 #define PHYSICS_MODULE__SPACE_SHIP_H
 
-#include <Modules/Physics_Module__Rigid_Body_2D.h>
+#include <Modules/Rigid_Body_2D.h>
 
 #include <Game_World/Physical_Model__Space_Ship.h>
 
@@ -9,7 +9,7 @@
 namespace GSSG
 {
 
-    class Physics_Module__Space_Ship : public LPhys::Physics_Module__Rigid_Body_2D
+    class Physics_Module__Space_Ship : public LPhys::Rigid_Body_2D
     {
     public:
         DECLARE_VARIABLE;
