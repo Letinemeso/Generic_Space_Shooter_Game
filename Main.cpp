@@ -422,9 +422,10 @@ int main()
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
-    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses = new float[2];
-    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[0] = 2.5f;
-    ((LPhys::Rigid_Body_2D__Stub*)projectile_stub.physics_module)->masses[1] = 2.5f;
+    delete[] projectile_stub.physics_module->masses;
+    projectile_stub.physics_module->masses = new float[2];
+    projectile_stub.physics_module->masses[0] = 2.5f;
+    projectile_stub.physics_module->masses[1] = 2.5f;
 
     LEti::Object_2D_Stub explosion_stub;
     explosion_stub.draw_module = new LR::Draw_Module__Animation__Stub;
