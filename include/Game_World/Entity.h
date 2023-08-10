@@ -1,18 +1,36 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <Collision_Detection/Intersection_Data.h>
+
+#include <Game_World/Entity_Physics_Module.h>
 #include <Effects_Controller.h>
 
 
-namespace LPhys
-{
-    struct Intersection_Data;
-    class Rigid_Body_2D;
-    class Rigid_Body_2D__Stub;
-}
-
 namespace GSSG
 {
+
+    class Entity_Physics_Module_Stub;
+
+    class Entity_Stub : public LEti::Object_2D_Stub
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    public:
+        Entity_Physics_Module_Stub* physics_module = nullptr;
+
+        Effects_Controller* effects_controller = nullptr;
+        const LEti::Object_2D_Stub* on_death_effect = nullptr;
+
+    protected:
+        LV::Variable_Base* M_construct_product() const override;
+        void M_init_constructed_product(LV::Variable_Base* _product) const override;
+
+    public:
+        ~Entity_Stub();
+
+    };
 
     class Entity : public LEti::Object_2D
     {
@@ -56,26 +74,6 @@ namespace GSSG
         virtual void on_collision(const LPhys::Intersection_Data& /*_id*/) { }
         virtual void on_other_entity_death(const Entity* _entity_to_delete);
         virtual void on_death();
-
-    };
-
-    class Entity_Stub : public LEti::Object_2D_Stub
-    {
-    public:
-        DECLARE_VARIABLE;
-
-    public:
-        LPhys::Rigid_Body_2D__Stub* physics_module = nullptr;
-
-        Effects_Controller* effects_controller = nullptr;
-        const LEti::Object_2D_Stub* on_death_effect = nullptr;
-
-    protected:
-        LV::Variable_Base* M_construct_product() const override;
-        void M_init_constructed_product(LV::Variable_Base* _product) const override;
-
-    public:
-        ~Entity_Stub();
 
     };
 

@@ -91,7 +91,11 @@ void GUI::update_prev_state()
 void GUI::update()
 {
     for(auto it = m_objects.begin(); !it.end_reached(); ++it)
-        (*it).pm->update(LR::Event_Controller::get_dt());
+    {
+//        if((*it).pm)
+//            (*it).pm->update();
+        (*it).object->update();
+    }
 
     m_collision_detector.update();
 }

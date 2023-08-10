@@ -6,9 +6,9 @@ CONFIG -= qt
 unix {
     LIBS += "../L_Utility/libL_Utility.a"
     LIBS += "../L_Variable/libL_Variable.a"
-    LIBS += "../LEti_Engine/libLEti_Engine.a"
     LIBS += "../L_Renderer/libL_Renderer.a"
     LIBS += "../L_Physics/libL_Physics.a"
+    LIBS += "../LEti_Engine/libLEti_Engine.a"
     LIBS += "../L_Gamedev_Lib/libL_Gamedev_Lib.a"
 
     LIBS += "../../LEti_Engine/OpenGL/Linux/lib/libglfw3.a"
@@ -23,9 +23,9 @@ unix {
 win32 {
     LIBS += "../L_Utility/debug/libL_Utility.a"
     LIBS += "../L_Variable/debug/libL_Variable.a"
-    LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
     LIBS += "../L_Renderer/debug/libL_Renderer.a"
     LIBS += "../L_Physics/debug/libL_Physics.a"
+    LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
     LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
 
     LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
@@ -49,7 +49,6 @@ INCLUDEPATH += "../L_Gamedev_Lib/include/"
 INCLUDEPATH += "../LEti_Engine/include/"
 INCLUDEPATH += "../L_Renderer/include/"
 INCLUDEPATH += "../L_Physics/include/"
-INCLUDEPATH += "../L_/include/"
 
 
 DISTFILES += \
@@ -90,6 +89,7 @@ HEADERS += \
 	include/Game_World/Enemy_Generator.h \
 	include/Game_World/Entity.h \
 	include/Game_World/Entity_Manager.h \
+	include/Game_World/Entity_Physics_Module.h \
 	include/Game_World/Game_World.h \
 	include/Game_World/Physical_Model__Space_Ship.h \
 	include/Game_World/Physics_Module__Space_Ship.h \
@@ -115,6 +115,7 @@ SOURCES += \
 	source/Game_World/Enemy_Generator.cpp \
 	source/Game_World/Entity.cpp \
 	source/Game_World/Entity_Manager.cpp \
+	source/Game_World/Entity_Physics_Module.cpp \
 	source/Game_World/Game_World.cpp \
 	source/Game_World/Physical_Model__Space_Ship.cpp \
 	source/Game_World/Physics_Module__Space_Ship.cpp \

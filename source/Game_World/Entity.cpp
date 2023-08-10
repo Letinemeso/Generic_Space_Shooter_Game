@@ -24,15 +24,16 @@ void Entity_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 
     Entity* result = (Entity*)_product;
 
-    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)physics_module->construct();
+    Entity_Physics_Module* pm = (Entity_Physics_Module*)physics_module->construct();
     pm->set_on_alignment_func([result, pm]()
     {
         result->draw_module()->move_raw(-pm->calculate_raw_center_of_mass());
     });
     pm->align_to_center_of_mass();
 
+    result->add_module(pm);
     result->set_physics_module(pm);
-    pm->set_associated_object(result);
+    pm->set_owner(result);
 
     result->inject_effects_controller(effects_controller);
     result->set_on_death_effect(on_death_effect);
@@ -58,14 +59,15 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-    delete m_physics_module;
+
 }
 
 
 
 void Entity::update()
 {
-    m_physics_module->update(LR::Event_Controller::get_dt());
+    LEti::Object_2D::update();
+//    m_physics_module->update(LR::Event_Controller::get_dt());
 }
 
 

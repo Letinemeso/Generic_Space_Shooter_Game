@@ -411,14 +411,14 @@ int main()
 
     GSSG::Enemy_Stub enemy_entity_stub;
     enemy_entity_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
-    enemy_entity_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
+    enemy_entity_stub.physics_module = new GSSG::Entity_Physics_Module_Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
     enemy_entity_stub.on_values_assigned();
     ((LR::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
 
     GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LR::Draw_Module__Animation__Stub;
-    projectile_stub.physics_module = new LPhys::Rigid_Body_2D__Stub;
+    projectile_stub.physics_module = new GSSG::Entity_Physics_Module_Stub;
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
@@ -484,7 +484,7 @@ int main()
 
     GSSG::Grid_Cell_Stub em_cell_stub;
     em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
-    em_cell_stub.physics_module = new LPhys::Physics_Module_2D_Stub;
+    em_cell_stub.physics_module = new GSSG::Grid_Cell_Physics_Module_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();
 

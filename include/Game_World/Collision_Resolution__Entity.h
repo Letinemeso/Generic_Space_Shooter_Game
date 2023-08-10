@@ -4,6 +4,7 @@
 #include <Collision_Resolution/Collision_Resolution__Rigid_Body_2D.h>
 
 #include <Game_World/Entity.h>
+#include <Game_World/Entity_Physics_Module.h>
 
 
 namespace GSSG

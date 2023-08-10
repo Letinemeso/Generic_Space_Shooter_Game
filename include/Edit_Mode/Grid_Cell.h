@@ -11,13 +11,15 @@
 namespace GSSG
 {
 
+    class Grid_Cell_Physics_Module_Stub;
+
     class Grid_Cell_Stub : public LEti::Object_2D_Stub
     {
     public:
         DECLARE_VARIABLE;
 
     public:
-        LPhys::Physics_Module_2D_Stub* physics_module = nullptr;
+        Grid_Cell_Physics_Module_Stub* physics_module = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
@@ -57,6 +59,30 @@ namespace GSSG
         inline unsigned int index_x() const { return m_index_x; }
         inline unsigned int index_y() const { return m_index_y; }
         inline const Block* material() const { return m_material; }
+
+    };
+
+    class Grid_Cell_Physics_Module : public LPhys::Physics_Module_2D
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    private:
+        Grid_Cell* m_owner_grid_cell = nullptr;
+
+    public:
+        inline void set_owner(Grid_Cell* _owner) { m_owner_grid_cell = _owner; }
+        inline Grid_Cell* owner() const { return m_owner_grid_cell; }
+
+    };
+
+    class Grid_Cell_Physics_Module_Stub : public LPhys::Physics_Module_2D_Stub
+    {
+    public:
+        DECLARE_VARIABLE;
+
+    protected:
+        LV::Variable_Base* M_construct_product() const override;
 
     };
 

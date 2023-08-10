@@ -29,6 +29,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     product->set_draw_module(dm);
     product->set_physics_module(pm);
+    product->add_module(pm);
 
     product->set_structure(structure);
 
@@ -45,7 +46,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->set_rotation_axis({0.0f, 0.0f, 1.0f});
     product->set_rotation_angle(LEti::Math::HALF_PI);
 
-    pm->set_associated_object(product);
+    pm->set_owner(product);
 
 //    product->set_on_update_func([product](float _ratio)
 //    {
@@ -212,7 +213,7 @@ glm::vec3 Player::M_calculate_block_global_pos(unsigned int _x, unsigned int _y)
     glm::vec3 block_pos(block_scale.x * (float)_x, block_scale.y * (float)_y, 0.0f);
 //    block_pos -= glm::vec3(0.5f, 0.5f, 0.0f);
     block_pos -= m_block_pos_offset;
-    block_pos = (m_current_state.rotation_matrix * m_current_state.scale_matrix) * glm::vec4(block_pos, 1.0f);
+    block_pos = (m_current_state.rotation_matrix() * m_current_state.scale_matrix()) * glm::vec4(block_pos, 1.0f);
     block_pos += get_pos();
 
     return block_pos;
@@ -347,7 +348,7 @@ void Player::on_collision(const LPhys::Intersection_Data& _id)
 {
     Space_Ship::on_collision(_id);
 
-    unsigned int hit_polygon_index = (_id.first->associated_object() == this ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
+    unsigned int hit_polygon_index = (_id.first == physics_module() ? _id.first_collided_polygon_index : _id.second_collided_polygon_index);
 
     Polygon__Space_Ship* hit_polygon = (Polygon__Space_Ship*)(physics_module()->get_physical_model()->get_polygon(hit_polygon_index));
 

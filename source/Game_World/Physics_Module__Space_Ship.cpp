@@ -3,7 +3,7 @@
 using namespace GSSG;
 
 
-INIT_FIELDS(GSSG::Physics_Module__Space_Ship, LPhys::Rigid_Body_2D)
+INIT_FIELDS(GSSG::Physics_Module__Space_Ship, GSSG::Entity_Physics_Module)
 FIELDS_END
 
 

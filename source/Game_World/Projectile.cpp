@@ -32,13 +32,6 @@ void Projectile::revert_to_previous_state()
     m_time_until_death = m_time_until_death_prev_state;
 }
 
-void Projectile::revert_to_ratio_between_frames(float _ratio)
-{
-    Entity::revert_to_ratio_between_frames(_ratio);
-
-    m_time_until_death = m_time_until_death_prev_state + ((m_time_until_death - m_time_until_death_prev_state) * _ratio);
-}
-
 void Projectile::update_previous_state()
 {
     Entity::update_previous_state();
@@ -61,7 +54,8 @@ void Projectile::on_collision(const LPhys::Intersection_Data& _id)
 
     m_time_until_death = -1.0f;
 
-    Entity* with = (Entity*)(_id.first->associated_object() == this ? _id.second->associated_object() : _id.first->associated_object());
+//    Entity* with = (Entity*)(_id.first->associated_object() == this ? _id.second->associated_object() : _id.first->associated_object());
+    Entity_Physics_Module* with = (Entity_Physics_Module*)(_id.first == physics_module() ? _id.second : _id.first );
 
     //  TODO: think of better way to inform player
     //  IDEA: make another projectile derived from this and override this method
@@ -69,7 +63,7 @@ void Projectile::on_collision(const LPhys::Intersection_Data& _id)
     if(!maybe_player)
         return;
 
-    if(!LV::cast_variable<Enemy>(with))
+    if(!LV::cast_variable<Enemy>(with->owner()))
         return;
 
     maybe_player->set_eliminations_amount(maybe_player->eliminations_amount() + 1);

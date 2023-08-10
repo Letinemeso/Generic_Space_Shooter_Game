@@ -25,7 +25,6 @@ namespace GSSG
 
     public:
         void revert_to_previous_state() override;
-        void revert_to_ratio_between_frames(float _ratio) override;
         void update_previous_state() override;
         void update() override;
 

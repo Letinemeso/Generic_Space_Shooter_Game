@@ -246,7 +246,7 @@ void Grid::M_apply_input()
         return;
 
     for(LDS::List<LPhys::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)
-        M_on_cell_pressed(*(Grid_Cell*)it->first->associated_object());
+        M_on_cell_pressed(*((Grid_Cell_Physics_Module*)it->first)->owner());
 }
 
 

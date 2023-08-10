@@ -21,10 +21,11 @@ void Grid_Cell_Stub::M_init_constructed_product(LV::Variable_Base* _product) con
 
     Grid_Cell* result = (Grid_Cell*)_product;
 
-    LPhys::Physics_Module_2D* pm = (LPhys::Physics_Module_2D*)physics_module->construct();
+    Grid_Cell_Physics_Module* pm = (Grid_Cell_Physics_Module*)physics_module->construct();
 
+    result->add_module(pm);
     result->set_physics_module(pm);
-    pm->set_associated_object(result);
+    pm->set_owner(result);
 }
 
 
@@ -48,4 +49,21 @@ Grid_Cell::Grid_Cell()
 Grid_Cell::~Grid_Cell()
 {
     delete m_physics_module;
+}
+
+
+
+INIT_FIELDS(GSSG::Grid_Cell_Physics_Module, LPhys::Physics_Module_2D)
+FIELDS_END
+
+
+
+INIT_FIELDS(GSSG::Grid_Cell_Physics_Module_Stub, LPhys::Physics_Module_2D_Stub)
+FIELDS_END
+
+
+
+LV::Variable_Base* Grid_Cell_Physics_Module_Stub::M_construct_product() const
+{
+    return new Grid_Cell_Physics_Module;
 }
