@@ -93,6 +93,11 @@ void Background::M_reconfigure()
 
     delete m_draw_module;
     m_draw_module = new LR::Default_Draw_Module_2D;
+    m_draw_module->set_renderer(m_renderer);
+    m_draw_module->set_transformation_data(&m_transformation_data);
+
+    m_transformation_data.set_scale({1.0f, 1.0f, 1.0f});
+    m_transformation_data.set_rotation({0.0f, 0.0f, 0.0f});
 
     m_draw_module->init_vertices(coords, total_images_amount * 18);
     m_draw_module->init_colors(colors, total_images_amount * 24);
@@ -119,12 +124,8 @@ void Background::update()
     stride.x = (m_picture->width() * full_stride_x) - (LR::Window_Controller::get_window_data().width / 2.0f);
     stride.y = (m_picture->height() * full_stride_y) - (LR::Window_Controller::get_window_data().height / 2.0f);
 
-    glm::mat4x4 move_matrix{
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        stride.x, stride.y, 0.0f, 1.0f
-    };
+    m_transformation_data.set_position({stride.x, stride.y, 0.0f});
+    m_transformation_data.update_matrix();
 
-    m_draw_module->update(move_matrix);
+    m_draw_module->update();
 }

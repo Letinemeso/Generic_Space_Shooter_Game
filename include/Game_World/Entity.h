@@ -4,6 +4,7 @@
 #include <Collision_Detection/Intersection_Data.h>
 
 #include <Game_World/Entity_Physics_Module.h>
+#include <Game_World/Visual_Effect.h>
 #include <Effects_Controller.h>
 
 
@@ -19,9 +20,10 @@ namespace GSSG
 
     public:
         Entity_Physics_Module_Stub* physics_module = nullptr;
+        LR::Default_Draw_Module_2D_Stub* draw_module = nullptr;
 
         Effects_Controller* effects_controller = nullptr;
-        const LEti::Object_2D_Stub* on_death_effect = nullptr;
+        const Visual_Effect_Stub* on_death_effect = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
@@ -42,7 +44,7 @@ namespace GSSG
 
     protected:
         Effects_Controller* m_effects_controller = nullptr;
-        const LEti::Object_2D_Stub* m_on_death_effect = nullptr;
+        const Visual_Effect_Stub* m_on_death_effect = nullptr;
 
     protected:
         LPhys::Rigid_Body_2D* m_physics_module = nullptr;
@@ -62,7 +64,7 @@ namespace GSSG
     public:
         inline void inject_effects_controller(Effects_Controller* _effects_controller) { m_effects_controller = _effects_controller; }
 
-        inline void set_on_death_effect(const LEti::Object_2D_Stub* _on_death_effect) { m_on_death_effect = _on_death_effect; }
+        inline void set_on_death_effect(const Visual_Effect_Stub* _on_death_effect) { m_on_death_effect = _on_death_effect; }
         inline void set_parent(const Entity* _parent) { m_parent = _parent; }
         inline const Entity* parent() const { return m_parent; }
 

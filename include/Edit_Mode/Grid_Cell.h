@@ -20,6 +20,7 @@ namespace GSSG
 
     public:
         Grid_Cell_Physics_Module_Stub* physics_module = nullptr;
+        LR::Default_Draw_Module_2D_Stub* draw_module = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
@@ -52,6 +53,7 @@ namespace GSSG
         inline const LPhys::Physics_Module_2D* physics_module() const { return m_physics_module; }
 
     public:
+        LST::Function<void(const float*, unsigned int, const float*, unsigned int, const float*, unsigned int)> set_visual_data;
         inline void set_indices(unsigned int _x, unsigned int _y) { m_index_x = _x; m_index_y = _y; }
         inline void set_material(const Block* _material) { m_material = _material; }
 

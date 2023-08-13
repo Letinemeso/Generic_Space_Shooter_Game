@@ -8,6 +8,7 @@ using namespace GSSG;
 
 INIT_FIELDS(GSSG::Entity_Stub, LEti::Object_2D_Stub)
 
+ADD_CHILD("draw_module", *draw_module)
 ADD_CHILD("physics_module", *physics_module)
 
 FIELDS_END
@@ -24,19 +25,23 @@ void Entity_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 
     Entity* result = (Entity*)_product;
 
+    LR::Default_Draw_Module_2D* dm = (LR::Default_Draw_Module_2D*)draw_module->construct();
+
     Entity_Physics_Module* pm = (Entity_Physics_Module*)physics_module->construct();
-    pm->set_on_alignment_func([result, pm]()
+    pm->set_on_alignment_func([pm, dm]()
     {
-        result->draw_module()->move_raw(-pm->calculate_raw_center_of_mass());
+        dm->move_raw(-pm->calculate_raw_center_of_mass());
     });
     pm->align_to_center_of_mass();
 
-    result->add_module(pm);
     result->set_physics_module(pm);
     pm->set_owner(result);
 
     result->inject_effects_controller(effects_controller);
     result->set_on_death_effect(on_death_effect);
+
+    result->add_module(pm);
+    result->add_module(dm);
 }
 
 
@@ -83,7 +88,7 @@ void Entity::on_death()
     if(!m_effects_controller || !m_on_death_effect)
         return;
 
-    LEti::Object_2D* effect = (LEti::Object_2D*)m_on_death_effect->construct();
+    Visual_Effect* effect = (Visual_Effect*)m_on_death_effect->construct();
     effect->set_scale(get_scale()/* * 2.0f*/);
     effect->set_pos(get_pos());
     effect->set_rotation_angle(get_rotation_angle());

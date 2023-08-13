@@ -16,7 +16,7 @@ void Player_Controller::M_create_player()
 
     m_entity_manager->add_entity(m_player);
 
-    m_player_respawn_tf->draw_module()->set_visible(false);
+//    m_player_respawn_tf->draw_module()->set_visible(false);
 }
 
 
@@ -35,7 +35,7 @@ void Player_Controller::notify_about_player_death()
     m_player = nullptr;
     m_respawn_timer.start(1.0f);
     m_player_respawn_tf->set_text("Respawning in 5...");
-    m_player_respawn_tf->draw_module()->set_visible(true);
+//    m_player_respawn_tf->draw_module()->set_visible(true);
 }
 
 void Player_Controller::update()

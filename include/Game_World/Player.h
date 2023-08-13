@@ -3,6 +3,7 @@
 
 
 #include <Data_Structures/List.h>
+#include <Stuff/Function_Wrapper.h>
 
 #include <Event_Controller/Event_Controller.h>
 #include <Object_System/Text_Field.h>
@@ -13,6 +14,7 @@
 #include <Game_World/Projectile.h>
 #include <Game_World/Space_Ship.h>
 #include <Game_World/Physics_Module__Space_Ship.h>
+#include <Game_World/Visual_Effect.h>
 
 
 namespace GSSG
@@ -28,9 +30,10 @@ namespace GSSG
     public:
         Space_Ship_Structure structure;
         Effects_Controller* effects_controller = nullptr;
-        const LEti::Object_2D_Stub* on_death_effect = nullptr;
+        const Visual_Effect_Stub* on_death_effect = nullptr;
         const LR::Picture* picture = nullptr;
         LR::Camera_2D* camera = nullptr;
+        LR::Renderer* renderer = nullptr;
 
     protected:
         LV::Variable_Base* M_construct_product() const override;
@@ -84,6 +87,8 @@ namespace GSSG
 
         inline const Space_Ship_Structure& initial_structure() const { return m_initial_structure; }
         inline const Space_Ship_Structure& current_structure() const { return m_current_structure; }
+
+        LST::Function<void(const float*, unsigned int, const float*, unsigned int, const float*, unsigned int)> on_reconstruction;
 
         void reconstruct();
 

@@ -5,6 +5,10 @@ using namespace GSSG;
 
 void Game_World::update()
 {
+    m_gui->update();
+
+    m_background->update();
+
     m_entity_manager->update_entities_prev_state();
     m_entity_manager->apply_entities_input();
     m_entity_manager->update_entities();
@@ -19,11 +23,7 @@ void Game_World::update()
     m_player_controller->update();
     m_effects_controller->update();
 
-    m_gui->update();
-
-    m_background->update();
-
-    m_renderer->draw(*m_background->draw_module());
+//    m_renderer->draw(*m_background->draw_module());
 
     m_entity_manager->draw_entities();
     m_effects_controller->draw();

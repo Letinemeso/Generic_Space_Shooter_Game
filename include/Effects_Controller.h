@@ -4,8 +4,8 @@
 #include <Data_Structures/List.h>
 
 #include <Renderer/Renderer.h>
-#include <Object_System/Object_2D.h>
-#include <Draw_Modules/Draw_Module__Animation.h>
+
+#include <Game_World/Visual_Effect.h>
 
 
 namespace GSSG
@@ -17,7 +17,7 @@ namespace GSSG
         const LR::Renderer* m_renderer = nullptr;
 
     private:
-        LDS::List<LEti::Object_2D*> m_effect_objects;
+        LDS::List<Visual_Effect*> m_effect_objects;
 
     public:
         Effects_Controller();
@@ -29,7 +29,7 @@ namespace GSSG
         inline void inject_renderer(LR::Renderer* _renderer) { m_renderer = _renderer; }
 
     public:
-        void add_object(LEti::Object_2D* _object);
+        void add_object(Visual_Effect* _object);
 
     public:
         void update();

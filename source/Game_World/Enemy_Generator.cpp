@@ -49,12 +49,14 @@ void Enemy_Generator::spawn_enemy() const
     ((LPhys::Rigid_Body_2D*)enemy->physics_module())->set_mass_multiplier(3.0f * (float)random_scale);
     enemy->set_rotation_angle(LEti::Math::DOUBLE_PI / 360.0f * (float)LEti::Math::random_number(0, 360));
 
-    for(unsigned int i=0; i<3; ++i)
-    {
-        float random_color = (float)LEti::Math::random_number(1, 11) / 10.0f;
-        for(unsigned int c=i; c<enemy->draw_module()->colors().size(); c += 4)
-            enemy->draw_module()->colors()[c] = random_color;
-    }
+    //  color randomization will have to wait
+
+//    for(unsigned int i=0; i<3; ++i)
+//    {
+//        float random_color = (float)LEti::Math::random_number(1, 11) / 10.0f;
+//        for(unsigned int c=i; c<enemy->draw_module()->colors().size(); c += 4)
+//            enemy->draw_module()->colors()[c] = random_color;
+//    }
 
     enemy->update_previous_state();
     enemy->update();

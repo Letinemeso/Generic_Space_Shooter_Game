@@ -29,6 +29,7 @@
 #include <Game_World/Player.h>
 #include <Game_World/Enemy.h>
 #include <Game_World/Game_World.h>
+#include <Game_World/Visual_Effect.h>
 #include <GUI.h>
 #include <Effects_Controller.h>
 #include <Edit_Mode/Edit_Mode.h>
@@ -353,6 +354,7 @@ int main()
 
     GSSG::Background background;
     background.inject_camera(&camera);
+    background.inject_renderer(&renderer);
     background.set_picture(LR::Picture_Manager::get_picture("background_texture"));
 
     GSSG::Entity_Manager entity_manager;
@@ -414,7 +416,8 @@ int main()
     enemy_entity_stub.physics_module = new GSSG::Entity_Physics_Module_Stub;
     enemy_entity_stub.assign_values(reader.get_stub("triangle"));
     enemy_entity_stub.on_values_assigned();
-    ((LR::Default_Draw_Module_2D_Stub*)enemy_entity_stub.draw_module)->texture_name = "triangle_texture";
+    enemy_entity_stub.draw_module->texture_name = "triangle_texture";
+    enemy_entity_stub.draw_module->renderer = &renderer;
 
     GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LR::Draw_Module__Animation__Stub;
@@ -422,13 +425,15 @@ int main()
     projectile_stub.assign_values(reader.get_stub("projectile"));
     projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
+    projectile_stub.draw_module->renderer = &renderer;
     delete[] projectile_stub.physics_module->masses;
     projectile_stub.physics_module->masses = new float[2];
     projectile_stub.physics_module->masses[0] = 2.5f;
     projectile_stub.physics_module->masses[1] = 2.5f;
 
-    LEti::Object_2D_Stub explosion_stub;
+    GSSG::Visual_Effect_Stub explosion_stub;
     explosion_stub.draw_module = new LR::Draw_Module__Animation__Stub;
+    explosion_stub.draw_module->renderer = &renderer;
     explosion_stub.assign_values(reader.get_stub("explosion"));
     explosion_stub.on_values_assigned();
 
@@ -454,6 +459,7 @@ int main()
     player_stub.effects_controller = &effects_controller;
     player_stub.on_death_effect = &explosion_stub;
     player_stub.picture = LR::Picture_Manager::get_picture("edit_mode_atlas");
+    player_stub.renderer = &renderer;
     enemy_entity_stub.effects_controller = &effects_controller;
     enemy_entity_stub.on_death_effect = &explosion_stub;
     projectile_stub.effects_controller = &effects_controller;
@@ -485,6 +491,7 @@ int main()
 
     GSSG::Grid_Cell_Stub em_cell_stub;
     em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
+    em_cell_stub.draw_module->renderer = &renderer;
     em_cell_stub.physics_module = new GSSG::Grid_Cell_Physics_Module_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();

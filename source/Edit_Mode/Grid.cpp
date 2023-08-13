@@ -88,11 +88,13 @@ void Grid::M_on_cell_pressed(Grid_Cell& _cell)
 
 void Grid::M_set_cell_visual_data(Grid_Cell& _object, const Block& _block)
 {
-    LR::Default_Draw_Module_2D* draw_module = _object.draw_module();
+    _object.set_visual_data(_block.get_coords(), _block.get_size().coords, _block.get_colors(), _block.get_size().colors, _block.get_texture_coords(), _block.get_size().texture_coords);
 
-    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
-    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
-    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
+//    LR::Default_Draw_Module_2D* draw_module = _object.draw_module();
+
+//    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
+//    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
+//    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
 }
 
 

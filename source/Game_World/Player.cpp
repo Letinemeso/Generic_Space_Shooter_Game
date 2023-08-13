@@ -23,21 +23,31 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     LR::Default_Draw_Module_2D* dm = new LR::Default_Draw_Module_2D;
     dm->assign_values({});
     dm->on_values_assigned();
+    dm->set_texture(picture);
+    dm->set_renderer(renderer);
     Physics_Module__Space_Ship* pm = new Physics_Module__Space_Ship;
     pm->assign_values({});
     pm->on_values_assigned();
 
-    product->set_draw_module(dm);
+    pm->set_on_alignment_func([pm, dm]()
+    {
+        dm->move_raw(-pm->calculate_raw_center_of_mass());
+    });
+
+    product->on_reconstruction = [dm](const float* _coords, unsigned int _coords_amount, const float* _colors, unsigned int _colors_amount, const float* _t_coords, unsigned int _t_coords_amount)
+    {
+        dm->init_vertices(_coords, _coords_amount);
+        dm->init_colors(_colors, _colors_amount);
+        dm->init_texture(dm->texture().get_picture(), _t_coords, _t_coords_amount);
+    };
+
     product->set_physics_module(pm);
-    product->add_module(pm);
 
     product->set_structure(structure);
 
     product->inject_camera(camera);
     product->inject_effects_controller(effects_controller);
     product->set_on_death_effect(on_death_effect);
-
-    product->draw_module()->set_texture(picture);
 
     product->reconstruct();
 
@@ -55,6 +65,9 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 //        product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
 //        product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
 //    });
+
+    product->add_module(pm);
+    product->add_module(dm);
 
     product->update();
     product->update_previous_state();
@@ -159,12 +172,10 @@ void Player::reconstruct()
         }
     }
 
-    LR::Default_Draw_Module_2D* dm = (LR::Default_Draw_Module_2D*)draw_module();
-    Physics_Module__Space_Ship* pm = (Physics_Module__Space_Ship*)physics_module();
+    on_reconstruction(coords, arrays_sizes.coords, colors, arrays_sizes.colors, t_coords, arrays_sizes.texture_coords);
 
-    dm->init_vertices(coords, arrays_sizes.coords);
-    dm->init_colors(colors, arrays_sizes.colors);
-    dm->init_texture(dm->texture().get_picture(), t_coords, arrays_sizes.texture_coords);
+//    LR::Default_Draw_Module_2D* dm = (LR::Default_Draw_Module_2D*)draw_module();
+    Physics_Module__Space_Ship* pm = (Physics_Module__Space_Ship*)physics_module();
 
     pm->init_physical_model();
     pm->setup_base_data(phys_coords, arrays_sizes.phys_coords, collision_permissions);
@@ -184,10 +195,6 @@ void Player::reconstruct()
 
     m_block_pos_offset = pm->calculate_raw_center_of_mass();
 
-    pm->set_on_alignment_func([this, pm]()
-    {
-        draw_module()->move_raw(-pm->calculate_raw_center_of_mass());
-    });
     pm->align_to_center_of_mass();
 
     for(unsigned int x=0; x<current_structure().width(); ++x)
@@ -224,7 +231,7 @@ void Player::M_create_block_destruction_effect(unsigned int _x, unsigned int _y)
     glm::vec3 effect_scale(1.0f / m_current_structure.width(), 1.0f / m_current_structure.height(), 1.0f);
     effect_scale = get_scale() * ( 1.0f / (float)(m_current_structure.width() > m_current_structure.height() ? m_current_structure.height() : m_current_structure.width()) );
 
-    LEti::Object_2D* effect = (LEti::Object_2D*)m_on_death_effect->construct();
+    Visual_Effect* effect = (Visual_Effect*)m_on_death_effect->construct();
     effect->set_scale(effect_scale);
     effect->set_pos(M_calculate_block_global_pos(_x, _y));
     effect->set_rotation_angle(get_rotation_angle());

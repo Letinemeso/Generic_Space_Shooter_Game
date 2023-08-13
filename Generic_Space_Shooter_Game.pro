@@ -28,8 +28,8 @@ win32 {
     LIBS += "../LEti_Engine/debug/libLEti_Engine.a"
     LIBS += "../L_Gamedev_Lib/debug/libL_Gamedev_Lib.a"
 
-    LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
-    LIBS += "../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglew32.a"
+    LIBS += "../../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglfw3.a"
+    LIBS += "../../LEti_Engine/OpenGL/Windows_x64_mingw/lib/libglew32.a"
 
     LIBS += -lopengl32 \
 	-luser32 \
@@ -57,11 +57,11 @@ Resources/Models/arrow_quad.mdl \
 	Resources/Models/explosion.mdl \
 	Resources/Models/grid_cell.mdl \
 	Resources/Models/projectile.mdl \
-    Resources/Models/text_field_new.mdl \
-Resources/Models/triangle.mdl \
-Resources/Shaders/fragment_shader.shader \
-Resources/Shaders/vertex_shader.shader \
-Resources/Font/font_yellow.png \
+        Resources/Models/text_field_new.mdl \
+        Resources/Models/triangle.mdl \
+        Resources/Shaders/fragment_shader.shader \
+        Resources/Shaders/vertex_shader.shader \
+        Resources/Font/font_yellow.png \
 	Resources/Textures/editing_mode_textures/_edit_mode_atlas.png \
 	Resources/Textures/editing_mode_textures/edit_mode_atlas.png \
 	Resources/Textures/editing_mode_textures/grid_11x11.png \
@@ -98,7 +98,8 @@ HEADERS += \
 	include/Game_World/Polygon__Space_Ship.h \
 	include/Game_World/Projectile.h \
 	include/Game_World/Space_Ship.h \
-	include/Game_World/Space_Ship_Structure.h
+	include/Game_World/Space_Ship_Structure.h \
+	include/Game_World/Visual_Effect.h
 
 SOURCES += \
 	Main.cpp \
@@ -124,6 +125,7 @@ SOURCES += \
 	source/Game_World/Polygon__Space_Ship.cpp \
 	source/Game_World/Projectile.cpp \
 	source/Game_World/Space_Ship.cpp \
-	source/Game_World/Space_Ship_Structure.cpp
+	source/Game_World/Space_Ship_Structure.cpp \
+	source/Game_World/Visual_Effect.cpp
 
 

@@ -10,15 +10,15 @@ Effects_Controller::Effects_Controller()
 
 Effects_Controller::~Effects_Controller()
 {
-    for(LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
+    for(LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
         delete *it;
 }
 
 
 
-void Effects_Controller::add_object(LEti::Object_2D *_object)
+void Effects_Controller::add_object(Visual_Effect *_object)
 {
-    L_ASSERT(LV::cast_variable<LR::Draw_Module__Animation>(_object->draw_module()));  //  non-animations shall not pass
+//    L_ASSERT(LV::cast_variable<LR::Draw_Module__Animation>(_object->draw_module()));  //  non-animations shall not pass   //
 
     m_effect_objects.push_back(_object);
 }
@@ -27,21 +27,19 @@ void Effects_Controller::add_object(LEti::Object_2D *_object)
 
 void Effects_Controller::update()
 {
-    for(LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
+    for(LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
         (*it)->update();
 
     if(m_effect_objects.size() == 0)
         return;
 
-    LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin();
+    LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin();
 
     while(true)
     {
-        LR::Draw_Module__Animation* dm = (LR::Draw_Module__Animation*)((*it)->draw_module());
-
-        if(dm->repetitions() >= 1)
+        if((*it)->should_be_destroyed())
         {
-            LDS::List<LEti::Object_2D*>::Iterator next = it;
+            LDS::List<Visual_Effect*>::Iterator next = it;
             if(!it.end_reached())
                 ++next;
 
@@ -60,6 +58,6 @@ void Effects_Controller::update()
 
 void Effects_Controller::draw()
 {
-    for(LDS::List<LEti::Object_2D*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
+    for(LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
         (*it)->draw(*m_renderer);
 }
