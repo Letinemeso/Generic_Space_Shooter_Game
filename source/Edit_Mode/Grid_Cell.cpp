@@ -13,7 +13,7 @@ FIELDS_END
 
 LV::Variable_Base* Grid_Cell_Stub::M_construct_product() const
 {
-    return new Entity;
+    return new Grid_Cell;
 }
 
 void Grid_Cell_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
@@ -59,7 +59,7 @@ Grid_Cell::Grid_Cell()
 
 Grid_Cell::~Grid_Cell()
 {
-    delete m_physics_module;
+
 }
 
 

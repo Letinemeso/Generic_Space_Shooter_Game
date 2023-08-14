@@ -47,6 +47,8 @@ void Edit_Mode::on_activate()
 
 //    m_grid->set_position(m_camera->position());
     m_grid->set_position(grid_pos);
+
+//    update();
 }
 
 void Edit_Mode::on_deactivate()

@@ -67,7 +67,7 @@ void Grid::M_update_cells()
             cell.set_material(block_data.material);
             cell.set_rotation_angle(block_data.angle);
 
-            cell.update();
+            cell.current_state().update_matrix();
         }
     }
 }
@@ -118,6 +118,8 @@ void Grid::set_position(const glm::vec3 &_position)
 
             Grid_Cell& cell = *m_cells[index];
             cell.set_pos(total_stride);
+
+            cell.current_state().update_matrix();
         }
     }
 
@@ -130,6 +132,7 @@ void Grid::set_position(const glm::vec3 &_position)
     cell_size_stride.z = 0.0f;
 
     m_cell_preview->set_pos( _position - total_size_stride - cell_size_stride );
+    m_cell_preview->current_state().update_matrix();
 }
 
 void Grid::construct()

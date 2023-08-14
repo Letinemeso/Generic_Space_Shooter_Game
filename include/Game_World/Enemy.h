@@ -38,7 +38,7 @@ namespace GSSG
         Enemy();
         ~Enemy();
 
-        inline void temp_set_health(int _health) { m_health = _health; };
+        inline void temp_set_health(int _health) { m_health = _health; }
 
     private:
         float m_idle_rotation = 0.0f;

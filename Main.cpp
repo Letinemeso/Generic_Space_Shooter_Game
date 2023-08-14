@@ -548,8 +548,6 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        game_logic->update();
-
         if(LR::Event_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
         {
             game_logic->on_deactivate();
@@ -561,6 +559,8 @@ int main()
 
             game_logic->on_activate();
         }
+
+        game_logic->update();
 
         if(LR::Event_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();

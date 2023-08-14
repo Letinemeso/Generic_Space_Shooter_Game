@@ -92,5 +92,6 @@ void Entity::on_death()
     effect->set_scale(get_scale()/* * 2.0f*/);
     effect->set_pos(get_pos());
     effect->set_rotation_angle(get_rotation_angle());
+    effect->current_state().update_matrix();
     m_effects_controller->add_object(effect);
 }
