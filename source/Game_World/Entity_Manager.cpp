@@ -44,10 +44,10 @@ void Entity_Manager::update_entities_prev_state() const
         (*it)->update_previous_state();
 }
 
-void Entity_Manager::update_entities() const
+void Entity_Manager::update_entities(float _dt) const
 {
     for(LDS::List<Entity*>::Const_Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
-        (*it)->update();
+        (*it)->update(_dt);
 }
 
 void Entity_Manager::apply_entities_input() const

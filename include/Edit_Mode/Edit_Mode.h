@@ -50,7 +50,7 @@ namespace GSSG
         inline void set_block_controller(Block_Controller* _ptr) { m_block_controller = _ptr; }
 
     public:
-        void update() override;
+        void update(float _dt) override;
 
     };
 

@@ -17,7 +17,6 @@
 #include <Collision_Resolution/Collision_Resolution__Rigid_Body_2D.h>
 #include <Object_System/Text_Field.h>
 #include <Object_System/Object_2D.h>
-#include <Object_System/Rigid_Body_2D_Stub.h>
 #include <Draw_Modules/Draw_Module__Animation.h>
 #include <Renderer/Renderer.h>
 
@@ -467,7 +466,7 @@ int main()
 
 //    player_controller.update();
     entity_manager.update_entities_prev_state();
-    entity_manager.update_entities();
+    entity_manager.update_entities(0.0f);
 
     //  ~game setup
 
@@ -560,7 +559,7 @@ int main()
             game_logic->on_activate();
         }
 
-        game_logic->update();
+        game_logic->update(LR::Event_Controller::get_dt());
 
         if(LR::Event_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();

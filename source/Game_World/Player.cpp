@@ -68,7 +68,7 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
     product->add_module(pm);
     product->add_module(dm);
 
-    product->update();
+    product->update(0.0f);
     product->update_previous_state();
 }
 
@@ -257,7 +257,7 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 
     reconstruct();
 
-    update();
+    update(0.0f);
     update_previous_state();
 }
 
@@ -301,9 +301,9 @@ void Player::apply_input()
 
 }
 
-void Player::update()
+void Player::update(float _dt)
 {
-    Space_Ship::update();
+    Space_Ship::update(_dt);
 
     m_camera->set_position(current_state().position());
 }

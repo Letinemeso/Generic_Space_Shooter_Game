@@ -38,12 +38,12 @@ void Player_Controller::notify_about_player_death()
 //    m_player_respawn_tf->draw_module()->set_visible(true);
 }
 
-void Player_Controller::update()
+void Player_Controller::update(float _dt)
 {
     if(m_player)
         return;
 
-    m_respawn_timer.update(LR::Event_Controller::get_dt());
+    m_respawn_timer.update(_dt);
 
     m_player_respawn_tf->set_text("Respawning in " + std::to_string((unsigned int)(m_respawn_timer.time_left()) + 1) + "...");
 

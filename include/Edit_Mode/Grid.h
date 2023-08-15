@@ -80,7 +80,7 @@ namespace GSSG
         void M_apply_input();
 
     public:
-        void update();
+        void update(float _dt);
 
     };
 

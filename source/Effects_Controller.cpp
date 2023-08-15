@@ -25,10 +25,10 @@ void Effects_Controller::add_object(Visual_Effect *_object)
 
 
 
-void Effects_Controller::update()
+void Effects_Controller::update(float _dt)
 {
     for(LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
-        (*it)->update();
+        (*it)->update(_dt);
 
     if(m_effect_objects.size() == 0)
         return;

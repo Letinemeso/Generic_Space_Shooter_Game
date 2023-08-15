@@ -38,7 +38,7 @@ namespace GSSG
         void M_reconfigure();
 
     public:
-        void update();
+        void update(float _dt);
 
     public:
         inline const LR::Default_Draw_Module_2D* draw_module() const { return m_draw_module; }

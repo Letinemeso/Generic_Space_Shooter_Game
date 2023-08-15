@@ -17,11 +17,11 @@ Enemy_Generator::~Enemy_Generator()
 
 
 
-void Enemy_Generator::update()
+void Enemy_Generator::update(float _dt)
 {
     L_ASSERT(m_enemy_stub);
 
-    m_timer.update(LR::Event_Controller::get_dt());
+    m_timer.update(_dt);
     if(!m_timer.is_active())
     {
         spawn_enemy();
@@ -59,7 +59,7 @@ void Enemy_Generator::spawn_enemy() const
 //    }
 
     enemy->update_previous_state();
-    enemy->update();
+    enemy->update(0.0f);
 
     m_entity_manager->add_entity(enemy);
 }

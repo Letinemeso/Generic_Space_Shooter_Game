@@ -48,7 +48,7 @@ namespace GSSG
 //        bool should_be_destroyed() const override;
 
     public:
-        void update() override;
+        void update(float _dt) override;
 
     };
 

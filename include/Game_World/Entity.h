@@ -54,7 +54,7 @@ namespace GSSG
         ~Entity();
 
     public:
-        void update() override;
+        void update(float _dt) override;
 
     public:
         inline void set_physics_module(LPhys::Rigid_Body_2D* _ptr) { m_physics_module = _ptr; }

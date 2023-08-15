@@ -112,7 +112,7 @@ void Background::M_reconfigure()
 
 
 
-void Background::update()
+void Background::update(float _dt)
 {
     if(!LEti::Math::floats_are_equal(m_camera->view_scale(), m_screen_size_scale))
         M_reconfigure();
@@ -127,5 +127,5 @@ void Background::update()
     m_transformation_data.set_position({stride.x, stride.y, 0.0f});
     m_transformation_data.update_matrix();
 
-    m_draw_module->update();
+    m_draw_module->update(_dt);
 }

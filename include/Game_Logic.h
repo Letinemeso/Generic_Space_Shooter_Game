@@ -19,7 +19,7 @@ namespace GSSG
         virtual bool can_be_deactivated() const { return true; }
 
     public:
-        virtual void update() = 0;
+        virtual void update(float _dt) = 0;
 
     };
 

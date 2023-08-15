@@ -39,7 +39,7 @@ namespace GSSG
         inline void set_spawn_frequency(float _spawn_frequency) { m_spawn_frequency = _spawn_frequency; }
 
     public:
-        void update();
+        void update(float _dt);
 
     public:
         void spawn_enemy() const;

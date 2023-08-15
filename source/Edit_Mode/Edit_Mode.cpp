@@ -71,9 +71,9 @@ bool Edit_Mode::can_be_deactivated() const
 
 
 
-void Edit_Mode::update()
+void Edit_Mode::update(float _dt)
 {
     m_cursor_pos = m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
 
-    m_grid->update();
+    m_grid->update(_dt);
 }

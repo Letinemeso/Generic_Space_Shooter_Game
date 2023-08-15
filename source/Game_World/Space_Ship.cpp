@@ -37,7 +37,7 @@ void Space_Ship::M_shoot()
     pm->set_velocity(projectile_impulse);
 
     projectile->update_previous_state();
-    projectile->update();
+    projectile->update(0.0f);
 
     m_entity_manager->add_entity(projectile);
 return;
@@ -55,7 +55,7 @@ return;
 
 
 
-void Space_Ship::update()
+void Space_Ship::update(float _dt)
 {
-    Entity::update();
+    Entity::update(_dt);
 }

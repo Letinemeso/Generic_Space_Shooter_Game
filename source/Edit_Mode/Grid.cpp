@@ -34,8 +34,6 @@ void Grid::M_reset_cell(Grid_Cell& _cell)
     _cell.set_material(m_no_material);
     M_set_cell_visual_data(_cell, *m_no_material);
     _cell.current_state().set_rotation({0.0f, 0.0f, 0.0f});
-
-    _cell.update();
 }
 
 void Grid::M_reset_cells()
@@ -256,17 +254,17 @@ void Grid::M_apply_input()
 
 
 
-void Grid::update()
+void Grid::update(float _dt)
 {
     M_apply_input();
 
     m_cell_preview->update_previous_state();
-    m_cell_preview->update();
+    m_cell_preview->update(_dt);
 
     for(unsigned int i=0; i<m_cells.size(); ++i)
     {
         ((Grid_Cell&)(*m_cells[i])).update_previous_state();
-        ((Grid_Cell&)(*m_cells[i])).update();
+        ((Grid_Cell&)(*m_cells[i])).update(_dt);
     }
 
     m_collision_detector->update();

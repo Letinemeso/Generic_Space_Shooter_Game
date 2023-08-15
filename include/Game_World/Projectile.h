@@ -23,7 +23,7 @@ namespace GSSG
         ~Projectile();
 
     public:
-        void update() override;
+        void update(float _dt) override;
 
         void on_collision(const LPhys::Intersection_Data& _id) override;
 

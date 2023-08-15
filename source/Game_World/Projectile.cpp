@@ -25,11 +25,11 @@ Projectile::~Projectile()
 
 
 
-void Projectile::update()
+void Projectile::update(float _dt)
 {
-    Entity::update();
+    Entity::update(_dt);
 
-    m_time_until_death -= LR::Event_Controller::get_dt();
+    m_time_until_death -= _dt;
 }
 
 

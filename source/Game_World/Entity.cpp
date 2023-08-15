@@ -69,10 +69,9 @@ Entity::~Entity()
 
 
 
-void Entity::update()
+void Entity::update(float _dt)
 {
-    LEti::Object_2D::update();
-//    m_physics_module->update(LR::Event_Controller::get_dt());
+    LEti::Object_2D::update(_dt);
 }
 
 

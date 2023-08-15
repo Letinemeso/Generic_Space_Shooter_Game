@@ -32,7 +32,7 @@ namespace GSSG
         void add_object(Visual_Effect* _object);
 
     public:
-        void update();
+        void update(float _dt);
 
     };
 

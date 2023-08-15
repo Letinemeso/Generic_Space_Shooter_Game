@@ -53,7 +53,7 @@ namespace GSSG
         inline void set_renderer(const LR::Renderer* _ptr) { m_renderer = _ptr; }
 
     public:
-        void update() override;
+        void update(float _dt) override;
 
     };
 

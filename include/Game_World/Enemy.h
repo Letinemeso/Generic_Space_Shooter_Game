@@ -72,7 +72,7 @@ namespace GSSG
 
         void apply_input() override;
 
-        void update() override;
+        void update(float _dt) override;
 
         void on_other_entity_death(const Entity* _entity_to_delete) override;
 

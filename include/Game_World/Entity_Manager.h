@@ -49,7 +49,7 @@ namespace GSSG
 
     public:
         void update_entities_prev_state() const;
-        void update_entities() const;
+        void update_entities(float _dt) const;
         void apply_entities_input() const;
 
         void remove_dead_entities();

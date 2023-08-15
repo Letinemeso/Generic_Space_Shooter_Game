@@ -59,7 +59,7 @@ namespace GSSG
 
     public:
         void update_prev_state();
-        void update();
+        void update(float _dt);
 
     };
 

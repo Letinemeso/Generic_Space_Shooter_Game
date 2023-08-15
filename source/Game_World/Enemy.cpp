@@ -283,9 +283,9 @@ void Enemy::apply_input()
 }
 
 
-void Enemy::update()
+void Enemy::update(float _dt)
 {
-    Space_Ship::update();
+    Space_Ship::update(_dt);
 }
 
 
