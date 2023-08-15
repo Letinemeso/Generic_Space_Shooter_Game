@@ -99,9 +99,3 @@ void GUI::update()
 
     m_collision_detector.update();
 }
-
-void GUI::draw()
-{
-    for(auto it = m_objects.begin(); !it.end_reached(); ++it)
-        (*it).object->draw(m_renderer);
-}

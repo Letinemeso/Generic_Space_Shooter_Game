@@ -33,7 +33,7 @@ void Grid::M_reset_cell(Grid_Cell& _cell)
 {
     _cell.set_material(m_no_material);
     M_set_cell_visual_data(_cell, *m_no_material);
-    _cell.set_rotation_angle(0.0f);
+    _cell.current_state().set_rotation({0.0f, 0.0f, 0.0f});
 
     _cell.update();
 }
@@ -54,7 +54,7 @@ void Grid::M_update_cells()
             Grid_Cell& cell = M_get_cell_with_coordinates(x, y);
             const Space_Ship_Structure::Block_Data& block_data = m_structure.block(x, y);
 
-            if(cell.material() == block_data.material && LEti::Math::floats_are_equal(cell.get_rotation_angle(), block_data.angle))
+            if(cell.material() == block_data.material && LEti::Math::floats_are_equal(cell.current_state().rotation().z, block_data.angle))
                 continue;
             if(cell.material() == m_no_material && block_data.material == nullptr)
                 continue;
@@ -65,7 +65,7 @@ void Grid::M_update_cells()
                 M_set_cell_visual_data(cell, *m_no_material);
 
             cell.set_material(block_data.material);
-            cell.set_rotation_angle(block_data.angle);
+            cell.current_state().set_rotation({0.0f, 0.0f, block_data.angle});
 
             cell.current_state().update_matrix();
         }
@@ -76,7 +76,7 @@ void Grid::M_update_cells()
 void Grid::M_on_cell_pressed(Grid_Cell& _cell)
 {
     Space_Ship_Structure::Block_Data block_data;
-    block_data.angle = m_cell_preview->get_rotation_angle();
+    block_data.angle = m_cell_preview->current_state().rotation().z;
     if(m_material != m_no_material)
         block_data.material = m_material;
 
@@ -117,7 +117,7 @@ void Grid::set_position(const glm::vec3 &_position)
             glm::vec3 total_stride = glm::vec3(horizontal_stride, vertical_stride, 0.0f) - total_size_halved + _position;
 
             Grid_Cell& cell = *m_cells[index];
-            cell.set_pos(total_stride);
+            cell.current_state().set_position(total_stride);
 
             cell.current_state().update_matrix();
         }
@@ -131,7 +131,7 @@ void Grid::set_position(const glm::vec3 &_position)
     cell_size_stride.y *= -1.0f;
     cell_size_stride.z = 0.0f;
 
-    m_cell_preview->set_pos( _position - total_size_stride - cell_size_stride );
+    m_cell_preview->current_state().set_position( _position - total_size_stride - cell_size_stride );
     m_cell_preview->current_state().update_matrix();
 }
 
@@ -163,7 +163,7 @@ void Grid::construct()
             glm::vec3 total_stride = glm::vec3(horizontal_stride, vertical_stride, 0.0f) - total_size_halved;
 
             Grid_Cell* cell = (Grid_Cell*)m_cell_stub->construct();
-            cell->set_pos(total_stride);
+            cell->current_state().set_position(total_stride);
             cell->set_indices(x, y);
             m_cells.push(cell);
         }
@@ -203,12 +203,12 @@ const Grid_Cell& Grid::get_cell(unsigned int _x, unsigned int _y) const
 
 glm::vec3 Grid::get_cell_size() const
 {
-    return m_cell_preview->get_scale();
+    return m_cell_preview->current_state().scale();
 }
 
 glm::vec3 Grid::get_size() const
 {
-    glm::vec3 size = m_cell_preview->get_scale();
+    glm::vec3 size = m_cell_preview->current_state().scale();
     size.x *= (float)m_width;
     size.y *= (float)m_height;
     return size;
@@ -243,9 +243,9 @@ void Grid::M_apply_input()
     }
 
     if(LR::Event_Controller::key_was_pressed(GLFW_KEY_E))
-        m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() - LEti::Math::HALF_PI);
+        m_cell_preview->current_state().set_rotation({0.0f, 0.0f, m_cell_preview->current_state().rotation().z - LEti::Math::HALF_PI});
     if(LR::Event_Controller::key_was_pressed(GLFW_KEY_Q))
-        m_cell_preview->set_rotation_angle(m_cell_preview->get_rotation_angle() + LEti::Math::HALF_PI);
+        m_cell_preview->current_state().set_rotation({0.0f, 0.0f, m_cell_preview->current_state().rotation().z + LEti::Math::HALF_PI});
 
     if(!LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
         return;
@@ -258,6 +258,8 @@ void Grid::M_apply_input()
 
 void Grid::update()
 {
+    M_apply_input();
+
     m_cell_preview->update_previous_state();
     m_cell_preview->update();
 
@@ -268,12 +270,4 @@ void Grid::update()
     }
 
     m_collision_detector->update();
-
-
-    M_apply_input();
-
-    for(unsigned int i=0; i<m_cells.size(); ++i)
-        ((Grid_Cell&)(*m_cells[i])).draw(*m_renderer);
-
-    m_cell_preview->draw(*m_renderer);
 }

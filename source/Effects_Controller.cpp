@@ -55,9 +55,3 @@ void Effects_Controller::update()
         ++it;
     }
 }
-
-void Effects_Controller::draw()
-{
-    for(LDS::List<Visual_Effect*>::Iterator it = m_effect_objects.begin(); !it.end_reached() && it.is_ok(); ++it)
-        (*it)->draw(*m_renderer);
-}

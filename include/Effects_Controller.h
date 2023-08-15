@@ -33,7 +33,6 @@ namespace GSSG
 
     public:
         void update();
-        void draw();
 
     };
 

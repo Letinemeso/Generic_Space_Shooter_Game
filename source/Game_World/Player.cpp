@@ -51,10 +51,9 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     product->reconstruct();
 
-    product->set_scale({100.0f, 100.0f, 1.0f});
-    product->set_pos({0.0f, 0.0f, 0.0f});
-    product->set_rotation_axis({0.0f, 0.0f, 1.0f});
-    product->set_rotation_angle(LEti::Math::HALF_PI);
+    product->current_state().set_scale({100.0f, 100.0f, 1.0f});
+    product->current_state().set_position({0.0f, 0.0f, 0.0f});
+    product->current_state().set_rotation({0.0f, 0.0f, LEti::Math::HALF_PI});
 
     pm->set_owner(product);
 
@@ -221,7 +220,7 @@ glm::vec3 Player::M_calculate_block_global_pos(unsigned int _x, unsigned int _y)
 //    block_pos -= glm::vec3(0.5f, 0.5f, 0.0f);
     block_pos -= m_block_pos_offset;
     block_pos = (m_current_state.rotation_matrix() * m_current_state.scale_matrix()) * glm::vec4(block_pos, 1.0f);
-    block_pos += get_pos();
+    block_pos += current_state().position();
 
     return block_pos;
 }
@@ -229,12 +228,12 @@ glm::vec3 Player::M_calculate_block_global_pos(unsigned int _x, unsigned int _y)
 void Player::M_create_block_destruction_effect(unsigned int _x, unsigned int _y)
 {
     glm::vec3 effect_scale(1.0f / m_current_structure.width(), 1.0f / m_current_structure.height(), 1.0f);
-    effect_scale = get_scale() * ( 1.0f / (float)(m_current_structure.width() > m_current_structure.height() ? m_current_structure.height() : m_current_structure.width()) );
+    effect_scale = current_state().scale() * ( 1.0f / (float)(m_current_structure.width() > m_current_structure.height() ? m_current_structure.height() : m_current_structure.width()) );
 
     Visual_Effect* effect = (Visual_Effect*)m_on_death_effect->construct();
-    effect->set_scale(effect_scale);
-    effect->set_pos(M_calculate_block_global_pos(_x, _y));
-    effect->set_rotation_angle(get_rotation_angle());
+    effect->current_state().set_scale(effect_scale);
+    effect->current_state().set_position(M_calculate_block_global_pos(_x, _y));
+    effect->current_state().set_rotation(current_state().rotation());
     m_effects_controller->add_object(effect);
 }
 
@@ -263,43 +262,6 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 }
 
 
-
-void Player::temp_apply_simple_input()
-{
-    glm::vec3 impulse = {0.0f, 0.0f, 0.0f};
-
-    if(LR::Event_Controller::is_key_down(GLFW_KEY_A))
-    {
-        impulse.x -= acceleration();
-    }
-    if(LR::Event_Controller::is_key_down(GLFW_KEY_D))
-    {
-        impulse.x += acceleration();
-    }
-    if(LR::Event_Controller::is_key_down(GLFW_KEY_W))
-    {
-        impulse.y += acceleration();
-    }
-    if(LR::Event_Controller::is_key_down(GLFW_KEY_S))
-    {
-        impulse.y -= acceleration();
-    }
-    physics_module()->set_velocity(impulse);
-
-    glm::vec3 pos_to_cursor = get_pos() - m_camera->convert_window_coords({LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f});
-    LEti::Math::shrink_vector_to_1(pos_to_cursor);
-    set_rotation_angle(LEti::Math::PI - acos(pos_to_cursor.x));
-    if(pos_to_cursor.y > 0.0f)
-        set_rotation_angle(LEti::Math::DOUBLE_PI - get_rotation_angle());
-
-    m_shoot_timer.update(LR::Event_Controller::get_dt());
-
-    if((LR::Event_Controller::is_key_down(GLFW_KEY_SPACE) || LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1)) && !m_shoot_timer.is_active())
-    {
-        M_shoot();
-        m_shoot_timer.start(0.6f);
-    }
-}
 
 void Player::apply_input()
 {
@@ -343,7 +305,7 @@ void Player::update()
 {
     Space_Ship::update();
 
-    m_camera->set_position(get_pos());
+    m_camera->set_position(current_state().position());
 }
 
 void Player::on_other_entity_death(const Entity *_entity_to_delete)

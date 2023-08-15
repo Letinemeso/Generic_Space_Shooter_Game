@@ -89,9 +89,8 @@ void Entity::on_death()
         return;
 
     Visual_Effect* effect = (Visual_Effect*)m_on_death_effect->construct();
-    effect->set_scale(get_scale()/* * 2.0f*/);
-    effect->set_pos(get_pos());
-    effect->set_rotation_angle(get_rotation_angle());
-    effect->current_state().update_matrix();
+    effect->current_state().set_scale(current_state().scale());
+    effect->current_state().set_position(current_state().position());
+    effect->current_state().set_rotation(current_state().rotation());
     m_effects_controller->add_object(effect);
 }

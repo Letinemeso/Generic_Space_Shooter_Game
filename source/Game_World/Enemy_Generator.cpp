@@ -44,10 +44,10 @@ void Enemy_Generator::spawn_enemy() const
     Enemy* enemy = (Enemy*)m_enemy_stub->construct();
     enemy->set_projectile_stub(m_enemy_projectile_stub);
     enemy->inject_entity_manager(m_entity_manager);
-    enemy->set_pos(position);
-    enemy->set_scale(5.0f * (float)random_scale);
+    enemy->current_state().set_position(position);
+    enemy->current_state().set_scale({5.0f * (float)random_scale, 5.0f * (float)random_scale, 5.0f * (float)random_scale}); //  to hell with multiplying same shit several times. ill probably rewrite this stuff later anyways
     ((LPhys::Rigid_Body_2D*)enemy->physics_module())->set_mass_multiplier(3.0f * (float)random_scale);
-    enemy->set_rotation_angle(LEti::Math::DOUBLE_PI / 360.0f * (float)LEti::Math::random_number(0, 360));
+    enemy->current_state().set_rotation({0.0f, 0.0f, LEti::Math::DOUBLE_PI / 360.0f * (float)LEti::Math::random_number(0, 360)});
 
     //  color randomization will have to wait
 

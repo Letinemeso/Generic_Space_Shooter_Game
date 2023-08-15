@@ -25,20 +25,6 @@ Projectile::~Projectile()
 
 
 
-void Projectile::revert_to_previous_state()
-{
-    Entity::revert_to_previous_state();
-
-    m_time_until_death = m_time_until_death_prev_state;
-}
-
-void Projectile::update_previous_state()
-{
-    Entity::update_previous_state();
-
-    m_time_until_death_prev_state = m_time_until_death;
-}
-
 void Projectile::update()
 {
     Entity::update();
@@ -73,7 +59,6 @@ void Projectile::on_collision(const LPhys::Intersection_Data& _id)
 
 void Projectile::set_lifetime(float _seconds)
 {
-    m_time_until_death_prev_state = _seconds;
     m_time_until_death = _seconds;
     m_has_limited_lifetime = true;
 }

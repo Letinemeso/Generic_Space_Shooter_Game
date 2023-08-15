@@ -52,7 +52,7 @@ LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
 {
     if(m_attacked_entity)
     {
-        float dist = LEti::Math::vector_length(get_pos() - m_attacked_entity->get_pos());
+        float dist = LEti::Math::vector_length(current_state().position() - m_attacked_entity->current_state().position());
         if(dist < m_max_dist)
             return LGL::BT_Execution_Result::Success;
     }
@@ -73,7 +73,7 @@ LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
         if(maybe_spaceship == this)
             continue;
 
-        float dist = LEti::Math::vector_length(get_pos() - maybe_spaceship->get_pos());
+        float dist = LEti::Math::vector_length(current_state().position() - maybe_spaceship->current_state().position());
 
         if(dist > m_max_dist)
             continue;
@@ -94,7 +94,7 @@ LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
 
 LGL::BT_Execution_Result Enemy::M_accelerate()
 {
-    glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+    glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z);
     physics_module()->apply_linear_impulse(look_direction * LR::Event_Controller::get_dt());
 
     float speed = LEti::Math::vector_length(physics_module()->velocity());
@@ -119,12 +119,12 @@ LGL::BT_Execution_Result Enemy::M_rotate_away_from_enemy()
     if(m_attacked_entity == nullptr)
         return LGL::BT_Execution_Result::Fail;
 
-    glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
+    glm::vec3 this_to_other_vec = current_state().position() - m_attacked_entity->current_state().position();
 
     if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
         return LGL::BT_Execution_Result::Fail;
 
-    glm::vec3 look_direction = LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+    glm::vec3 look_direction = LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z);
 
     float cos_between_vecs = LEti::Math::angle_cos_between_vectors(this_to_other_vec, look_direction);
 
@@ -153,12 +153,12 @@ LGL::BT_Execution_Result Enemy::M_rotate_towards_enemy()
     if(m_attacked_entity == nullptr)
         return LGL::BT_Execution_Result::Fail;
 
-    glm::vec3 this_to_other_vec = get_pos() - m_attacked_entity->get_pos();
+    glm::vec3 this_to_other_vec = current_state().position() - m_attacked_entity->current_state().position();
 
     if(LEti::Math::vector_length(this_to_other_vec) > m_max_dist)
         return LGL::BT_Execution_Result::Fail;
 
-    glm::vec3 inverse_look_direction = -LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+    glm::vec3 inverse_look_direction = -LEti::Math::rotate_vector({1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z);
 
     float cos_between_vecs = LEti::Math::angle_cos_between_vectors(this_to_other_vec, inverse_look_direction);
 
@@ -178,9 +178,9 @@ LGL::BT_Execution_Result Enemy::M_rotate_towards_enemy()
 
 LGL::BT_Execution_Result Enemy::M_get_close_to_enemy()
 {
-    glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle());
+    glm::vec3 impulse = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z);
 
-    float dist = LEti::Math::get_distance(get_pos(), m_attacked_entity->get_pos());
+    float dist = LEti::Math::get_distance(current_state().position(), m_attacked_entity->current_state().position());
     if(dist < 150.0f)
         impulse *= -1.0f;
 
@@ -247,7 +247,7 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 
     if(m_idle_acceleration > 0.0001f)
     {
-        glm::vec3 impulse = LEti::Math::rotate_vector({m_idle_acceleration, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, get_rotation_angle()) * LR::Event_Controller::get_dt();
+        glm::vec3 impulse = LEti::Math::rotate_vector({m_idle_acceleration, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z) * LR::Event_Controller::get_dt();
         physics_module()->apply_linear_impulse(impulse);
 
         float speed = LEti::Math::vector_length(physics_module()->velocity());

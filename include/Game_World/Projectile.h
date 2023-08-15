@@ -15,7 +15,6 @@ namespace GSSG
         DECLARE_VARIABLE;
 
     private:
-        float m_time_until_death_prev_state = 0.0f;
         float m_time_until_death = 0.0f;
         bool m_has_limited_lifetime = false;
 
@@ -24,8 +23,6 @@ namespace GSSG
         ~Projectile();
 
     public:
-        void revert_to_previous_state() override;
-        void update_previous_state() override;
         void update() override;
 
         void on_collision(const LPhys::Intersection_Data& _id) override;

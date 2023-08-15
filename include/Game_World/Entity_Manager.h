@@ -54,8 +54,6 @@ namespace GSSG
 
         void remove_dead_entities();
 
-        void draw_entities() const;
-
     };
 
 }

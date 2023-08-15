@@ -23,11 +23,4 @@ void Game_World::update()
     m_player_controller->update();
     m_effects_controller->update();
 
-//    m_renderer->draw(*m_background->draw_module());
-
-    m_entity_manager->draw_entities();
-    m_effects_controller->draw();
-
-    m_gui->draw();
-
 }

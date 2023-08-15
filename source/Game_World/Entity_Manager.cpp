@@ -68,7 +68,7 @@ void Entity_Manager::remove_dead_entities()
 
     while(true)
     {
-        if((*it)->should_be_destroyed() || ( LEti::Math::vector_length(m_camera->position() - (*it)->get_pos()) > m_max_distance_from_view_pos ) )
+        if((*it)->should_be_destroyed() || ( LEti::Math::vector_length(m_camera->position() - (*it)->current_state().position()) > m_max_distance_from_view_pos ) )
         {
             LDS::List<Entity*>::Iterator next = it;
             if(!it.end_reached())
@@ -90,13 +90,4 @@ void Entity_Manager::remove_dead_entities()
 
         ++it;
     }
-}
-
-
-void Entity_Manager::draw_entities() const
-{
-    L_ASSERT(m_renderer);
-
-    for(LDS::List<Entity*>::Const_Iterator it = m_entities.begin(); !it.end_reached() && it.is_ok(); ++it)
-        (*it)->draw(*m_renderer);
 }
