@@ -10,7 +10,7 @@ void Game_World::update(float _dt)
     m_background->update(_dt);
 
     m_entity_manager->update_entities_prev_state();
-    m_entity_manager->apply_entities_input();
+    m_entity_manager->apply_entities_input(_dt);
     m_entity_manager->update_entities(_dt);
 
     m_gui->update_prev_state();

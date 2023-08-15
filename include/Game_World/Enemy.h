@@ -28,6 +28,7 @@ namespace GSSG
         Mode m_mode = Mode::idle;
 
         LGL::Node_Base* m_behavior = nullptr;
+        float m_dt_for_behavior = 0.0f; //  bruh
 
         Space_Ship* m_attacked_entity = nullptr;
         float m_max_dist = 400.0f;
@@ -70,7 +71,7 @@ namespace GSSG
     public:
         void on_collision(const LPhys::Intersection_Data& _id) override;
 
-        void apply_input() override;
+        void apply_input(float _dt) override;
 
         void update(float _dt) override;
 

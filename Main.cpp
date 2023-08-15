@@ -4,10 +4,15 @@
 #include <MDL_Reader.h>
 
 #include <Stuff/Timer.h>
-#include <Event_Controller/Event_Controller.h>
+
+#include <FPS_Timer.h>
+#include <Object_System/Text_Field.h>
+#include <Object_System/Object_2D.h>
+
 #include <Shader/Shader.h>
 #include <Camera/Camera_2D.h>
 #include <Picture/Picture_Manager.h>
+
 #include <Collision_Detection/Collision_Detector_2D.h>
 #include <Collision_Detection/Space_Hasher_2D.h>
 #include <Collision_Detection/Dynamic_Narrow_CD.h>
@@ -15,8 +20,6 @@
 #include <Collision_Detection/SAT_Narrowest_CD.h>
 #include <Collision_Resolution/Collision_Resolver.h>
 #include <Collision_Resolution/Collision_Resolution__Rigid_Body_2D.h>
-#include <Object_System/Text_Field.h>
-#include <Object_System/Object_2D.h>
 #include <Draw_Modules/Draw_Module__Animation.h>
 #include <Renderer/Renderer.h>
 
@@ -343,8 +346,8 @@ int main()
     texture_autoload.assign_values(reader.get_stub("textures"));
     texture_autoload.on_values_assigned();
 
-
-    LR::Event_Controller::set_max_dt(60.0f / 1000.0f);
+    LEti::FPS_Timer timer;
+    timer.set_max_dt(60.0f / 1000.0f);
 
     //  ~engine setup
 
@@ -540,14 +543,14 @@ int main()
 
     while (!LR::Window_Controller::window_should_close())
     {
+        timer.update();
         LR::Window_Controller::update();
-        LR::Event_Controller::update();
 
         cursor_position = camera.convert_window_coords(glm::vec3(LR::Window_Controller::get_cursor_position().x, LR::Window_Controller::get_cursor_position().y, 0.0f));
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        if(LR::Event_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
+        if(LR::Window_Controller::key_was_released(GLFW_KEY_TAB) && game_logic->can_be_deactivated())
         {
             game_logic->on_deactivate();
 
@@ -559,17 +562,18 @@ int main()
             game_logic->on_activate();
         }
 
-        game_logic->update(LR::Event_Controller::get_dt());
+        game_logic->update(timer.dt());
 
-        if(LR::Event_Controller::key_was_released(GLFW_KEY_B))
+        if(LR::Window_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();
 
         ++fps_counter;
-        fps_timer.update(LR::Event_Controller::get_dt());
+        fps_timer.update(timer.dt());
 
         if(!fps_timer.is_active())
         {
             fps_timer.start(1.0f);
+            std::cout << fps_counter << "\n";
             fps_counter = 0;
         }
 

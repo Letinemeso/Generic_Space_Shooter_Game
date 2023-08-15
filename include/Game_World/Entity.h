@@ -72,7 +72,7 @@ namespace GSSG
         virtual bool should_be_destroyed() const { return true; }
 
     public:
-        virtual void apply_input() { }
+        virtual void apply_input(float /*_dt*/) { } //  dt nor whole method are not needed here obviously, but ill care for them later
         virtual void on_collision(const LPhys::Intersection_Data& /*_id*/) { }
         virtual void on_other_entity_death(const Entity* _entity_to_delete);
         virtual void on_death();

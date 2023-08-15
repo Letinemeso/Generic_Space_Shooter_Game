@@ -5,7 +5,6 @@
 #include <Data_Structures/List.h>
 #include <Stuff/Function_Wrapper.h>
 
-#include <Event_Controller/Event_Controller.h>
 #include <Object_System/Text_Field.h>
 
 #include <Game_World/Enemy_Generator.h>
@@ -99,7 +98,7 @@ namespace GSSG
 
     public:
         void kill_force() { m_cabin_is_broken = true; }
-        void apply_input() override;
+        void apply_input(float _dt) override;
         void update(float _dt) override;
         void on_other_entity_death(const Entity* _entity_to_delete) override;
         void on_collision(const LPhys::Intersection_Data& _id) override;

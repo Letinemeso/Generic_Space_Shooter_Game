@@ -216,7 +216,7 @@ void Block::apply_block_effect_on_construction(Space_Ship* /*_space_ship*/) cons
 
 }
 
-void Block::apply_block_effect(Space_Ship* /*_space_ship*/, float /*_block_rotation*/, const glm::vec3& /*_block_position*/) const
+void Block::apply_block_effect(Space_Ship* /*_space_ship*/, float /*_block_rotation*/, const glm::vec3& /*_block_position*/, float /*_dt*/) const
 {
 //    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 }
@@ -231,12 +231,12 @@ FIELDS_END
 
 
 
-void Cabin::apply_block_effect_on_construction(Space_Ship* _space_ship) const
+void Cabin::apply_block_effect_on_construction(Space_Ship* /*_space_ship*/) const
 {
     //  set shoot delay
 }
 
-void Cabin::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
+void Cabin::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position, float /*_dt*/) const
 {
 //    LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 }
@@ -256,7 +256,7 @@ void Engine::apply_block_effect_on_construction(Space_Ship* _space_ship) const
 
 }
 
-void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const
+void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position, float _dt) const
 {
     LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)_space_ship->physics_module();
 
@@ -267,8 +267,8 @@ void Engine::apply_block_effect(Space_Ship* _space_ship, float _block_rotation, 
     float angular_impulse = torque / pm->moment_of_inertia();
 
     linear_impulse /= pm->mass();
-    linear_impulse *= LR::Event_Controller::get_dt();
-    angular_impulse *= LR::Event_Controller::get_dt();
+    linear_impulse *= _dt;
+    angular_impulse *= _dt;
 
     pm->apply_linear_impulse(linear_impulse);
     pm->apply_rotation(angular_impulse);

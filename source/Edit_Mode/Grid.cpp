@@ -220,7 +220,7 @@ void Grid::M_apply_input()
 
     for(unsigned int i=GLFW_KEY_1; i<=GLFW_KEY_9; ++i)
     {
-        if(!LR::Event_Controller::key_was_pressed(i))
+        if(!LR::Window_Controller::key_was_pressed(i))
             continue;
 
         unsigned int id = i - GLFW_KEY_0;
@@ -231,7 +231,7 @@ void Grid::M_apply_input()
         m_material = &m_block_controller->get_block(id);
     }
 
-    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
+    if(LR::Window_Controller::key_was_pressed(GLFW_KEY_BACKSPACE))
         m_material = m_no_material;
 
     if(m_material->get_id() != material_before_input)
@@ -240,12 +240,12 @@ void Grid::M_apply_input()
         set_preview_visual_data(block);
     }
 
-    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_E))
+    if(LR::Window_Controller::key_was_pressed(GLFW_KEY_E))
         m_cell_preview->current_state().set_rotation({0.0f, 0.0f, m_cell_preview->current_state().rotation().z - LEti::Math::HALF_PI});
-    if(LR::Event_Controller::key_was_pressed(GLFW_KEY_Q))
+    if(LR::Window_Controller::key_was_pressed(GLFW_KEY_Q))
         m_cell_preview->current_state().set_rotation({0.0f, 0.0f, m_cell_preview->current_state().rotation().z + LEti::Math::HALF_PI});
 
-    if(!LR::Event_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Window_Controller::is_mouse_button_down(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(LDS::List<LPhys::Intersection_Data>::Const_Iterator it = m_collision_detector->get_collisions__points().begin(); !it.end_reached(); ++it)

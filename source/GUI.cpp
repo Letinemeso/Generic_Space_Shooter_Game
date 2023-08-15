@@ -54,7 +54,7 @@ void GUI::M_update_cursor_position()
 
 void GUI::M_process_mouse_down()
 {
-    if(!LR::Event_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Window_Controller::mouse_button_was_pressed(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)
@@ -68,7 +68,7 @@ void GUI::M_process_mouse_down()
 
 void GUI::M_process_mouse_up()
 {
-    if(!LR::Event_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
+    if(!LR::Window_Controller::mouse_button_was_released(GLFW_MOUSE_BUTTON_1))
         return;
 
     for(auto it = m_objects.begin(); it.is_ok() && !it.end_reached(); ++it)

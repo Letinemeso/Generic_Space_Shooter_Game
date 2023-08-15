@@ -263,7 +263,7 @@ void Player::M_process_hit_block(unsigned int _x, unsigned int _y)
 
 
 
-void Player::apply_input()
+void Player::apply_input(float _dt)
 {
     for(unsigned int x=0; x<current_structure().width(); ++x)
     {
@@ -275,10 +275,10 @@ void Player::apply_input()
             if(!material)
                 continue;
 
-            if(!LR::Event_Controller::is_key_down(block_data.bound_key))
+            if(!LR::Window_Controller::is_key_down(block_data.bound_key))
                 continue;
 
-            material->apply_block_effect(this, m_current_structure.block(x, y).angle, M_calculate_block_global_pos(x, y));
+            material->apply_block_effect(this, m_current_structure.block(x, y).angle, M_calculate_block_global_pos(x, y), _dt);
         }
     }
 
@@ -291,9 +291,9 @@ void Player::apply_input()
     if(velocity_ratio > 1.0f)
         physics_module()->set_velocity(physics_module()->velocity() / velocity_ratio);
 
-    m_shoot_timer.update(LR::Event_Controller::get_dt());
+    m_shoot_timer.update(_dt);
 
-    if(LR::Event_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
+    if(LR::Window_Controller::is_key_down(GLFW_KEY_SPACE) && !m_shoot_timer.is_active())
     {
         M_shoot();
         m_shoot_timer.start(0.6f);

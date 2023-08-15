@@ -116,7 +116,7 @@ namespace GSSG
 
     public:
         virtual void apply_block_effect_on_construction(Space_Ship* _space_ship) const;
-        virtual void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const;
+        virtual void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position, float _dt) const;
 
     };
 
@@ -130,7 +130,7 @@ namespace GSSG
 
     public:
         void apply_block_effect_on_construction(Space_Ship* _space_ship) const override;
-        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const override;
+        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position, float _dt) const override;
 
     };
 
@@ -144,7 +144,7 @@ namespace GSSG
 
     public:
         void apply_block_effect_on_construction(Space_Ship* _space_ship) const override;
-        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position) const override;
+        void apply_block_effect(Space_Ship* _space_ship, float _block_rotation, const glm::vec3& _block_position, float _dt) const override;
 
     };
 

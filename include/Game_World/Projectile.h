@@ -27,7 +27,7 @@ namespace GSSG
 
         void on_collision(const LPhys::Intersection_Data& _id) override;
 
-        void apply_input() override { }
+        void apply_input(float /*_dt*/) override { }
 
     public:
         void set_lifetime(float _seconds);

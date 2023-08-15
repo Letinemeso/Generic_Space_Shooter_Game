@@ -95,7 +95,7 @@ LGL::BT_Execution_Result Enemy::M_find_closest_enemy()
 LGL::BT_Execution_Result Enemy::M_accelerate()
 {
     glm::vec3 look_direction = LEti::Math::rotate_vector({acceleration(), 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z);
-    physics_module()->apply_linear_impulse(look_direction * LR::Event_Controller::get_dt());
+    physics_module()->apply_linear_impulse(look_direction * m_dt_for_behavior);
 
     float speed = LEti::Math::vector_length(physics_module()->velocity());
     if(speed > max_speed())
@@ -184,7 +184,7 @@ LGL::BT_Execution_Result Enemy::M_get_close_to_enemy()
     if(dist < 150.0f)
         impulse *= -1.0f;
 
-    physics_module()->apply_linear_impulse(impulse * LR::Event_Controller::get_dt());
+    physics_module()->apply_linear_impulse(impulse * m_dt_for_behavior);
 
     float speed = LEti::Math::vector_length(physics_module()->velocity());
     if(speed > max_speed())
@@ -198,7 +198,7 @@ LGL::BT_Execution_Result Enemy::M_get_close_to_enemy()
 
 LGL::BT_Execution_Result Enemy::M_shoot_at_enemy()
 {
-    m_shoot_timer.update(LR::Event_Controller::get_dt());
+    m_shoot_timer.update(m_dt_for_behavior);
     if(!m_shoot_timer.is_active())
     {
         m_shoot_timer.start(1.0f);
@@ -212,7 +212,7 @@ LGL::BT_Execution_Result Enemy::M_shoot_at_enemy()
 
 LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 {
-    m_idle_timer.update(LR::Event_Controller::get_dt());
+    m_idle_timer.update(m_dt_for_behavior);
     if(!m_idle_timer.is_active())
     {
         if(m_idle_acceleration > 0.001f)
@@ -233,21 +233,21 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
 
     if(fabs(m_idle_rotation) > 0.0001f)
     {
-        physics_module()->apply_rotation(m_idle_rotation * LR::Event_Controller::get_dt());
+        physics_module()->apply_rotation(m_idle_rotation * m_dt_for_behavior);
         if(physics_module()->angular_velocity() > max_rotation_speed())
             physics_module()->set_angular_velocity(max_rotation_speed());
     }
     else if(!LEti::Math::floats_are_equal(physics_module()->angular_velocity(), 0.0f))
     {
         float multiplier = physics_module()->angular_velocity() < 0.0f ? 1.0f : -1.0f;
-        physics_module()->set_angular_velocity(physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * LR::Event_Controller::get_dt()));
-        if(fabs(physics_module()->angular_velocity()) < rotation_acceleration() * LR::Event_Controller::get_dt())
+        physics_module()->set_angular_velocity(physics_module()->angular_velocity() + (rotation_acceleration() * multiplier * m_dt_for_behavior));
+        if(fabs(physics_module()->angular_velocity()) < rotation_acceleration() * m_dt_for_behavior)
             physics_module()->set_angular_velocity(0.0f);
     }
 
     if(m_idle_acceleration > 0.0001f)
     {
-        glm::vec3 impulse = LEti::Math::rotate_vector({m_idle_acceleration, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z) * LR::Event_Controller::get_dt();
+        glm::vec3 impulse = LEti::Math::rotate_vector({m_idle_acceleration, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, current_state().rotation().z) * m_dt_for_behavior;
         physics_module()->apply_linear_impulse(impulse);
 
         float speed = LEti::Math::vector_length(physics_module()->velocity());
@@ -256,7 +256,7 @@ LGL::BT_Execution_Result Enemy::M_process_idle_behavior()
     }
     else if(!LEti::Math::floats_are_equal(LEti::Math::vector_length(physics_module()->velocity()), 0.0f))
     {
-        glm::vec3 impulse = -LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()) * LR::Event_Controller::get_dt();
+        glm::vec3 impulse = -LEti::Math::extend_vector_to_length(physics_module()->velocity(), max_speed()) * m_dt_for_behavior;
         physics_module()->apply_linear_impulse(impulse);
 
         float speed = LEti::Math::vector_length(physics_module()->velocity());
@@ -277,8 +277,10 @@ void Enemy::on_collision(const LPhys::Intersection_Data &_id)
 }
 
 
-void Enemy::apply_input()
+void Enemy::apply_input(float _dt)
 {
+    m_dt_for_behavior = _dt;
+
     m_behavior->process();
 }
 
