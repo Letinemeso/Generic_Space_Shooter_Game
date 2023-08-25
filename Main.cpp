@@ -4,6 +4,7 @@
 #include <MDL_Reader.h>
 
 #include <Stuff/Timer.h>
+#include <Stuff/File.h>
 
 #include <FPS_Timer.h>
 #include <Object_System/Text_Field.h>
@@ -304,6 +305,9 @@ int main()
     glm::vec3 cursor_position(0.0f, 0.0f, 0.0f);
 
 
+    LST::File vertex_shader_file("Resources/Shaders/vertex_shader.shader");
+    LST::File fragment_shader_file("Resources/Shaders/fragment_shader.shader");
+
     LV::MDL_Reader reader;
 
     LR::Window_Controller::create_window(1200, 800, "Generic Space Shooter Game");
@@ -326,7 +330,7 @@ int main()
     GSSG::GUI gui;
     gui.inject_shader(&shader);
 
-    shader.init("Resources/Shaders/vertex_shader.shader", "Resources/Shaders/fragment_shader.shader");
+    shader.init(vertex_shader_file.extract_block(), fragment_shader_file.extract_block());
     shader.set_texture_uniform("input_texture");
     shader.set_transform_matrix_uniform("transform_matrix");
     shader.set_projection_matrix_uniform("projection_matrix");
