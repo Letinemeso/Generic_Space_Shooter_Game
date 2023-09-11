@@ -347,6 +347,7 @@ int main()
 
     reader.parse_file("Resources/Textures/textures");
     LR::Graphic_Resources_Manager graphics_resources_manager;
+
     graphics_resources_manager.load_resources(reader.get_stub("textures"));
 
     LEti::FPS_Timer timer;
@@ -500,7 +501,7 @@ int main()
     GSSG::Grid_Cell_Stub em_cell_stub;
     em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
     em_cell_stub.draw_module->renderer = &renderer;
-    enemy_entity_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
+    em_cell_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
     em_cell_stub.physics_module = new GSSG::Grid_Cell_Physics_Module_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();
@@ -580,7 +581,7 @@ int main()
         if(!fps_timer.is_active())
         {
             fps_timer.start(1.0f);
-            std::cout << fps_counter << "\n";
+//            std::cout << fps_counter << "\n";
             fps_counter = 0;
         }
 

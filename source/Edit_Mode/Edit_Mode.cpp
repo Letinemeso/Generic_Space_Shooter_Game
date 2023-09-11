@@ -26,8 +26,6 @@ void Edit_Mode::on_activate()
 {
     m_grid->set_structure(m_player_stub->structure);
 
-    m_grid->construct();
-
     glm::vec3 grid_cell_size = m_grid->get_cell_size();
     grid_cell_size.z = 0.0f;
     glm::vec3 grid_size = m_grid->get_size();

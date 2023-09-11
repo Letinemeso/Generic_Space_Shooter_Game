@@ -87,12 +87,6 @@ void Grid::M_on_cell_pressed(Grid_Cell& _cell)
 void Grid::M_set_cell_visual_data(Grid_Cell& _object, const Block& _block)
 {
     _object.set_visual_data(_block.get_coords(), _block.get_size().coords, _block.get_colors(), _block.get_size().colors, _block.get_texture_coords(), _block.get_size().texture_coords);
-
-//    LR::Default_Draw_Module_2D* draw_module = _object.draw_module();
-
-//    draw_module->init_vertices(_block.get_coords(), _block.get_size().coords);
-//    draw_module->init_colors(_block.get_colors(), _block.get_size().colors);
-//    draw_module->init_texture(draw_module->texture().get_picture(), _block.get_texture_coords(), _block.get_size().texture_coords);
 }
 
 
@@ -172,7 +166,7 @@ void Grid::construct()
 
     delete m_cell_preview;
     m_cell_preview = (Grid_Cell*)m_cell_stub->construct();
-    M_set_cell_visual_data(*m_cell_preview, *m_no_material);
+    M_set_cell_visual_data(*m_cell_preview, /**m_no_material*/ m_block_controller->get_block(1));
 
     m_material = m_no_material;
 
