@@ -57,14 +57,6 @@ void Player_Stub::M_init_constructed_product(LV::Variable_Base *_product) const
 
     pm->set_owner(product);
 
-//    product->set_on_update_func([product](float _ratio)
-//    {
-//        LPhys::Rigid_Body_2D* pm = (LPhys::Rigid_Body_2D*)product->physics_module();
-
-//        product->move(pm->velocity() * LR::Event_Controller::get_dt() * _ratio);
-//        product->rotate(pm->angular_velocity() * LR::Event_Controller::get_dt() * _ratio);
-//    });
-
     product->add_module(pm);
     product->add_module(dm);
 
