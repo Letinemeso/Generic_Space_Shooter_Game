@@ -1,66 +1,80 @@
-|textures|
+|resources|
 \
-    ||font_texture||
+    ||pictures||
     \
-        |path|
+        ||font_texture||
         \
-            "Resources/Font/font_yellow.png"
+            |path|
+            \
+                "Resources/Font/font_yellow.png"
+            /
+        /
+        ||white_texture||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/white.png"
+            /
+        /
+        ||arrow_texture||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/arrow.png"
+            /
+        /
+        ||background_texture||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/background.png"
+            /
+        /
+        ||yellow_texture||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/yellow.png"
+            /
+        /
+        ||triangle_texture||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/triangle.png"
+            /
+        /
+        ||explosion_animation||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/explosion_animation.png"
+            /
+        /
+        ||projectile_animation||
+        \
+            |path|
+            \
+                "Resources/Textures/gameplay_textures/projectile_animation.png"
+            /
+        /
+        ||edit_mode_atlas||
+        \
+            |path|
+            \
+                "Resources/Textures/editing_mode_textures/edit_mode_atlas.png"
+            /
         /
     /
-    ||white_texture||
+    
+    ||fonts||
     \
-        |path|
+        ||small_font||
         \
-            "Resources/Textures/gameplay_textures/white.png"
-        /
-    /
-    ||arrow_texture||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/arrow.png"
-        /
-    /
-    ||background_texture||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/background.png"
-        /
-    /
-    ||yellow_texture||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/yellow.png"
-        /
-    /
-    ||triangle_texture||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/triangle.png"
-        /
-    /
-    ||explosion_animation||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/explosion_animation.png"
-        /
-    /
-    ||projectile_animation||
-    \
-        |path|
-        \
-            "Resources/Textures/gameplay_textures/projectile_animation.png"
-        /
-    /
-    ||edit_mode_atlas||
-    \
-        |path|
-        \
-            "Resources/Textures/editing_mode_textures/edit_mode_atlas.png"
+            |path|
+            \
+                "Resources/Font/small_font"
+            /
         /
     /
 /

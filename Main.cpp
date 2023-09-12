@@ -12,7 +12,7 @@
 
 #include <Shader/Shader.h>
 #include <Camera/Camera_2D.h>
-#include <Picture/Picture_Manager.h>
+#include <Picture/Graphic_Resources_Manager.h>
 
 #include <Collision_Detection/Collision_Detector_2D.h>
 #include <Collision_Detection/Space_Hasher_2D.h>
@@ -348,7 +348,7 @@ int main()
     reader.parse_file("Resources/Textures/textures");
     LR::Graphic_Resources_Manager graphics_resources_manager;
 
-    graphics_resources_manager.load_resources(reader.get_stub("textures"));
+    graphics_resources_manager.load_resources(reader.get_stub("resources"));
 
     LEti::FPS_Timer timer;
     timer.set_max_dt(60.0f / 1000.0f);
