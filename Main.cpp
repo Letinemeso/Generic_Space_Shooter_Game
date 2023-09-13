@@ -490,11 +490,14 @@ int main()
     test_tf_stub.graphic_resources_manager = &graphics_resources_manager;
     test_tf_stub.assign_values(reader.get_stub("test_text_field"));
 
+    LR::Draw_Module__Text_Field* test_tf_dm = (LR::Draw_Module__Text_Field*)test_tf_stub.construct();
+    LR::Text_Field_Settings& tf_settings = test_tf_dm->settings();
+
     LEti::Object_2D test_tf;
     test_tf.assign_values({});
-    test_tf.add_module((LEti::Module*)test_tf_stub.construct());
+    test_tf.add_module(test_tf_dm);
     test_tf.current_state().set_position({0, 0, 0});
-    test_tf.current_state().set_scale({2.0f, 2.0f, 1.0f});
+    test_tf.current_state().set_scale({200.0f, 200.0f, 1.0f});
 
     //  ~game setup
 
@@ -593,6 +596,13 @@ int main()
         if(LR::Window_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();
 
+        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_LEFT))
+            tf_settings.text = "12345";
+        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_RIGHT))
+            tf_settings.text = "54321";
+
+        test_tf.update(timer.dt());
+
         ++fps_counter;
         fps_timer.update(timer.dt());
 
@@ -602,8 +612,6 @@ int main()
 //            std::cout << fps_counter << "\n";
             fps_counter = 0;
         }
-
-        test_tf.update(timer.dt());
 
         LR::Window_Controller::swap_buffers();
     }
