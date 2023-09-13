@@ -1,0 +1,32 @@
+|test_text_field|
+\
+    |font_name|
+    \
+        "small_font"
+    /
+    
+    |horizontal_alignment|
+    \
+        "0"
+    /
+    
+    |vertical_alignment|
+    \
+        "0"
+    /
+    
+    |raw_offset|
+    \
+        "0" "0" "0"
+    /
+    
+    |max_size|
+    \
+        "-1"
+    /
+    
+    |text|
+    \
+        "12345"
+    /
+/

@@ -22,6 +22,7 @@
 #include <Collision_Resolution/Collision_Resolver.h>
 #include <Collision_Resolution/Collision_Resolution__Rigid_Body_2D.h>
 #include <Draw_Modules/Draw_Module__Animation.h>
+#include <Draw_Modules/Draw_Module__Text_Field.h>
 #include <Renderer/Renderer.h>
 
 #include <Game_World/Background.h>
@@ -478,6 +479,23 @@ int main()
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
+
+
+
+
+    reader.parse_file("Resources/Models/text_field");
+
+    LR::Draw_Module__Text_Field__Stub test_tf_stub;
+    test_tf_stub.renderer = &renderer;
+    test_tf_stub.graphic_resources_manager = &graphics_resources_manager;
+    test_tf_stub.assign_values(reader.get_stub("test_text_field"));
+
+    LEti::Object_2D test_tf;
+    test_tf.assign_values({});
+    test_tf.add_module((LEti::Module*)test_tf_stub.construct());
+    test_tf.current_state().set_position({0, 0, 0});
+    test_tf.current_state().set_scale({2.0f, 2.0f, 1.0f});
+
     //  ~game setup
 
 
@@ -584,6 +602,8 @@ int main()
 //            std::cout << fps_counter << "\n";
             fps_counter = 0;
         }
+
+        test_tf.update(timer.dt());
 
         LR::Window_Controller::swap_buffers();
     }
