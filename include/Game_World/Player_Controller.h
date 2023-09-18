@@ -1,8 +1,6 @@
 #ifndef PLAYER_CONTROLLER_H
 #define PLAYER_CONTROLLER_H
 
-#include <Object_System/Text_Field.h>
-
 #include <Game_World/Player.h>
 #include <Game_World/Entity_Manager.h>
 
@@ -18,9 +16,8 @@ namespace GSSG
         Player* m_player = nullptr;
         LST::Timer m_respawn_timer;
 
-        LEti::Text_Field* m_player_hp_tf = nullptr;
-        LEti::Text_Field* m_player_respawn_tf = nullptr;
-        LEti::Text_Field* m_player_eliminations_amount_tf = nullptr;
+        LR::Text_Field_Settings* m_player_respawn_tf = nullptr;
+        LR::Text_Field_Settings* m_player_eliminations_amount_tf = nullptr;
 
     private:
         LR::Camera_2D* m_camera = nullptr;
@@ -31,9 +28,8 @@ namespace GSSG
         inline void set_player_stub(const Player_Stub* _player_stub) { m_player_stub = _player_stub; }
         inline void inject_camera(LR::Camera_2D* _camera) { m_camera = _camera; }
         inline void inject_entity_manager(Entity_Manager* _entity_manager) { m_entity_manager = _entity_manager; }
-        inline void inject_player_hp_caption(LEti::Text_Field* _player_hp_tf) { m_player_hp_tf = _player_hp_tf; }
-        inline void inject_player_respawn_caption(LEti::Text_Field* _player_respawn_tf) { m_player_respawn_tf = _player_respawn_tf; }
-        inline void inject_player_eliminations_amount_caption(LEti::Text_Field* _player_eliminations_amount_tf) { m_player_eliminations_amount_tf = _player_eliminations_amount_tf; }
+        inline void inject_player_respawn_caption(LR::Text_Field_Settings* _player_respawn_tf) { m_player_respawn_tf = _player_respawn_tf; }
+        inline void inject_player_eliminations_amount_caption(LR::Text_Field_Settings* _player_eliminations_amount_tf) { m_player_eliminations_amount_tf = _player_eliminations_amount_tf; }
 
     private:
         void M_create_player();

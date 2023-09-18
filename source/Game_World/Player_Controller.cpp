@@ -11,7 +11,6 @@ void Player_Controller::M_create_player()
     m_player->inject_entity_manager(m_entity_manager);
     m_player->inject_player_controller(this);
 
-    m_player->inject_player_hp_caption(m_player_hp_tf);
     m_player->inject_eliminations_amount_caption(m_player_eliminations_amount_tf);
 
     m_entity_manager->add_entity(m_player);
@@ -33,9 +32,10 @@ void Player_Controller::forcefuly_kill_player()
 void Player_Controller::notify_about_player_death()
 {
     m_player = nullptr;
-    m_respawn_timer.start(1.0f);
-    m_player_respawn_tf->set_text("Respawning in 5...");
-//    m_player_respawn_tf->draw_module()->set_visible(true);
+
+    unsigned int respawn_time = 1.0f;
+
+    m_respawn_timer.start((float)respawn_time);
 }
 
 void Player_Controller::update(float _dt)
@@ -45,8 +45,11 @@ void Player_Controller::update(float _dt)
 
     m_respawn_timer.update(_dt);
 
-    m_player_respawn_tf->set_text("Respawning in " + std::to_string((unsigned int)(m_respawn_timer.time_left()) + 1) + "...");
+    m_player_respawn_tf->text = "Respawning in " + std::to_string((unsigned int)(m_respawn_timer.time_left()) + 1) + "...";
 
     if(!m_respawn_timer.is_active())
+    {
         M_create_player();
+        m_player_respawn_tf->text = "";
+    }
 }

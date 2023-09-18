@@ -7,7 +7,6 @@
 #include <Stuff/File.h>
 
 #include <FPS_Timer.h>
-#include <Object_System/Text_Field.h>
 #include <Object_System/Object_2D.h>
 
 #include <Shader/Shader.h>
@@ -372,32 +371,47 @@ int main()
 
     reader.parse_file("Resources/Models/arrow_quad");
     reader.parse_file("Resources/Models/triangle");
-    reader.parse_file("Resources/Models/text_field_new");
     reader.parse_file("Resources/Models/explosion");
     reader.parse_file("Resources/Models/projectile");
     reader.parse_file("Resources/Models/grid_cell");
     reader.parse_file("Resources/Models/blocks");
     reader.parse_file("Resources/Models/structure");
+    reader.parse_file("Resources/Models/text_field");
 
-    LEti::Text_Field_Stub text_field_stub;
+    LR::Text_Field_Settings* last_created_tf_settings = nullptr;
+    LR::Draw_Module__Text_Field__Stub text_field_stub;
+    text_field_stub.renderer = &gui.renderer();
+    text_field_stub.graphic_resources_manager = &graphics_resources_manager;
     text_field_stub.assign_values(reader.get_stub("text_field"));
     text_field_stub.on_values_assigned();
+    text_field_stub.set_extract_data_func([&last_created_tf_settings](LV::Variable_Base* _product)
+    {
+        LR::Draw_Module__Text_Field* dm_tf = (LR::Draw_Module__Text_Field*)_product;
+        last_created_tf_settings = &dm_tf->settings();
+    });
 
-    LEti::Text_Field* player_hp_tf = (LEti::Text_Field*)text_field_stub.construct();
-    player_hp_tf->current_state().set_position({20.0f, 20.0f, 0.0f});
-    player_hp_tf->set_text(" ");
-
-    LEti::Text_Field* player_respawn_timer_tf = (LEti::Text_Field*)text_field_stub.construct();
+    LEti::Object_2D* player_respawn_timer_tf = new LEti::Object_2D;
+    player_respawn_timer_tf->assign_values({});
+    player_respawn_timer_tf->on_values_assigned();
     player_respawn_timer_tf->current_state().set_position({600.0f, 400.0f, 0.0f});
-    player_respawn_timer_tf->set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::center);
-    player_respawn_timer_tf->set_vertical_alignment(LEti::Text_Field::Vertical_Alignment::center);
+    player_respawn_timer_tf->add_module((LEti::Module*)text_field_stub.construct());
+    LR::Text_Field_Settings* player_respawn_timer_tf_settings = last_created_tf_settings;
+    player_respawn_timer_tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Center;
+    player_respawn_timer_tf_settings->vertical_alignment = LR::Text_Field_Settings::Vertical_Alignment::Center;
+    player_respawn_timer_tf_settings->max_size = 500.0f;
 
-    LEti::Text_Field* player_eliminations_tf = (LEti::Text_Field*)text_field_stub.construct();
-    player_eliminations_tf->current_state().set_position({1180, 20.0f, 0.0f});
-    player_eliminations_tf->set_horizontal_alignment(LEti::Text_Field::Horizontal_Alignment::right);
-
-    gui.add_object(player_hp_tf);
     gui.add_object(player_respawn_timer_tf);
+
+    LEti::Object_2D* player_eliminations_tf = new LEti::Object_2D;
+    player_eliminations_tf->assign_values({});
+    player_eliminations_tf->on_values_assigned();
+    player_eliminations_tf->current_state().set_position({1180, 20.0f, 0.0f});
+    player_eliminations_tf->add_module((LEti::Module*)text_field_stub.construct());
+    LR::Text_Field_Settings* player_eliminations_tf_settings = last_created_tf_settings;
+    player_eliminations_tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Right;
+    player_eliminations_tf_settings->vertical_alignment = LR::Text_Field_Settings::Vertical_Alignment::Bottom;
+    player_eliminations_tf_settings->max_size = 300.0f;
+
     gui.add_object(player_eliminations_tf);
 
 
@@ -462,9 +476,8 @@ int main()
     player_controller.set_projectile_stub(&projectile_stub);
     player_controller.inject_camera(&camera);
     player_controller.inject_entity_manager(&entity_manager);
-    player_controller.inject_player_hp_caption(player_hp_tf);
-    player_controller.inject_player_respawn_caption(player_respawn_timer_tf);
-    player_controller.inject_player_eliminations_amount_caption(player_eliminations_tf);
+    player_controller.inject_player_respawn_caption(player_respawn_timer_tf_settings);
+    player_controller.inject_player_eliminations_amount_caption(player_eliminations_tf_settings);
 
     player_stub.effects_controller = &effects_controller;
     player_stub.on_death_effect = &explosion_stub;
@@ -479,33 +492,6 @@ int main()
     entity_manager.update_entities_prev_state();
     entity_manager.update_entities(0.0f);
 
-
-
-
-
-    reader.parse_file("Resources/Models/text_field");
-
-    LR::Text_Field_Settings* tf_settings = nullptr;
-
-    LR::Draw_Module__Text_Field__Stub test_tf_stub;
-    test_tf_stub.renderer = &renderer;
-    test_tf_stub.graphic_resources_manager = &graphics_resources_manager;
-    test_tf_stub.set_extract_data_func([&tf_settings](LV::Variable_Base* _stub)
-    {
-        LR::Draw_Module__Text_Field* dm_tf = (LR::Draw_Module__Text_Field*)_stub;
-        tf_settings = &dm_tf->settings();
-    });
-
-    test_tf_stub.assign_values(reader.get_stub("test_text_field"));
-
-    LR::Draw_Module__Text_Field* test_tf_dm = (LR::Draw_Module__Text_Field*)test_tf_stub.construct();
-    tf_settings->font = graphics_resources_manager.get_font("font_yellow");
-
-    LEti::Object_2D test_tf;
-    test_tf.assign_values({});
-    test_tf.add_module(test_tf_dm);
-    test_tf.current_state().set_position({0, 100, 0});
-    test_tf.current_state().set_scale({0.5f, 0.5f, 1.0f});
 
     //  ~game setup
 
@@ -604,20 +590,6 @@ int main()
         if(LR::Window_Controller::key_was_released(GLFW_KEY_B))
             enemy_generator.spawn_enemy();
 
-        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_LEFT))
-            tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Left;
-//            tf_settings.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?*/+-";
-        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_RIGHT))
-//            tf_settings.text = "54321";
-            tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Right;
-
-//        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_UP))
-//            tf_settings.font = graphics_resources_manager.get_font("font_yellow");
-//        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_DOWN))
-//            tf_settings.font = graphics_resources_manager.get_font("small_font");
-
-        test_tf.update(timer.dt());
-
         ++fps_counter;
         fps_timer.update(timer.dt());
 
@@ -631,7 +603,6 @@ int main()
         LR::Window_Controller::swap_buffers();
     }
 
-    delete player_hp_tf;
     delete player_respawn_timer_tf;
     delete player_eliminations_tf;
 

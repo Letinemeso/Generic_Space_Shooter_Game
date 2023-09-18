@@ -83,20 +83,6 @@ Player::~Player()
 
 
 
-void Player::inject_player_hp_caption(LEti::Text_Field *_player_hp_tf)
-{
-    m_player_hp_tf = _player_hp_tf;
-//    m_player_hp_tf->set_text("HP " + std::to_string(health()));
-}
-
-void Player::inject_eliminations_amount_caption(LEti::Text_Field *_eliminations_amount_tf)
-{
-    m_eliminations_amount_tf = _eliminations_amount_tf;
-    m_eliminations_amount_tf->set_text("Eliminations " + std::to_string(m_eliminations_amount));
-}
-
-
-
 void Player::reconstruct()
 {
     Block::Size arrays_sizes;
@@ -337,5 +323,5 @@ bool Player::should_be_destroyed() const
 void Player::set_eliminations_amount(unsigned int _amount)
 {
     m_eliminations_amount = _amount;
-    m_eliminations_amount_tf->set_text("Eliminations " + std::to_string(m_eliminations_amount));
+    m_eliminations_amount_tf->text = "Eliminations " + std::to_string(m_eliminations_amount);
 }

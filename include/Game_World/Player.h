@@ -5,7 +5,7 @@
 #include <Data_Structures/List.h>
 #include <Stuff/Function_Wrapper.h>
 
-#include <Object_System/Text_Field.h>
+#include <Draw_Modules/Draw_Module__Text_Field.h>
 
 #include <Game_World/Enemy_Generator.h>
 #include <Game_World/Entity_Manager.h>
@@ -61,10 +61,8 @@ namespace GSSG
 
         LST::Timer m_shoot_timer;
 
-        LEti::Text_Field* m_player_hp_tf = nullptr;
-
     private:
-        LEti::Text_Field* m_eliminations_amount_tf = nullptr;
+        LR::Text_Field_Settings* m_eliminations_amount_tf = nullptr;
         unsigned int m_eliminations_amount = 0;
 
     private:
@@ -77,8 +75,7 @@ namespace GSSG
     public:
         inline void inject_camera(LR::Camera_2D* _camera) { m_camera = _camera; }
         inline void inject_player_controller(Player_Controller* _player_controller) { m_player_controller = _player_controller; }
-        void inject_player_hp_caption(LEti::Text_Field* _player_hp_tf);
-        void inject_eliminations_amount_caption(LEti::Text_Field* _eliminations_amount_tf);
+        inline void inject_eliminations_amount_caption(LR::Text_Field_Settings* _eliminations_amount_tf) { m_eliminations_amount_tf = _eliminations_amount_tf; m_eliminations_amount_tf->text = "Eliminations " + std::to_string(m_eliminations_amount); }
 
     public:
         inline void set_structure(const Space_Ship_Structure& _structure) { m_initial_structure = _structure; m_current_structure = _structure; }

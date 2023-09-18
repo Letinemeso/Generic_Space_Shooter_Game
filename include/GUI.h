@@ -48,6 +48,9 @@ namespace GSSG
     public:
         inline void inject_shader(const LR::Shader* _shader) { m_renderer.set_shader(_shader); }
 
+        inline LR::Renderer& renderer() { return m_renderer; }
+        inline const LR::Renderer& renderer() const { return m_renderer; }
+
     public:
         void add_object(LEti::Object_2D* _object, LPhys::Physics_Module_2D* _pm = nullptr, const LST::Function<void(unsigned int)>& _on_pressed = {}, const LST::Function<void(unsigned int)>& _on_released = {});
         void remove_object(LEti::Object_2D* _object);

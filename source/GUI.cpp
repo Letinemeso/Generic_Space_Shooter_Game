@@ -91,11 +91,7 @@ void GUI::update_prev_state()
 void GUI::update(float _dt)
 {
     for(auto it = m_objects.begin(); !it.end_reached(); ++it)
-    {
-//        if((*it).pm)
-//            (*it).pm->update();
         (*it).object->update(_dt);
-    }
 
     m_collision_detector.update();
 }

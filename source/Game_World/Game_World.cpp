@@ -5,8 +5,6 @@ using namespace GSSG;
 
 void Game_World::update(float _dt)
 {
-    m_gui->update(_dt);
-
     m_background->update(_dt);
 
     m_entity_manager->update_entities_prev_state();
@@ -23,4 +21,5 @@ void Game_World::update(float _dt)
     m_player_controller->update(_dt);
     m_effects_controller->update(_dt);
 
+    m_gui->update(_dt);
 }
