@@ -2,7 +2,7 @@
 \
     |font_name|
     \
-        "small_font"
+        "font_yellow"
     /
     
     |horizontal_alignment|
@@ -22,11 +22,11 @@
     
     |max_size|
     \
-        "1"
+        "-1"
     /
     
     |text|
     \
-        "12345"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?*/+-"
     /
 /

@@ -76,5 +76,13 @@
                 "Resources/Font/small_font"
             /
         /
+
+        ||font_yellow||
+        \
+            |path|
+            \
+                "Resources/Font/font_yellow"
+            /
+        /
     /
 /

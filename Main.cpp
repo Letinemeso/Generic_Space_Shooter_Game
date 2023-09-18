@@ -492,12 +492,13 @@ int main()
 
     LR::Draw_Module__Text_Field* test_tf_dm = (LR::Draw_Module__Text_Field*)test_tf_stub.construct();
     LR::Text_Field_Settings& tf_settings = test_tf_dm->settings();
+    tf_settings.font = graphics_resources_manager.get_font("font_yellow");
 
     LEti::Object_2D test_tf;
     test_tf.assign_values({});
     test_tf.add_module(test_tf_dm);
-    test_tf.current_state().set_position({0, 0, 0});
-    test_tf.current_state().set_scale({200.0f, 200.0f, 1.0f});
+    test_tf.current_state().set_position({0, 100, 0});
+    test_tf.current_state().set_scale({0.5f, 0.5f, 1.0f});
 
     //  ~game setup
 
@@ -597,9 +598,16 @@ int main()
             enemy_generator.spawn_enemy();
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_LEFT))
-            tf_settings.text = "12345";
+            tf_settings.horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Left;
+//            tf_settings.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?*/+-";
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_RIGHT))
-            tf_settings.text = "54321";
+//            tf_settings.text = "54321";
+            tf_settings.horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Right;
+
+//        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_UP))
+//            tf_settings.font = graphics_resources_manager.get_font("font_yellow");
+//        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_DOWN))
+//            tf_settings.font = graphics_resources_manager.get_font("small_font");
 
         test_tf.update(timer.dt());
 
