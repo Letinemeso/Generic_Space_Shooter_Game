@@ -425,7 +425,7 @@ int main()
     enemy_entity_stub.on_values_assigned();
     enemy_entity_stub.draw_module->texture_name = "triangle_texture";
     enemy_entity_stub.draw_module->renderer = &renderer;
-    enemy_entity_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
+    enemy_entity_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
 
     GSSG::Projectile_Stub projectile_stub;
     projectile_stub.draw_module = new LR::Draw_Module__Animation__Stub;
@@ -434,7 +434,7 @@ int main()
     projectile_stub.on_values_assigned();
     projectile_stub.scale = { 8.0f, 8.0f, 1.0f };
     projectile_stub.draw_module->renderer = &renderer;
-    projectile_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
+    projectile_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
     delete[] projectile_stub.physics_module->masses;
     projectile_stub.physics_module->masses = new float[2];
     projectile_stub.physics_module->masses[0] = 2.5f;
@@ -443,7 +443,7 @@ int main()
     GSSG::Visual_Effect_Stub explosion_stub;
     explosion_stub.draw_module = new LR::Draw_Module__Animation__Stub;
     explosion_stub.draw_module->renderer = &renderer;
-    explosion_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
+    explosion_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
     explosion_stub.assign_values(reader.get_stub("explosion"));
     explosion_stub.on_values_assigned();
 
@@ -485,14 +485,21 @@ int main()
 
     reader.parse_file("Resources/Models/text_field");
 
+    LR::Text_Field_Settings* tf_settings = nullptr;
+
     LR::Draw_Module__Text_Field__Stub test_tf_stub;
     test_tf_stub.renderer = &renderer;
     test_tf_stub.graphic_resources_manager = &graphics_resources_manager;
+    test_tf_stub.set_extract_data_func([&tf_settings](LV::Variable_Base* _stub)
+    {
+        LR::Draw_Module__Text_Field* dm_tf = (LR::Draw_Module__Text_Field*)_stub;
+        tf_settings = &dm_tf->settings();
+    });
+
     test_tf_stub.assign_values(reader.get_stub("test_text_field"));
 
     LR::Draw_Module__Text_Field* test_tf_dm = (LR::Draw_Module__Text_Field*)test_tf_stub.construct();
-    LR::Text_Field_Settings& tf_settings = test_tf_dm->settings();
-    tf_settings.font = graphics_resources_manager.get_font("font_yellow");
+    tf_settings->font = graphics_resources_manager.get_font("font_yellow");
 
     LEti::Object_2D test_tf;
     test_tf.assign_values({});
@@ -523,7 +530,7 @@ int main()
     GSSG::Grid_Cell_Stub em_cell_stub;
     em_cell_stub.draw_module = new LR::Default_Draw_Module_2D_Stub;
     em_cell_stub.draw_module->renderer = &renderer;
-    em_cell_stub.draw_module->graphics_resources_manager = &graphics_resources_manager;
+    em_cell_stub.draw_module->graphic_resources_manager = &graphics_resources_manager;
     em_cell_stub.physics_module = new GSSG::Grid_Cell_Physics_Module_Stub;
     em_cell_stub.assign_values(reader.get_stub("grid_cell"));
     em_cell_stub.on_values_assigned();
@@ -598,11 +605,11 @@ int main()
             enemy_generator.spawn_enemy();
 
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_LEFT))
-            tf_settings.horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Left;
+            tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Left;
 //            tf_settings.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?*/+-";
         if(LR::Window_Controller::key_was_pressed(GLFW_KEY_RIGHT))
 //            tf_settings.text = "54321";
-            tf_settings.horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Right;
+            tf_settings->horizontal_alignment = LR::Text_Field_Settings::Horizontal_Alignment::Right;
 
 //        if(LR::Window_Controller::key_was_pressed(GLFW_KEY_UP))
 //            tf_settings.font = graphics_resources_manager.get_font("font_yellow");
