@@ -49,6 +49,7 @@ void Entity_Stub::M_init_constructed_product(LV::Variable_Base* _product) const
 Entity_Stub::~Entity_Stub()
 {
     delete physics_module;
+    delete draw_module;
 }
 
 
