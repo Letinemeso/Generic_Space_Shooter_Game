@@ -337,8 +337,12 @@ int main()
 
     LPhys::Collision_Detector_2D collision_detector;
 
-    collision_detector.set_broad_phase(new LPhys::Space_Hasher_2D, 10);
-    collision_detector.set_narrow_phase(new LPhys::Dynamic_Narrow_CD, 10);
+    LPhys::Space_Hasher_2D* cd_broad_phase = new LPhys::Space_Hasher_2D;
+    cd_broad_phase->set_precision(10);
+    collision_detector.set_broad_phase(cd_broad_phase);
+    LPhys::Dynamic_Narrow_CD* cd_narrow_phase = new LPhys::Dynamic_Narrow_CD;
+    cd_narrow_phase->set_precision(10);
+    collision_detector.set_narrow_phase(cd_narrow_phase);
     collision_detector.set_narrowest_phase(new LPhys::SAT_Narrowest_CD);
 
     LPhys::Collision_Resolver collision_resolver;
@@ -524,8 +528,12 @@ int main()
 
 
     LPhys::Collision_Detector_2D grid_collision_detector;
-    grid_collision_detector.set_broad_phase(new LPhys::Space_Hasher_2D, 10);
-    grid_collision_detector.set_narrow_phase(new LPhys::Dynamic_Narrow_CD, 10);
+    cd_broad_phase = new LPhys::Space_Hasher_2D;
+    cd_broad_phase->set_precision(10);
+    grid_collision_detector.set_broad_phase(cd_broad_phase);
+    cd_narrow_phase = new LPhys::Dynamic_Narrow_CD;
+    cd_narrow_phase->set_precision(10);
+    grid_collision_detector.set_narrow_phase(cd_narrow_phase);
     grid_collision_detector.set_narrowest_phase(new LPhys::SAT_Narrowest_CD);
     grid_collision_detector.register_point(&cursor_position);
 

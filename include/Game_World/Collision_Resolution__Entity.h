@@ -13,7 +13,7 @@ namespace GSSG
     class Collision_Resolution__Entity : public LPhys::Collision_Resolution__Rigid_Body_2D
     {
     public:
-        bool resolve(const LPhys::Intersection_Data &_id) override;
+        bool resolve(const LPhys::Intersection_Data &_id, float _dt) override;
 
     };
 

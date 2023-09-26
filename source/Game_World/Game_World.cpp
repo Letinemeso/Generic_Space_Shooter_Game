@@ -14,7 +14,7 @@ void Game_World::update(float _dt)
     m_gui->update_prev_state();
 
     m_collision_detector->update();
-    m_collision_resolver->resolve_all(m_collision_detector->get_collisions__models());
+    m_collision_resolver->resolve_all(m_collision_detector->get_collisions__models(), _dt);
 
     m_entity_manager->remove_dead_entities();
     m_enemy_generator->update(_dt);

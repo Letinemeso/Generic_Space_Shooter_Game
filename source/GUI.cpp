@@ -10,10 +10,15 @@ GUI::GUI()
 
     m_renderer.set_camera(&m_camera);
 
-    m_collision_detector.register_point(&m_cursor_position);
-    m_collision_detector.set_broad_phase(new LPhys::Space_Hasher_2D, 10);
-    m_collision_detector.set_narrow_phase(new LPhys::Dynamic_Narrow_CD, 10);
+    LPhys::Space_Hasher_2D* cd_broad_phase = new LPhys::Space_Hasher_2D;
+    cd_broad_phase->set_precision(10);
+    m_collision_detector.set_broad_phase(cd_broad_phase);
+    LPhys::Dynamic_Narrow_CD* cd_narrow_phase = new LPhys::Dynamic_Narrow_CD;
+    cd_narrow_phase->set_precision(10);
+    m_collision_detector.set_narrow_phase(cd_narrow_phase);
     m_collision_detector.set_narrowest_phase(new LPhys::SAT_Narrowest_CD);
+
+    m_collision_detector.register_point(&m_cursor_position);
 }
 
 GUI::~GUI()
